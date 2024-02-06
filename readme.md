@@ -1,6 +1,6 @@
 # Cost Catcher
-Here a small application is being developed for analysing bank transactions. The goal is to get an overview over your spendings, as well manage the types or categories of your spendings for a deeper analysis.
-Cost Catcher will be a webpage-driven application (based on Django) that will be packed as native running app.
+Cost Catcher is a small application for analysing bank transactions (via csv import). The goal is to get an overview over your spendings, as well as manage the types or categories of your spendings for a deeper analysis.
+Cost Catcher will be a webpage-driven application (based on Django and Vue.js) that will be packed as native running app.
 
 # Features
 * import CSV-File with bank transactions
