@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from REST_API.views import TransactionList
+from REST_API.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/transactions/', TransactionList.as_view()),
+    path('api/files/', FilesList.as_view()),
 
 ]
