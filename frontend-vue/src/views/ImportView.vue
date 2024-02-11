@@ -6,22 +6,14 @@
     </div>
 </template>
 
-<script>
-import { ref } from 'vue'
-export default {
-    name: 'ImportView',
-    setup() {
+<script setup>
+import { onMounted, ref } from 'vue';
+import { getData } from '../composables/API.js'
 
-        // API Call (Files)
-        const data = ref(null)
-        const fetchData = async () => { 
-            const response = await fetch('http://127.0.0.1:8000/api/files/')
-            const responseData = await response.json()
-            data.value = responseData
-        }
-        fetchData()
-        return { data }
-    }
-   
-}
+const data = ref(null)
+
+onMounted(async () => {
+    data.value = await getData('files')
+})
+
 </script>
