@@ -3,7 +3,7 @@
     <thead>
         <tr>
             <th class="bg-secondary text-primary" v-for="key in Object.keys(jsonData[0])" :key="key">
-                {{ translations[key] || translations.undefined }}
+                {{ translations[key] || key}}
             </th>
         </tr>
     </thead>
