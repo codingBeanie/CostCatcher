@@ -1,11 +1,11 @@
 <template>
-<table class="bg-gray-100 shadow-sm table-auto ">
+<table class="shadow-sm table-auto bg-light-100 ">
     <thead>
         <tr>
-            <th class="p-1 pl-2 text-left border-b ptext-left text-primary-300" v-for="key in Object.keys(jsonData[0])" :key="key">
+            <th class="p-1 pl-2 text-left border-b ptext-left bg-light-300 text-primary-300" v-for="key in Object.keys(jsonData[0])" :key="key">
                 {{ translations[key] || key}}
             </th>
-            <th class="p-1 pl-2 text-left border-b ptext-left text-primary-300">
+            <th class="p-1 pl-2 text-left border-b ptext-left bg-light-300 text-primary-300">
                 Actions
             </th>
         </tr>

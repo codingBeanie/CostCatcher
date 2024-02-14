@@ -22,5 +22,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/transactions/', TransactionList.as_view()),
     path('api/files/', FilesList.as_view()),
-
 ]

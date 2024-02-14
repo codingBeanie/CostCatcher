@@ -6,17 +6,17 @@
 
     <BoxContainer>
         <h2>Select a csv-file here </h2>
-        <input type="file" accept=".csv" @change="loadFile" class="block w-full p-1 text-lg shadow-md rounded-xl bg-primary-200 text-primary-100">
+        <input type="file" accept=".csv" @change="loadFile" class="block w-full p-1 text-lg shadow-md rounded-xl bg-primary-200 text-light-100">
     </BoxContainer>
         
     <BoxContainer>
         <h2>Table of uploaded files</h2>
-        <h3>See what files you already uploaded and delete them if wanted</h3>
+        <h3 class="mb-5">See what files you already uploaded and delete them if wanted</h3>
         <Table v-if="data" :jsonData="data" />   
     </BoxContainer>
     
-    <BoxContainer>
-        <TableSchema v-if="previewData" :arrayData="previewData" />     
+    <BoxContainer v-if="previewData.length">
+        <TableSchema :arrayData="previewData" />     
     </BoxContainer>
             
 </template>
