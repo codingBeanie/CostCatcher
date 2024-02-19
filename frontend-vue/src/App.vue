@@ -12,9 +12,15 @@
     
   </div>
 
+
+<!--Modals and Popus-->
+<Modal></Modal>
+<Toast></Toast>
 </template>
 
 
 <script setup>
 import RouterLink from './components/RouterLink.vue'
+import Modal from './components/Modal.vue'
+import Toast from './components/Toast.vue'
 </script>

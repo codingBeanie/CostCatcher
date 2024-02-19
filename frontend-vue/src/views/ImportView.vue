@@ -16,7 +16,7 @@
     </BoxContainer>
     
     <BoxContainer v-if="previewData.length">
-        <TableSchema :arrayData="previewData" />     
+        <TableImport :arrayData="previewData" />     
     </BoxContainer>
             
 </template>
@@ -25,8 +25,9 @@
 import { onMounted, ref } from 'vue';
 import { getData } from '../composables/API.js'
 import Table from '../components/Table.vue'
-import TableSchema from '../components/TableSchema.vue'
+import TableImport from '../components/TableImport.vue'
 import BoxContainer from '../components/BoxContainer.vue'
+
 
 const data = ref(null)
 const previewData = ref([])
