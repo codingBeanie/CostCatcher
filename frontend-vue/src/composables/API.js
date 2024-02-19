@@ -10,3 +10,7 @@ export async function getData(type) {
     }
     
 }
+
+export function sendImport(data) {
+    console.log(data)
+}

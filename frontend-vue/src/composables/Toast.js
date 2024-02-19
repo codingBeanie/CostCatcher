@@ -1,21 +1,12 @@
-import { createApp, h } from 'vue';
-import Toast from '../components/Toast.vue'
-
 export function toast(content) {
-    const container = document.createElement('div')
-    container.id = "toast"
-    document.body.appendChild(container)
-
-    const app = createApp({
-        render() {
-            return h(Toast, { content })
-        }
-    })
-    app.mount(container)
+    document.getElementById("toastContent").innerHTML = content
+    const toast = document.getElementById("toast")
+    toast.classList.remove("invisible", "opacity-0")
+    toast.classList.add("visible", "opacity-100")
 
     setTimeout(() => {
-        app.unmount(container)
-        document.body.removeChild(container)
+        toast.classList.remove("visible", "opacity-100")
+        toast.classList.add("invisible", "opacity-0")
     }, 3000)
-
 }
+

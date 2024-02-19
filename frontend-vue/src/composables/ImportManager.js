@@ -1,6 +1,6 @@
 import { modal } from './Modal.js'
 import { toast } from './Toast.js' 
-
+import { sendImport } from '../composables/API.js'
 
 export async function sendData(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount) {
     const data = createDataFrame(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount)
@@ -10,7 +10,17 @@ export async function sendData(rawData, selectFirst, selectLast, selectDate, sel
     if (undefined.result === false) {
         let index = undefined.index + selectFirst.value
         const prompt = await modal('Error', `Data is missing in row ${index}`, true, true)
-        console.log("PROMPT",prompt)
+        if (prompt === true) {
+            sendImport(data)
+            toast('Data was sent')
+        }
+        else {
+            toast('Data was not sent')
+        }
+    }
+    else {
+        sendImport(data)
+        toast('Data was sent')
     }
 }
 
