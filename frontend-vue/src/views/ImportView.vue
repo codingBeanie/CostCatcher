@@ -6,13 +6,13 @@
 
     <BoxContainer>
         <h2>Select a csv-file here </h2>
-        <input type="file" accept=".csv" @change="loadFile" class="block w-full p-1 text-lg shadow-md rounded-xl bg-primary-200 text-light-100">
+        <input id="inputFile" type="file" accept=".csv" @change="loadFile" class="block w-full p-1 text-lg shadow-md rounded-xl bg-primary-200 text-light-100">
     </BoxContainer>
         
     <BoxContainer>
         <h2>Table of uploaded files</h2>
         <h3 class="mb-5">See what files you already uploaded and delete them if wanted</h3>
-        <Table v-if="data" :jsonData="data" />   
+        <Table v-if="data && data.length" :jsonData="data" />   
     </BoxContainer>
     
     <BoxContainer v-if="previewData.length">

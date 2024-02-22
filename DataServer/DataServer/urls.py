@@ -20,6 +20,6 @@ from REST_API.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/transactions/', TransactionList.as_view()),
-    path('api/files/', FilesList.as_view()),
+    path('api/transactions/', Transactions.as_view()),
+    path('api/files/', Files.as_view()),
 ]

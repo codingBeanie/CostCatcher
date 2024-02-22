@@ -1,6 +1,6 @@
 import { modal } from './Modal.js'
 import { toast } from './Toast.js' 
-import { sendImport } from '../composables/API.js'
+import { postData } from '../composables/API.js'
 
 export async function sendData(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount) {
     const data = createDataFrame(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount)
@@ -11,7 +11,7 @@ export async function sendData(rawData, selectFirst, selectLast, selectDate, sel
         let index = undefined.index + selectFirst.value
         const prompt = await modal('Error', `Data is missing in row ${index}`, true, true)
         if (prompt === true) {
-            sendImport(data)
+            postData(data, "transactions")
             toast('Data was sent')
         }
         else {
@@ -19,7 +19,7 @@ export async function sendData(rawData, selectFirst, selectLast, selectDate, sel
         }
     }
     else {
-        sendImport(data)
+        postData(data, 'transactions')
         toast('Data was sent')
     }
 }
@@ -27,24 +27,30 @@ export async function sendData(rawData, selectFirst, selectLast, selectDate, sel
 
 // creating data frame
 function createDataFrame(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount) {
-    const data = {}
-    var dataIndex = 0
+    const fileName = document.getElementById('inputFile').files[0].name.split('.')[0]
+    var dataArray = []
+    const sourceFileDate = new Date()
     // create Data object for transmission
     rawData.forEach((line, index) => {
         if (index + 1 >= selectFirst.value && index + 1 <= selectLast.value) {
-            data[dataIndex] = {
-                date: line[selectDate.value - 1],
+            const [day, month, year] = line[selectDate.value - 1].split('.')
+            const amount = parseFloat(line[selectAmount.value - 1].replace('.', '').replace(',', '.'))
+
+            var data = {
+                date: year + '-' + month + '-' + day,
+                sourceFile: fileName,
+                sourceFileDate: sourceFileDate,
                 recipient: line[selectRecipient.value - 1],
                 description: line[selectDescription.value - 1],
-                amount: line[selectAmount.value - 1]
+                amount: amount
             }
-            dataIndex++
+            dataArray.push(data)
         }
 
     })
 
     // check data and create message
-    return data 
+    return dataArray 
 }
 
 // checking data validity
