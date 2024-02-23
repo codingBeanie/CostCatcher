@@ -9,7 +9,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FilesSerializer(serializers.ModelSerializer):
+class FileSerializer(serializers.Serializer):
     class Meta:
         model = Transaction
-        fields = ['sourceFile', 'sourceFileDate']
+        fields = ['fileID', 'fileName', 'fileDate']

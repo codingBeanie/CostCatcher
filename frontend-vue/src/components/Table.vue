@@ -12,12 +12,12 @@
     </thead>
     <tbody>
         <tr v-for="entry in jsonData" :key="entry.id">
-            <td v-for="value in Object.values(entry)" :key="value" class="p-1 border-b-2 border-primary-100">
+            <td v-for="(value) in Object.values(entry)" :key="key" class="p-1 border-b-2 border-primary-100">
                 {{ value }}
             </td>
             
             <td class="p-1 border-b-2 border-primary-100">
-                DELETE
+                <Button @click="buttonDelete(entry.fileID)">DELETE</Button>
             </td>
         </tr>
     </tbody>
@@ -26,7 +26,10 @@
 
 <script setup>
 
-import { ref } from 'vue';
+import { ref } from 'vue'
+import { defineProps } from 'vue'
+import Button from './Button.vue'
+import { deleteData } from '../composables/API.js'
 
 const props = defineProps({
   jsonData: Object
@@ -37,5 +40,8 @@ const translations = ref({
     undefined: 'Undefined'
 })
 
+const buttonDelete = ((fileID) => {
+    deleteData(fileID, 'files')
+})
 
 </script>

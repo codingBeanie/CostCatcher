@@ -9,12 +9,6 @@
         <input id="inputFile" type="file" accept=".csv" @change="loadFile" class="block w-full p-1 text-lg shadow-md rounded-xl bg-primary-200 text-light-100">
     </BoxContainer>
         
-    <BoxContainer>
-        <h2>Table of uploaded files</h2>
-        <h3 class="mb-5">See what files you already uploaded and delete them if wanted</h3>
-        <Table v-if="data && data.length" :jsonData="data" />   
-    </BoxContainer>
-    
     <BoxContainer v-if="previewData.length">
         <TableImport :arrayData="previewData" />     
     </BoxContainer>
@@ -22,14 +16,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { getData } from '../composables/API.js'
-import Table from '../components/Table.vue'
+import {  ref } from 'vue';
 import TableImport from '../components/TableImport.vue'
 import BoxContainer from '../components/BoxContainer.vue'
 
-
-const data = ref(null)
 const previewData = ref([])
 
 const loadFile = (e) => { 
@@ -46,9 +36,5 @@ const loadFile = (e) => {
     reader.readAsText(file, 'ISO-8859-1')
     
 }
-
-onMounted(async () => {
-    data.value = await getData('files')
-})
 
 </script>

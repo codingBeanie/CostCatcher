@@ -14,16 +14,29 @@ export async function getData(type) {
 export async function postData(data, type) {
     try {
         const url = `http://127.0.0.1:8000/api/${type}/`
-        
-        console.log(data)
         const payload = JSON.stringify(data)
-        console.log(payload)
         const call = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: payload
+        })
+    }
+    catch (error) {
+        console.log(error) 
+    }
+}
+
+export async function deleteData(id, type) {
+    try {
+        const url = `http://127.0.0.1:8000/api/${type}/`
+        const call = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: id})
         })
     }
     catch (error) {

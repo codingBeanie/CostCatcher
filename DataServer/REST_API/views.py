@@ -23,7 +23,12 @@ class Transactions(APIView):
 
 class Files(APIView):
     def get(self, request):
-        data = Transaction.objects.all().values(
-            'sourceFile', 'sourceFileDate').distinct()
-        serializer = FilesSerializer(data, many=True)
-        return Response(serializer.data)
+        data = Transaction.objects.values('fileID', 'fileName', 'fileDate')
+        distinct_data = list({item['fileID']: item for item in data}.values())
+        return Response(distinct_data)
+
+    def delete(self, request):
+        data = request.data
+        fileID = data['id']
+        Transaction.objects.filter(fileID=fileID).delete()
+        return Response(status=204)

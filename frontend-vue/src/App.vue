@@ -27,11 +27,11 @@ import Toast from './components/Toast.vue'
 import DropdownLink from './components/DropdownLink.vue'
 
 const linksImport = [{
-  title: 'Import',
+  title: 'Import CSV',
   url: '/import' 
 },
  {
-  title: 'Export',
-   url: '/export'}
+  title: 'Manage Files',
+   url: '/files'}
 ]
 </script>

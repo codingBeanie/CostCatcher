@@ -5,6 +5,7 @@ import { postData } from '../composables/API.js'
 export async function sendData(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount) {
     const data = createDataFrame(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount)
     const undefined = checkUndefined(data)
+    console.log(undefined)
 
     // handle messages
     if (undefined.result === false) {
@@ -13,14 +14,17 @@ export async function sendData(rawData, selectFirst, selectLast, selectDate, sel
         if (prompt === true) {
             postData(data, "transactions")
             toast('Data was sent')
+            return true
         }
         else {
             toast('Data was not sent')
+            return false
         }
     }
     else {
         postData(data, 'transactions')
         toast('Data was sent')
+        return true
     }
 }
 
@@ -28,23 +32,32 @@ export async function sendData(rawData, selectFirst, selectLast, selectDate, sel
 // creating data frame
 function createDataFrame(rawData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount) {
     const fileName = document.getElementById('inputFile').files[0].name.split('.')[0]
+    const fileDate = new Date().toISOString().split('T')[0]
+
     var dataArray = []
-    const sourceFileDate = new Date()
+
     // create Data object for transmission
     rawData.forEach((line, index) => {
         if (index + 1 >= selectFirst.value && index + 1 <= selectLast.value) {
-            const [day, month, year] = line[selectDate.value - 1].split('.')
-            const amount = parseFloat(line[selectAmount.value - 1].replace('.', '').replace(',', '.'))
+            try {
+                const [day, month, year] = line[selectDate.value - 1].split('.')
+                const amount = parseFloat(line[selectAmount.value - 1].replace('.', '').replace(',', '.'))
 
             var data = {
                 date: year + '-' + month + '-' + day,
-                sourceFile: fileName,
-                sourceFileDate: sourceFileDate,
+                fileName: fileName,
+                fileDate: fileDate,
+                fileID: fileName + "_|_" +  fileDate,
                 recipient: line[selectRecipient.value - 1],
                 description: line[selectDescription.value - 1],
                 amount: amount
+                }
+                dataArray.push(data)
             }
-            dataArray.push(data)
+            catch (error) {
+                console.log(`Error in line ${index + 1}: ${error}`)
+            }
+
         }
 
     })

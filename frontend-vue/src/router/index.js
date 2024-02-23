@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ImportView from '../views/ImportView.vue'
+import FilesView from '../views/FilesView.vue'
 
 const routes = [
   { path: '/', redirect: '/import' },
@@ -8,6 +9,13 @@ const routes = [
     name: 'import',
     component: ImportView
   }
+  ,
+  {
+    path: '/files',
+    name: 'files',
+    component: FilesView
+  }
+
 ]
 
 const router = createRouter({

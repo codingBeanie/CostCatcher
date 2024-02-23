@@ -139,7 +139,9 @@ const maxRows = computed(() => {
 selectLast.value = maxRows.value
 
 // Button Action
-const confirm = (() => { sendData(props.arrayData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount) })
+const confirm = (() => {
+    sendData(props.arrayData, selectFirst, selectLast, selectDate, selectRecipient, selectDescription, selectAmount)
+})
 
 
 </script>
