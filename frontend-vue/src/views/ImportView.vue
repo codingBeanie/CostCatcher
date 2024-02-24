@@ -1,5 +1,22 @@
 <template>
-    <BoxContainer>
+    <!--Titles-->
+    <div>
+        <h1 class="mb-3 text-h3 font-weight-bold">Import</h1>
+        <p class="mb-4 text-h7">Upload a csv-file with your transaction data here.</p>
+    </div>
+    <v-divider class="mb-8"></v-divider>
+
+    <!--File-Input-->
+    <div>
+        <v-file-input label="Select a csv-file" accept=".csv" @change="loadFile"></v-file-input>
+    </div>
+
+    <!--Preview-Table-->
+    <div v-if="previewData.length">
+        <TableImport :arrayData="previewData"/>
+    </div>
+
+<!--     <BoxContainer>
         <h1>Import</h1>
         <h3>Import your CSV-File here</h3>
     </BoxContainer>
@@ -11,14 +28,14 @@
         
     <BoxContainer v-if="previewData.length">
         <TableImport :arrayData="previewData" />     
-    </BoxContainer>
+    </BoxContainer> -->
+
             
 </template>
 
 <script setup>
 import {  ref } from 'vue';
 import TableImport from '../components/TableImport.vue'
-import BoxContainer from '../components/BoxContainer.vue'
 
 const previewData = ref([])
 
@@ -34,6 +51,7 @@ const loadFile = (e) => {
         })
     }
     reader.readAsText(file, 'ISO-8859-1')
+    console.log(previewData.value)
     
 }
 

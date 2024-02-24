@@ -1,5 +1,41 @@
 <template>
-<div class="flex flex-col">
+
+<!--Table-->
+<div>
+    <v-table height="1000" hover density fixed-header>
+        <thead>
+            <tr>
+            <th v-for="i in maxColumns" :key="i" class="pl-2">
+                <div v-if="i === selectDate" class="bg-highlight-100">
+                    Date
+                </div>
+                <div v-else-if="i === selectRecipient" class="bg-highlight-200">
+                    Recipient
+                </div>
+                <div v-else-if="i === selectAmount" class="bg-highlight-300">
+                    Amount
+                </div>
+                <div v-else-if="i === selectDescription" class="bg-highlight-400">
+                    Description
+                </div>
+                <div v-else>
+                    {{ i }}
+                </div>
+            </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="entry in arrayData" :key="entry.id">
+                <td v-for="(value) in Object.values(entry)" :key="key">
+                    {{ value }}
+                </td>
+            </tr>
+        </tbody>
+    </v-table>
+</div>
+
+
+<!-- <div class="flex">
     <h2>Preview of data</h2>
     <h3 class="mb-5">Review your import data and set the the rows and coloumns that should be imported</h3>
     <div class="flex items-center">
@@ -101,7 +137,7 @@
     </tbody>
 
 </table>
-</div>
+</div> -->
 
 </template>
 
