@@ -1,33 +1,60 @@
 <template>
 
+<!--Descriptions-->
+<div>
+    <p class="mb-4 text-h5">Please check your data. If you encounter problems try to adjust the import schema.</p>
+</div>
+
+<!--Selectors-->
+<v-row>
+    <v-col><v-text-field type="number" density="compact" label="First Row" v-model="selectFirst"/></v-col>
+    <v-col><v-text-field type="number" density="compact" label="Last Row" v-model="selectLast"/></v-col>
+    <v-col><v-text-field type="number" density="compact" label="Column Date" v-model="selectDate" class="text-red-darken-4"/></v-col>
+    <v-col><v-text-field type="number" density="compact" label="Column Recipient" v-model="selectRecipient" class="text-pink-darken-1"/></v-col>
+    <v-col><v-text-field type="number" density="compact" label="Column Description" v-model="selectDescription" class="text-blue-darken-3"/></v-col>
+    <v-col><v-text-field type="number" density="compact" label="Column Amount" v-model="selectAmount"/></v-col>
+</v-row>
+
 <!--Table-->
 <div>
-    <v-table height="1000" hover density fixed-header>
-        <thead>
-            <tr>
-            <th v-for="i in maxColumns" :key="i" class="pl-2">
-                <div v-if="i === selectDate" class="bg-highlight-100">
+    <v-data-table :items="arrayData" headers="">
+    </v-data-table>
+    <v-table :key="selectDate" height="500" hover density fixed-header >
+    <thead class="">
+        <tr>
+            <th class="">#</th>
+            <th v-for="i in maxColumns" :key="i" class="">
+                <div v-if="i == selectDate" class="pl-2 bg-red-darken-1">
                     Date
                 </div>
-                <div v-else-if="i === selectRecipient" class="bg-highlight-200">
+                <div v-else-if="i == selectRecipient" class="pl-2 bg-pink-darken-3">
                     Recipient
                 </div>
-                <div v-else-if="i === selectAmount" class="bg-highlight-300">
+                <div v-else-if="i == selectAmount" class="pl-2 bg-green-darken-4">
                     Amount
                 </div>
-                <div v-else-if="i === selectDescription" class="bg-highlight-400">
+                <div v-else-if="i == selectDescription" class="pl-2 bg-blue-darken-4">
                     Description
                 </div>
                 <div v-else>
                     {{ i }}
                 </div>
             </th>
-            </tr>
-        </thead>
+        </tr>
+    </thead>
         <tbody>
-            <tr v-for="entry in arrayData" :key="entry.id">
-                <td v-for="(value) in Object.values(entry)" :key="key">
-                    {{ value }}
+            <tr v-for="(line, rowIndex) in arrayData" :key="line" class="">
+                <th scope="row">{{ rowIndex + 1 }}</th>
+                <td v-for="(value, colIndex) in maxColumns" :key="value" class="">
+                    <div v-if="rowIndex + 1 < selectFirst || rowIndex + 1 > selectLast" class="bg-grey-lighten-2">
+                        (/)
+                    </div>
+                    <div v-else-if="colIndex + 1 == selectDate" class="justify-start d-flex grow bg-red-lighten-4">
+                        {{ line[value - 1] }}
+                    </div>
+                    <div v-else>
+                        {{ line[value - 1] }}
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -143,7 +170,6 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import Button from '../components/Button.vue'
 import { sendData } from '../composables/ImportManager.js'
 
 

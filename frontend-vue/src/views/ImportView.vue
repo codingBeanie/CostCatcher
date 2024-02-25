@@ -7,35 +7,28 @@
     <v-divider class="mb-8"></v-divider>
 
     <!--File-Input-->
-    <div>
-        <v-file-input label="Select a csv-file" accept=".csv" @change="loadFile"></v-file-input>
-    </div>
+    <v-row>
+        <v-col cols="10"><v-file-input label="Select a csv-file" accept=".csv" @change="loadFile"></v-file-input></v-col>
+        <v-col cols="2" class="mt-2"><ImportDialog/></v-col>
+    </v-row>
 
     <!--Preview-Table-->
     <div v-if="previewData.length">
         <TableImport :arrayData="previewData"/>
     </div>
 
-<!--     <BoxContainer>
-        <h1>Import</h1>
-        <h3>Import your CSV-File here</h3>
-    </BoxContainer>
+    <!--Dialog for Schema Management-->
+    <v-dialog>
+        <v-card title="Manage import schema"></v-card>
+    </v-dialog>
 
-    <BoxContainer>
-        <h2>Select a csv-file here </h2>
-        <input id="inputFile" type="file" accept=".csv" @change="loadFile" class="block w-full p-1 text-lg shadow-md rounded-xl bg-primary-200 text-light-100">
-    </BoxContainer>
-        
-    <BoxContainer v-if="previewData.length">
-        <TableImport :arrayData="previewData" />     
-    </BoxContainer> -->
-
-            
+       
 </template>
 
 <script setup>
-import {  ref } from 'vue';
+import {  ref } from 'vue'
 import TableImport from '../components/TableImport.vue'
+import ImportDialog from '../components/ImportDialog.vue'
 
 const previewData = ref([])
 

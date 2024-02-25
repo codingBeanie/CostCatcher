@@ -4,7 +4,7 @@
         <v-app-bar-title>COSTCATCHER</v-app-bar-title>
     </v-app-bar>
     <v-card>
-      <v-navigation-drawer rail expand-on-hover class="bg-secondary">
+      <v-navigation-drawer permanent rail expand-on-hover class="bg-secondary">
           <v-list>
             <v-list-item title="ME">
             </v-list-item>
@@ -22,7 +22,7 @@
 
 
     <v-main>
-      <v-container fluid class="pa-6">
+      <v-container fluid class="pa-10">
          <router-view/>
       </v-container>
     </v-main>
