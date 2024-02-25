@@ -1,3 +1,3 @@
 venv/
 DataServer/__pycache__/
-DataServer/db.sqlite3
+DataServer/dev.sqlite3
