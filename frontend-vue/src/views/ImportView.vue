@@ -13,21 +13,13 @@
     </v-row>
 
     <!--Preview-Table-->
-    <div v-if="previewData.length">
-        <TableImport :arrayData="previewData"/>
-    </div>
 
-    <!--Dialog for Schema Management-->
-    <v-dialog>
-        <v-card title="Manage import schema"></v-card>
-    </v-dialog>
 
        
 </template>
 
 <script setup>
 import {  ref } from 'vue'
-import TableImport from '../components/TableImport.vue'
 import ImportDialog from '../components/ImportDialog.vue'
 
 const previewData = ref([])
