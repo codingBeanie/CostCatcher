@@ -5,11 +5,6 @@
     </v-app-bar>
     <v-card>
       <v-navigation-drawer permanent rail expand-on-hover class="bg-secondary">
-          <v-list>
-            <v-list-item title="ME">
-            </v-list-item>
-          </v-list>
-
           <v-divider></v-divider>
           <v-list density="compact" nav>
             <v-list-item prepend-icon="mdi-upload" title="Import CSV" to="/import">

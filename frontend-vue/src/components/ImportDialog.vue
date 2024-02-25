@@ -51,10 +51,13 @@
                             </v-row>
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="Delimeter" v-model="delimeter"></v-text-field>
+                                    <v-text-field label="CSV delimeter" v-model="delimiter"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-select label="Value type" v-model="valueType" :items="valueTypes"></v-select>
+                                    <v-text-field label="Thousands seperator" v-model="thousandsSeparator"></v-text-field>
+                                </v-col>
+                                <v-col>
+                                    <v-text-field label="Decimal seperator" v-model="decimalSeparator"></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -73,7 +76,10 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
 import { ref } from 'vue'
+import { getData, updateData } from '../composables/API.js'
+
 const active = ref(false)
 
 const rowFirst = ref(1)
@@ -84,18 +90,42 @@ const colRecipient = ref(2)
 const colDescription = ref(3)
 const colAmount = ref(4)
 
-const delimeter = ref(';')
-const valueType = ref('European (#.##0,00)')
+const delimiter = ref(';')
+const thousandsSeparator = ref('.')
+const decimalSeparator = ref(',')
 
-const valueTypes = [
-    'European (#.##0,00)',
-    'American (#,##0.00)'
-]
 const close = () => {
     active.value = false
 }
 const save = () => {
+    const data = {
+        rowFirst: rowFirst.value,
+        rowLast: rowLast.value,
+        colDate: colDate.value,
+        colRecipient: colRecipient.value,
+        colDescription: colDescription.value,
+        colAmount: colAmount.value,
+        delimiter: delimiter.value,
+        thousandsSeparator: thousandsSeparator.value,
+        decimalSeparator: decimalSeparator.value
+    }
+    updateData(data, 'schema')
     active.value = false
 }
+
+onMounted(async () => {
+    const schema = await getData('schema')
+    console.log(schema[0].delimeter)
+    rowFirst.value = schema[0].rowFirst
+    rowLast.value = schema[0].rowLast
+    colDate.value = schema[0].colDate
+    colRecipient.value = schema[0].colRecipient
+    colDescription.value = schema[0].colDescription
+    colAmount.value = schema[0].colAmount
+    delimiter.value = schema[0].delimiter
+    thousandsSeparator.value = schema[0].thousandsSeparator
+    decimalSeparator.value = schema[0].decimalSeparator
+
+     })
 
 </script>

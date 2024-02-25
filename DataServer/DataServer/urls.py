@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/transactions/', Transactions.as_view()),
     path('api/files/', Files.as_view()),
+    path('api/schema/', Schema.as_view()),
 ]

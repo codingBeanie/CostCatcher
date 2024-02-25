@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
-from .models import Transaction
+from .models import Transaction, ImportSchema
 from .serializer import *
 from rest_framework.views import APIView
 
@@ -32,3 +32,19 @@ class Files(APIView):
         fileID = data['id']
         Transaction.objects.filter(fileID=fileID).delete()
         return Response(status=204)
+
+
+class Schema(APIView):
+    def get(self, request):
+        data = ImportSchema.objects.all()
+        serializer = ImportSchemaSerializer(data, many=True)
+        return Response(serializer.data)
+
+    def put(self, request):
+        data = request.data
+        schema = ImportSchema.objects.first()
+        serializer = ImportSchemaSerializer(schema, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)

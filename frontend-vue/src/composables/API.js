@@ -28,6 +28,23 @@ export async function postData(data, type) {
     }
 }
 
+export async function updateData(data, type) {
+    try {
+        const url = `http://127.0.0.1:8000/api/${type}/`
+        const payload = JSON.stringify(data)
+        const call = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: payload
+        })
+    }
+    catch (error) {
+        console.log(error) 
+    }
+}
+
 export async function deleteData(id, type) {
     try {
         const url = `http://127.0.0.1:8000/api/${type}/`
