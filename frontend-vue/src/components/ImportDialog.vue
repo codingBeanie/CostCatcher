@@ -125,7 +125,6 @@ onMounted(async () => {
     delimiter.value = schema[0].delimiter
     thousandsSeparator.value = schema[0].thousandsSeparator
     decimalSeparator.value = schema[0].decimalSeparator
-
      })
 
 </script>
