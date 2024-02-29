@@ -2,7 +2,9 @@
     <v-row justify="center">
         <v-dialog v-model="active" max-width="600px">
             <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" prepend-icon="mdi-cog" color="accent" class="mt-3">Import Schema</v-btn>
+                <v-btn v-bind="props" prepend-icon="mdi-cog" color="accent" class="mt-3">
+                   <span class="hidden-md-and-down">Import Schema</span>
+                </v-btn>
             </template>
 
             <template v-slot:default="{ active }">
@@ -18,10 +20,10 @@
                             </v-row>
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="Ignore # first rows" v-model="rowFirst" type="number"></v-text-field>
+                                    <v-text-field label="Ignore # first rows" v-model="rowFirst" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Ignore # last rows" v-model="rowLast" type="number"></v-text-field>
+                                    <v-text-field label="Ignore # last rows" v-model="rowLast" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                             </v-row>
 
@@ -30,19 +32,19 @@
                             </v-row>
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="Column # Date" v-model="colDate" type="number"></v-text-field>
+                                    <v-text-field label="Column # Date" v-model="colDate" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Column # Recipient" v-model="colRecipient" type="number"></v-text-field>
+                                    <v-text-field label="Column # Recipient" v-model="colRecipient" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                             </v-row>
 
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="Column # Description" v-model="colDescription" type="number"></v-text-field>
+                                    <v-text-field label="Column # Description" v-model="colDescription" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Column # Amount" v-model="colAmount" type="number"></v-text-field>
+                                    <v-text-field label="Column # Amount" v-model="colAmount" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                             </v-row>
 
@@ -51,13 +53,13 @@
                             </v-row>
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="CSV delimeter" v-model="delimiter"></v-text-field>
+                                    <v-text-field label="CSV delimeter" v-model="delimiter" :rules="[value => (value === ';' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Thousands seperator" v-model="thousandsSeparator"></v-text-field>
+                                    <v-text-field label="Thousands seperator" v-model="thousandsSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Decimal seperator" v-model="decimalSeparator"></v-text-field>
+                                    <v-text-field label="Decimal seperator" v-model="decimalSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -72,7 +74,6 @@
             </template>
         </v-dialog>
     </v-row>
-
 </template>
 
 <script setup>
@@ -97,7 +98,7 @@ const decimalSeparator = ref(',')
 const close = () => {
     active.value = false
 }
-const save = () => {
+const save = (async() => {
     const data = {
         rowFirst: rowFirst.value,
         rowLast: rowLast.value,
@@ -109,13 +110,13 @@ const save = () => {
         thousandsSeparator: thousandsSeparator.value,
         decimalSeparator: decimalSeparator.value
     }
-    updateData(data, 'schema')
+    const update = await updateData(data, 'schema')
     active.value = false
-}
+})
 
 onMounted(async () => {
     const schema = await getData('schema')
-    console.log(schema[0].delimeter)
+
     rowFirst.value = schema[0].rowFirst
     rowLast.value = schema[0].rowLast
     colDate.value = schema[0].colDate
@@ -125,6 +126,7 @@ onMounted(async () => {
     delimiter.value = schema[0].delimiter
     thousandsSeparator.value = schema[0].thousandsSeparator
     decimalSeparator.value = schema[0].decimalSeparator
+
      })
 
 </script>

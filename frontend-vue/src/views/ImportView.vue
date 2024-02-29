@@ -9,13 +9,12 @@
     <!--File-Input-->
     <v-row>
         <v-col cols="10"><v-file-input label="Select a csv-file" accept=".csv" @change="loadFile"></v-file-input></v-col>
-        <v-col cols="2" class="mt-2"><ImportDialog/></v-col>
+        <v-col cols="2" class="mt-2"><ImportDialog @showAlert="displayAlert"/></v-col>
     </v-row>
 
     <!--Preview-Table-->
 
-
-       
+ 
 </template>
 
 <script setup>
@@ -23,6 +22,13 @@ import {  ref } from 'vue'
 import ImportDialog from '../components/ImportDialog.vue'
 
 const previewData = ref([])
+const showAlert = ref(false)
+const message = ref('')
+
+const displayAlert = (msg) => {
+    message.value = msg
+    showAlert.value = true
+}
 
 const loadFile = (e) => { 
     const file = e.target.files[0]

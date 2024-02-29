@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 
 
 class Transaction(models.Model):
@@ -21,3 +23,8 @@ class ImportSchema(models.Model):
     delimiter = models.CharField(max_length=1, default=';')
     thousandsSeparator = models.CharField(max_length=1, default='.')
     decimalSeparator = models.CharField(max_length=1, default=',')
+
+
+@receiver(post_migrate)
+def create_default_entry(sender, **kwargs):
+    ImportSchema.objects.get_or_create()

@@ -1,7 +1,10 @@
 <template>
   <v-app class="bg-primary">
     <v-app-bar flat color="secondary">
-        <v-app-bar-title>COSTCATCHER</v-app-bar-title>
+        <v-app-bar-title>
+          <div class="text-center bg-error" v-if="alertStore.appState==='error'">The application is not working properly. Please come back later.</div>
+          <div v-else>COSTCATCHER</div>
+        </v-app-bar-title>
     </v-app-bar>
     <v-card>
       <v-navigation-drawer permanent rail expand-on-hover class="bg-secondary">
@@ -15,15 +18,20 @@
       </v-navigation-drawer>
     </v-card>
 
-
     <v-main>
       <v-container fluid class="pa-10">
          <router-view/>
       </v-container>
     </v-main>
   </v-app>
+<Alert/>
+
 </template>
 
-<script setup>
 
+<script setup>
+import Alert from './components/Alert.vue'
+import { useAlertStore } from './stores/AlertStore.js'
+const alertStore = useAlertStore()
 </script>
+
