@@ -9,41 +9,89 @@
     <!--File-Input-->
     <v-row>
         <v-col cols="10"><v-file-input label="Select a csv-file" accept=".csv" @change="loadFile"></v-file-input></v-col>
-        <v-col cols="2" class="mt-2"><ImportDialog @showAlert="displayAlert"/></v-col>
+        <v-col cols="2" class="mt-2"><ImportDialog/></v-col>
     </v-row>
 
     <!--Preview-Table-->
+    <div v-if="previewData.length > 0">
+        <v-divider class="mb-8"></v-divider>
+        <v-row>
+            <h3>Preview Table</h3>
+        </v-row>
+        <v-row justify="center">
+            <v-col cols="10">
+                <p class="mb-4 text-h7">Check if data is correctly recognised. Adjust the schema settings if needed.</p>
+            </v-col>
+            <v-col cols="2">
+                <v-btn color="accent" @click="" prependIcon="mdi-upload">Upload</v-btn>
+            </v-col> 
+        </v-row>
+        <v-row>
+            <v-data-table :items="previewData" density="compact"/>
+        </v-row>
+    </div>
+
 
  
 </template>
 
 <script setup>
-import {  ref } from 'vue'
+import { ref } from 'vue'
+import { getData } from '../composables/API.js'
 import ImportDialog from '../components/ImportDialog.vue'
+import { watch } from 'vue'
+import { useUpdateStore } from '../stores/UpdateStore.js'
+import { useAlertStore } from '../stores/AlertStore.js'
 
+const rawData = ref([])
 const previewData = ref([])
-const showAlert = ref(false)
-const message = ref('')
+const updateStore = useUpdateStore()
+const updateAlert = useAlertStore()
+const fileLoaded = ref(false)
 
-const displayAlert = (msg) => {
-    message.value = msg
-    showAlert.value = true
-}
-
-const loadFile = (e) => { 
+// load the file from input
+const loadFile = async (e) => { 
     const file = e.target.files[0]
+    const schema = await getData('schema')
     const reader = new FileReader()
     reader.onload = (e) => { 
         const content = e.target.result.replace(/"/g, '')
         const lines = content.split('\n')
         lines.forEach(line => { 
-            const values = line.split(';')
-            previewData.value.push(values)
+            const values = line.split(schema[0].delimiter)
+            rawData.value.push(values)
         })
     }
     reader.readAsText(file, 'ISO-8859-1')
-    console.log(previewData.value)
-    
+    fileLoaded.value = true
+    convertData(rawData.value)
 }
 
+// converting data based on import scheme
+
+const convertData = async (data) => {
+    // get the import scheme
+    const schema = await getData('schema')
+    const maxRows = data.length
+    try { 
+        data.forEach((entry, index) => {
+            if (index >= schema[0].rowFirst && index < maxRows - schema[0].rowLast) {
+                const date = entry[schema[0].colDate - 1]
+                const recipient = entry[schema[0].colRecipient - 1]
+                const description = entry[schema[0].colDescription - 1]
+                const amount = entry[schema[0].colAmount - 1].replace(schema[0].thousandsSeparator, '').replace(schema[0].decimalSeparator, '.')
+                previewData.value.push({ date, recipient, description, amount })
+            }
+        })
+    } catch (error) {
+        updateAlert.showAlert('Error', 'The import scheme is not valid. Please check the import scheme in the settings.', 'error', 5000)
+    }
+}
+
+watch(() => updateStore.fired, () => {
+    if (fileLoaded.value) {
+        previewData.value = []
+        convertData(rawData.value)
+    }
+    })
 </script>

@@ -20,10 +20,10 @@
                             </v-row>
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="Ignore # first rows" v-model="rowFirst" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
+                                    <v-text-field label="Ignore # first rows" v-model="rowFirst" type="number" :rules="[value => (value >= 0 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Ignore # last rows" v-model="rowLast" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
+                                    <v-text-field label="Ignore # last rows" v-model="rowLast" type="number" :rules="[value => (value >= 0 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                 </v-col>
                             </v-row>
 
@@ -80,6 +80,7 @@
 import { onMounted } from 'vue';
 import { ref } from 'vue'
 import { getData, updateData } from '../composables/API.js'
+import { useUpdateStore } from '../stores/UpdateStore.js'
 
 const active = ref(false)
 
@@ -94,6 +95,8 @@ const colAmount = ref(4)
 const delimiter = ref(';')
 const thousandsSeparator = ref('.')
 const decimalSeparator = ref(',')
+
+const updateStore = useUpdateStore()
 
 const close = () => {
     active.value = false
@@ -111,6 +114,7 @@ const save = (async() => {
         decimalSeparator: decimalSeparator.value
     }
     const update = await updateData(data, 'schema')
+    updateStore.fire()
     active.value = false
 })
 

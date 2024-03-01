@@ -51,7 +51,7 @@ export async function updateData(data, type) {
             body: payload   
         })
         const response = await call.json()
-        if (call.status == 200) {
+        if (call.status == 201) {
             alertStore.showAlert('Success', 'Data updated successfully.', 'success', 5000)
         } else {
             alertStore.showAlert('Error', `Could not update data. ${JSON.stringify(response)}`, 'error', 5000)
