@@ -16,6 +16,8 @@
             </v-list-item>
             <v-list-item prepend-icon="mdi-bookmark-check" title="Categories" to="/categories">
             </v-list-item>
+            <v-list-item prepend-icon="mdi-marker" title="Assignments" to="/assignments">
+            </v-list-item>
           </v-list>
       </v-navigation-drawer>
     </v-card>

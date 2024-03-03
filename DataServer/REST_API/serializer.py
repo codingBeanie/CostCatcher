@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Transaction, ImportSchema, Category
+from .models import Transaction, ImportSchema, Category, Assignment
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -25,3 +25,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['name', 'transactionType']
+
+
+class AssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
+        fields = '__all__'

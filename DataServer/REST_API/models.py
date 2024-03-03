@@ -33,6 +33,14 @@ class Category(models.Model):
         max_length=100, null=True, default="Expense")
 
 
+class Assignment(models.Model):
+    keyword = models.CharField(max_length=100)
+    checkRecipient = models.BooleanField(default=False)
+    checkDescription = models.BooleanField(default=True)
+    category = models.ForeignKey(
+        'Category', on_delete=models.SET_NULL, null=True)
+
+
 @receiver(post_migrate)
 def create_default_entry(sender, **kwargs):
     ImportSchema.objects.get_or_create()

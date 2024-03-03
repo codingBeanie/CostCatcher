@@ -21,7 +21,10 @@ from REST_API.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/transactions/', Transactions.as_view()),
+    path('api/transactions/without_category/',
+         TransactionsWithoutCategory.as_view()),
     path('api/files/', Files.as_view()),
     path('api/schema/', Schema.as_view()),
     path('api/categories/', Categories.as_view()),
+    path('api/assignments/', Assignments.as_view()),
 ]

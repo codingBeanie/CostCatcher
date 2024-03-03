@@ -26,7 +26,7 @@ export async function postData(data, type) {
             body: JSON.stringify(data)
         })
         const response = await call.json()
-        if (call.status == 200) {
+        if (call.status == 201) {
             alertStore.showAlert('Success', 'Data uploaded successfully.', 'success', 5000)
         } else {
             alertStore.showAlert('Error', `Could not upload data. ${JSON.stringify(response)}`, 'error', 5000)

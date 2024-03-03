@@ -69,8 +69,6 @@ const createCategory = async () => {
     }
 }
 
-const editItem = async () => { }
-
 const deleteItem = async (item) => {
     deleteData(item, 'categories')
     loadTable()
