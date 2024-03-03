@@ -2,11 +2,15 @@ import { defineStore } from 'pinia'
 
 export const useUpdateStore = defineStore('update', {
     state: () => ({
-        fired: false
+        schemaClosed: false,
+        editCategoryClosed: false,
     }),
     actions: {
-        fire() {
-            this.fired = !this.fired
+        closeSchema() {
+            this.schemaClosed = !this.schemaClosed
+        },
+        closeEditCategory() {
+            this.editCategoryClosed = !this.editCategoryClosed
         }
     }
 })

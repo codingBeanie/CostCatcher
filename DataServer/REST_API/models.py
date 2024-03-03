@@ -6,11 +6,12 @@ from django.dispatch import receiver
 class Transaction(models.Model):
     fileName = models.CharField(max_length=100, null=True)
     fileDate = models.DateTimeField(null=True)
-    fileID = models.CharField(max_length=100, null=True)
     date = models.DateTimeField()
     amount = models.FloatField()
     recipient = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
+    category = models.ForeignKey(
+        'Category', on_delete=models.SET_NULL, null=True)
 
 
 class ImportSchema(models.Model):
@@ -23,6 +24,13 @@ class ImportSchema(models.Model):
     delimiter = models.CharField(max_length=1, default=';')
     thousandsSeparator = models.CharField(max_length=1, default='.')
     decimalSeparator = models.CharField(max_length=1, default=',')
+    dateFormat = models.CharField(max_length=100, default='DD.MM.YYYY')
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    transactionType = models.CharField(
+        max_length=100, null=True, default="Expense")
 
 
 @receiver(post_migrate)

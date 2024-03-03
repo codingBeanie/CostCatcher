@@ -14,12 +14,14 @@
             </v-list-item>
              <v-list-item prepend-icon="mdi-file-multiple" title="Manage Files" to="/files">
             </v-list-item>
+            <v-list-item prepend-icon="mdi-bookmark-check" title="Categories" to="/categories">
+            </v-list-item>
           </v-list>
       </v-navigation-drawer>
     </v-card>
 
     <v-main>
-      <v-container fluid class="pa-10">
+      <v-container class="">
          <router-view/>
       </v-container>
     </v-main>

@@ -18,13 +18,12 @@ export async function postData(data, type) {
     const alertStore = useAlertStore()
     try {
         const url = `http://127.0.0.1:8000/api/${type}/`
-        const payload = JSON.stringify(data)
         const call = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: payload
+            body: JSON.stringify(data)
         })
         const response = await call.json()
         if (call.status == 200) {
@@ -62,7 +61,7 @@ export async function updateData(data, type) {
     }
 }
 
-export async function deleteData(id, type) {
+export async function deleteData(data, type) {
     const alertStore = useAlertStore()
     try {
         const url = `http://127.0.0.1:8000/api/${type}/`
@@ -71,13 +70,12 @@ export async function deleteData(id, type) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({id: id})
+            body: JSON.stringify(data)
         })
-        const response = await call.json()
-        if (call.status == 200) {
+        if (call.status == 204) {
             alertStore.showAlert('Success', 'Data deleted successfully.', 'success', 5000)
         } else {
-            alertStore.showAlert('Error', `Could not delete data. ${JSON.stringify(response)}`, 'error', 5000)
+            alertStore.showAlert('Error', `Could not delete data.`, 'error', 5000)
         }
     }
     catch (error) {

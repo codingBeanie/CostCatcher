@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Transaction, ImportSchema
+from .models import Transaction, ImportSchema, Category
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -12,10 +12,16 @@ class TransactionSerializer(serializers.ModelSerializer):
 class FileSerializer(serializers.Serializer):
     class Meta:
         model = Transaction
-        fields = ['fileID', 'fileName', 'fileDate']
+        fields = ['fileName', 'fileDate']
 
 
 class ImportSchemaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImportSchema
         fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name', 'transactionType']

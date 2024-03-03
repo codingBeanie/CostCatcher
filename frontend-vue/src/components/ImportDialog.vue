@@ -58,10 +58,16 @@
                                 <v-col>
                                     <v-text-field label="Thousands seperator" v-model="thousandsSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                 </v-col>
+                            </v-row>    
+                            <v-row>
                                 <v-col>
                                     <v-text-field label="Decimal seperator" v-model="decimalSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                 </v-col>
+                                <v-col>
+                                    <v-text-field label="Date format" v-model="dateFormat"></v-text-field>
+                                </v-col>
                             </v-row>
+
                         </v-container>
                     </v-card-text>
 
@@ -95,6 +101,7 @@ const colAmount = ref(4)
 const delimiter = ref(';')
 const thousandsSeparator = ref('.')
 const decimalSeparator = ref(',')
+const dateFormat = ref('DD.MM.YYYY')
 
 const updateStore = useUpdateStore()
 
@@ -111,26 +118,30 @@ const save = (async() => {
         colAmount: colAmount.value,
         delimiter: delimiter.value,
         thousandsSeparator: thousandsSeparator.value,
-        decimalSeparator: decimalSeparator.value
+        decimalSeparator: decimalSeparator.value,
+        dateFormat: dateFormat.value
     }
     const update = await updateData(data, 'schema')
-    updateStore.fire()
+    updateStore.closeSchema()
     active.value = false
 })
 
 onMounted(async () => {
-    const schema = await getData('schema')
+    try {
+        const schema = await getData('schema')
 
-    rowFirst.value = schema[0].rowFirst
-    rowLast.value = schema[0].rowLast
-    colDate.value = schema[0].colDate
-    colRecipient.value = schema[0].colRecipient
-    colDescription.value = schema[0].colDescription
-    colAmount.value = schema[0].colAmount
-    delimiter.value = schema[0].delimiter
-    thousandsSeparator.value = schema[0].thousandsSeparator
-    decimalSeparator.value = schema[0].decimalSeparator
-
+        rowFirst.value = schema[0].rowFirst
+        rowLast.value = schema[0].rowLast
+        colDate.value = schema[0].colDate
+        colRecipient.value = schema[0].colRecipient
+        colDescription.value = schema[0].colDescription
+        colAmount.value = schema[0].colAmount
+        delimiter.value = schema[0].delimiter
+        thousandsSeparator.value = schema[0].thousandsSeparator
+        decimalSeparator.value = schema[0].decimalSeparator
+    } catch (error) {
+        console.log(error)
+    }
      })
 
 </script>
