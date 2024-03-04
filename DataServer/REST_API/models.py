@@ -12,6 +12,9 @@ class Transaction(models.Model):
     description = models.CharField(max_length=100)
     category = models.ForeignKey(
         'Category', on_delete=models.SET_NULL, null=True)
+    keywords = models.ManyToManyField(
+        'Assignment', related_name='transaction')
+    overruled = models.BooleanField(default=False)
 
 
 class ImportSchema(models.Model):
