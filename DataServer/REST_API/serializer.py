@@ -6,7 +6,7 @@ from .models import Transaction, ImportSchema, Category, Assignment
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = '__all__'
+        fields = ['date', 'recipient', 'description', 'amount', 'category']
 
 
 class FileSerializer(serializers.Serializer):

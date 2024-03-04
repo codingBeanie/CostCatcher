@@ -7,11 +7,16 @@ def createBinding(assignment):
     category = assignment['category']
     checkRecipient = assignment['checkRecipient']
     checkDescription = assignment['checkDescription']
+    print("Keyword: ", keyword)
+    print("Category: ", category)
+    print("Check Recipient: ", checkRecipient)
+    print("Check Description: ", checkDescription)
 
     # Recipient True / Description True
     if checkRecipient and checkDescription:
         transactions = Transaction.objects.filter(
-            Q(recipient__icontains=keyword) & Q(description__icontains=keyword))
+            recipient__icontains=keyword)
 
+        print(transactions)
         for transaction in transactions:
             print(transaction.recipient, transaction.description)

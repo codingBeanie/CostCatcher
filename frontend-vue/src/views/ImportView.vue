@@ -102,7 +102,7 @@ const convertData = async (data) => {
 // uploading data
 const uploadData = async () => {
     try {
-        postData(previewData.value, 'transactions')
+        await postData(previewData.value, 'transactions')
         router.push('/files')
     }
     catch (error) {
