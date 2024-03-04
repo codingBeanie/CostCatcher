@@ -13,7 +13,7 @@ class Transaction(models.Model):
     category = models.ForeignKey(
         'Category', on_delete=models.SET_NULL, null=True)
     keywords = models.ManyToManyField(
-        'Assignment', related_name='transaction')
+        'Assignment', related_name='transaction', blank=True, default=None)
     overruled = models.BooleanField(default=False)
 
 

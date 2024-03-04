@@ -129,7 +129,7 @@ const createAssignment = async () => {
 const editItem = async () => { }
 
 const deleteItem = async (item) => {
-    deleteData(item, 'assignments')
+    await deleteData(item, 'assignments')
     loadTable()
 }
 

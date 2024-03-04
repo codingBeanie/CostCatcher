@@ -70,7 +70,7 @@ const createCategory = async () => {
 }
 
 const deleteItem = async (item) => {
-    deleteData(item, 'categories')
+    await deleteData(item, 'categories')
     loadTable()
 }
 

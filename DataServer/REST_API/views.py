@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import *
 from rest_framework.views import APIView
+from .assignment import *
 
 
 class Transactions(APIView):
@@ -118,11 +119,12 @@ class Assignments(APIView):
         if Assignment.objects.filter(keyword=keyword).exists():
             return Response(status=400, data="Assignment already exists")
 
-        print(data)
         serializer = AssignmentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            createBinding(data)
             return Response(serializer.data, status=201)
+
         return Response(serializer.errors, status=400)
 
     def put(self, request):

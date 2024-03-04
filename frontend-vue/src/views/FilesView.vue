@@ -22,7 +22,6 @@ import { onMounted, ref } from 'vue';
 import { getData } from '../composables/API.js'
 import { deleteData } from '../composables/API.js'
 import { useAlertStore } from '../stores/AlertStore';
-import { load } from 'webfontloader';
 
 const data = ref([])
 const headers = [
@@ -39,7 +38,7 @@ const loadTable = async () => {
 }
 
 const deleteItem = async (item) => {
-    deleteData(item, 'files')
+    await deleteData(item, 'files')
     loadTable()
 }
 
