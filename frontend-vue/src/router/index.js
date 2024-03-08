@@ -3,6 +3,7 @@ import ImportView from '../views/ImportView.vue'
 import FilesView from '../views/FilesView.vue'
 import CategoriesView from '../views/CategoriesView.vue'
 import AssignmentsView from '../views/AssignmentsView.vue'
+import ReviewView from '../views/ReviewView.vue'
 
 const routes = [
   { path: '/', redirect: '/import' },
@@ -26,8 +27,12 @@ const routes = [
     path: '/assignments',
     name: 'assignments',
     component: AssignmentsView
+  },
+  {
+    path: '/review',
+    name: 'review',
+    component: ReviewView
   }
-
 ]
 
 const router = createRouter({

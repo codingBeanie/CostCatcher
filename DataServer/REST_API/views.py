@@ -24,6 +24,20 @@ class Transactions(APIView):
             return Response(status=200, data="Transactions have been uploaded")
         return Response(status=500, data="Transactions could not be uploaded")
 
+    def put(self, request):
+        data = request.data
+        transaction = Transaction.objects.get(id=data['id'])
+        serializer = TransactionSerializer(transaction, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=200, data="Transaction has been updated")
+        return Response(status=500, data="Transaction could not be updated")
+
+    def delete(self, request):
+        data = request.data
+        Transaction.objects.filter(id=data['id']).delete()
+        return Response(status=200, data="Transaction has been deleted")
+
 
 class TransactionsWithoutCategory(APIView):
     def get(self, request):

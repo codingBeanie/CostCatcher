@@ -5,6 +5,7 @@ export const useUpdateStore = defineStore('update', {
         schemaClosed: false,
         editCategoryClosed: false,
         editAssignmentClosed: false,
+        editTransactionClosed: false,
     }),
     actions: {
         closeSchema() {
@@ -15,6 +16,9 @@ export const useUpdateStore = defineStore('update', {
         },
         closeAssignment() {
             this.editAssignmentClosed = !this.editAssignmentClosed
+        },
+        closeTransaction() {
+            this.editTransactionClosed = !this.editTransactionClosed
         }
     }
 })
