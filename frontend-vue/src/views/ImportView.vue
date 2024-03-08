@@ -109,7 +109,7 @@ const uploadData = async () => {
     }
 }
 
-watch(() => updateStore.schemaClosed, () => {
+watch(() => updateStore.dialogTrigger, () => {
     if (fileLoaded.value) {
         previewData.value = []
         convertData(rawData.value)

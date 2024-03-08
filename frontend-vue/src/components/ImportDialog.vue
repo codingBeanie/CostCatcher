@@ -122,7 +122,7 @@ const save = (async() => {
         dateFormat: dateFormat.value
     }
     const update = await API('schema', 'PUT', data)
-    updateStore.closeSchema()
+    updateStore.closeDialog()
     active.value = false
 })
 

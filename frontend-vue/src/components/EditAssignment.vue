@@ -77,7 +77,7 @@ const save = async () => {
         checkDescription: newDescription.value
     }
     await API('assignments', 'PUT', data) 
-    updateStore.closeAssignment()
+    updateStore.closeDialog()
     active.value = false
 }
 

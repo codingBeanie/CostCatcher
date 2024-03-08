@@ -54,7 +54,7 @@ const save = async () => {
         name: newCategory.value,
     }
     await API('categories', 'PUT', data) 
-    updateStore.closeEditCategory()
+    updateStore.closeDialog()
     active.value = false
 }
 

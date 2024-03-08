@@ -9,17 +9,6 @@
     <!--Create Form-->
     <div>
         <v-row>
-            <v-col>
-                <h3 class="">Create a category</h3>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <h4 class="font-weight-regular">Choose a keyword which is then checked for the fields recipients and/or description. If the rule is true, the category will be applied.</h4>
-            </v-col>
-        </v-row>
-
-        <v-row>
             <v-col cols="3">
                 <v-text-field v-model="keyword" label="Keyword"></v-text-field>
             </v-col>
@@ -27,10 +16,10 @@
                 <v-select label="Category" v-model="category" :items="categoryItems"></v-select>
             </v-col>
             <v-col cols="2">
-                <v-checkbox v-model="recipient" label="Recipient"/>
+                <v-checkbox v-model="recipient" label="Must be in Recipient"/>
             </v-col>
             <v-col cols="2">
-                <v-checkbox v-model="description" label="Description"/>
+                <v-checkbox v-model="description" label="Must be in Description"/>
             </v-col>
             <v-col cols="2" class="mt-2">
                 <v-btn class="" color="accent" @click="createAssignment" prependIcon="mdi-plus">Create</v-btn>
@@ -140,7 +129,7 @@ onMounted(async () => {
     loadCategoryItems()
 })
 
-watch(() => updateStore.editAssignmentClosed, () => {
+watch(() => updateStore.dialogTrigger, () => {
     loadTable()
     loadDataUnmatched()
 })

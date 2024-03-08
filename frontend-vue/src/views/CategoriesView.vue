@@ -75,7 +75,7 @@ onMounted(async () => {
     loadTable()
 })
 
-watch(() => updateStore.editCategoryClosed, () => {
+watch(() => updateStore.dialogTrigger, () => {
     loadTable()
 })
 </script>
