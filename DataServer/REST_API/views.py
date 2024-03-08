@@ -9,49 +9,61 @@ from .assignment import *
 
 class Transactions(APIView):
     def get(self, request):
-        data = Transaction.objects.all()
-        serializer = TransactionSerializer(data, many=True)
-        return Response(serializer.data)
+        try:
+            data = Transaction.objects.all()
+            serializer = TransactionSerializer(data, many=True)
+            return Response(status=200, data=serializer.data)
+        except:
+            return Response(status=500, data="Transactions could not be queried")
 
     def post(self, request):
         data = request.data
         serializer = TransactionSerializer(data=data, many=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+            return Response(status=200, data="Transactions have been uploaded")
+        return Response(status=500, data="Transactions could not be uploaded")
 
 
 class TransactionsWithoutCategory(APIView):
     def get(self, request):
-        data = Transaction.objects.filter(category=None)
-        serializer = TransactionSerializer(data, many=True)
-        return Response(serializer.data)
+        try:
+            data = Transaction.objects.filter(category=None)
+            serializer = TransactionSerializer(data, many=True)
+            return Response(status=200, data=serializer.data)
+        except:
+            return Response(status=500, data="Transactions could not be queried")
 
 
 class Files(APIView):
     def get(self, request):
-        data = Transaction.objects.values('fileName', 'fileDate').distinct()
-        print(data)
-        return Response(data)
+        try:
+            data = Transaction.objects.values(
+                'fileName', 'fileDate').distinct()
+            return Response(status=200, data=data)
+        except:
+            return Response(status=500, data="Files could not be queried")
 
     def delete(self, request):
-        data = request.data
-        fileName = data['fileName']
-        fileDate = data['fileDate']
         try:
+            data = request.data
+            fileName = data['fileName']
+            fileDate = data['fileDate']
             Transaction.objects.filter(
                 fileName=fileName, fileDate=fileDate).delete()
-            return Response(status=204)
+            return Response(status=200, data="File has been deleted")
         except:
-            return Response(status=400)
+            return Response(status=500, data="File could not be deleted")
 
 
 class Schema(APIView):
     def get(self, request):
-        data = ImportSchema.objects.all()
-        serializer = ImportSchemaSerializer(data, many=True)
-        return Response(serializer.data)
+        try:
+            data = ImportSchema.objects.first()
+            serializer = ImportSchemaSerializer(data)
+            return Response(status=200, data=serializer.data)
+        except:
+            return Response(status=500, data="Schema could not be queried")
 
     def put(self, request):
         data = request.data
@@ -59,96 +71,95 @@ class Schema(APIView):
         serializer = ImportSchemaSerializer(schema, data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+            return Response(status=200, data="Schema has been updated")
+        return Response(status=500, data="Schema could not be updated")
 
 
 class Categories(APIView):
     def get(self, request):
-        data = Category.objects.all()
-        serializer = CategorySerializer(data, many=True)
-        return Response(serializer.data)
+        try:
+            data = Category.objects.all()
+            serializer = CategorySerializer(data, many=True)
+            return Response(status=200, data=serializer.data)
+        except:
+            return Response(status=500, data="Categories could not be queried")
 
     def post(self, request):
         data = request.data
-        print(data)
         if Category.objects.filter(name=data['name']).exists():
             return Response(status=400, data="Category already exists")
 
         serializer = CategorySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+            return Response(status=200, data="Category has been created")
+        return Response(status=500, data="Category could not be created")
 
     def put(self, request):
         data = request.data
-        oldName = data['oldName']
-        name = data['newName']
-        transactionType = data['newType']
-        category = Category.objects.get(name=oldName)
-        category.name = name
-        category.transactionType = transactionType
-        category.save()
-        return Response(status=201, data="Category updated")
+        print(data)
+        category = Category.objects.get(id=data['id'])
+        serializer = CategorySerializer(category, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=200, data="Category has been updated")
+        return Response(status=500, data="Category could not be updated")
 
     def delete(self, request):
-        data = request.data
-        name = data['name']
         try:
+            data = request.data
+            name = data['name']
             Category.objects.filter(name=name).delete()
-            return Response(status=204, data="Category deleted")
+            return Response(status=200, data="Category has been deleted")
         except:
-            return Response(status=400, data="Category does not exist")
+            return Response(status=500, data="Category could not be deleted")
 
 
 class Assignments(APIView):
     def get(self, request):
-        data = Assignment.objects.all()
-        serializer = AssignmentSerializer(data, many=True)
-        for assignment in serializer.data:
-            assignment['category'] = Category.objects.get(
-                id=assignment['category']).name
-        return Response(serializer.data)
+        try:
+            data = Assignment.objects.all()
+            serializer = AssignmentSerializer(data, many=True)
+            for assignment in serializer.data:
+                assignment['category'] = Category.objects.get(
+                    id=assignment['category']).name
+            return Response(status=200, data=serializer.data)
+        except:
+            return Response(status=500, data="Assignments could not be queried")
 
     def post(self, request):
-        data = request.data
-        keyword = data['keyword']
-        data['category'] = Category.objects.get(name=data['category']).id
+        try:
+            data = request.data
+            keyword = data['keyword']
+            data['category'] = Category.objects.get(name=data['category']).id
 
-        if Assignment.objects.filter(keyword=keyword).exists():
-            return Response(status=400, data="Assignment already exists")
+            if Assignment.objects.filter(keyword=keyword).exists():
+                return Response(status=400, data="Assignment already exists")
 
-        serializer = AssignmentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            createBinding(data)
-            return Response(serializer.data, status=201)
+            serializer = AssignmentSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                createBinding(serializer.instance)
+                return Response(status=200, data="Assignment has been created")
 
-        return Response(serializer.errors, status=400)
+        except:
+            return Response(status=500, data="Assignment could not be created")
 
     def put(self, request):
         data = request.data
-        oldKeyword = data['oldKeyword']
-        keyword = data['newKeyword']
-        checkRecipient = data['recipient']
-        checkDescription = data['description']
-        category = data['category']
-
-        assignment = Assignment.objects.get(keyword=oldKeyword)
-        assignment.keyword = keyword
-        assignment.checkRecipient = checkRecipient
-        assignment.checkDescription = checkDescription
-        assignment.category = Category.objects.get(name=category)
-
+        assignment = Assignment.objects.get(id=data['id'])
+        deleteBinding(assignment)
+        assignment.keyword = data['keyword']
+        assignment.checkRecipient = data['checkRecipient']
+        assignment.checkDescription = data['checkDescription']
+        assignment.category = Category.objects.get(name=data['category'])
         assignment.save()
-        return Response(status=201, data="Assignment updated")
+        createBinding(assignment)
+        return Response(status=200, data="Assignment has been updated")
 
     def delete(self, request):
         data = request.data
-        keyword = data['keyword']
-        try:
-            Assignment.objects.filter(keyword=keyword).delete()
-            return Response(status=204, data="Assignment deleted")
-        except:
-            return Response(status=400, data="Assignment does not exist")
+        assignment = Assignment.objects.get(id=data['id'])
+        deleteBinding(assignment)
+        assignment.delete()
+        return Response(status=200, data="Assignment has been deleted")

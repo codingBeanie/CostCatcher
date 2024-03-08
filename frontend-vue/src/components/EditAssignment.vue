@@ -44,12 +44,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { updateData } from '../composables/API.js'
 import { useUpdateStore } from '../stores/UpdateStore'
-import { getData } from '../composables/API.js'
+import { API } from '../composables/API.js'
 
 const active = ref(false)
 const props = defineProps({
+    id: Number,
     keyword: String,
     category: String,
     recipient: Boolean,
@@ -70,19 +70,19 @@ const close = () => {
 
 const save = async () => {
     const data = {
-        oldKeyword: props.keyword,
-        newKeyword: newKeyword.value,
+        id: props.id,
+        keyword: newKeyword.value,
         category: newCategory.value,
-        recipient: newRecipient.value,
-        description: newDescription.value
+        checkRecipient: newRecipient.value,
+        checkDescription: newDescription.value
     }
-    await updateData(data, 'assignments') 
+    await API('assignments', 'PUT', data) 
     updateStore.closeAssignment()
     active.value = false
 }
 
 onMounted(async () => {
-    const rawData = await getData('categories')
+    const rawData = await API('categories', 'GET')
     categories.value = rawData.map(item => item.name)
 })
 

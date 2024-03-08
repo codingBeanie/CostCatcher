@@ -19,9 +19,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { getData } from '../composables/API.js'
-import { deleteData } from '../composables/API.js'
-import { useAlertStore } from '../stores/AlertStore';
+import { API } from '../composables/API.js'
 
 const data = ref([])
 const headers = [
@@ -29,16 +27,15 @@ const headers = [
     { text: 'File Date', value: 'fileDate' },
     { text: 'Actions', value: 'action'}
 ]
-const alertStore = useAlertStore()
 
 // Methods
 const loadTable = async () => {
-    const rawData = await getData('files')
+    const rawData = await API('files', 'GET')
     data.value = rawData.map(item => ({ ...item, action: null }))
 }
 
 const deleteItem = async (item) => {
-    await deleteData(item, 'files')
+    await API('files', 'DELETE', item)
     loadTable()
 }
 

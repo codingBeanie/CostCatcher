@@ -1,84 +1,47 @@
 import { useAlertStore } from "../stores/AlertStore"
 
-export async function getData(type) { 
-    const alertStore = useAlertStore()
-    try {
-        const url = `http://127.0.0.1:8000/api/${type}`
-        const response = await fetch(url)
-        const data = await response.json()
-        return data
-        
-    } catch (error) {
-        alertStore.showAlert('Error', 'Could not fetch data. Database is probably not available.', 'error', 5000)
-    }
-    
-}
 
-export async function postData(data, type) {
+export async function API(resource, method, payload=null) {
     const alertStore = useAlertStore()
     try {
-        const url = `http://127.0.0.1:8000/api/${type}/`
-        const call = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        const response = await call.json()
-        if (call.status == 201) {
-            alertStore.showAlert('Success', 'Data uploaded successfully.', 'success', 5000)
-        } else {
-            alertStore.showAlert('Error', `Could not upload data. ${JSON.stringify(response)}`, 'error', 5000)
+        const url = `http://127.0.0.1:8000/api/${resource}/`
+        let request = null
+
+        if (method === 'GET') {
+            request = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+            })
         }
+        else {
+            request = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })  
+        }
+
+        const response = await request.json()
+
+        // SUCESS
+        if (request.status == 200) {
+            if (method != 'GET') {
+                alertStore.showAlert('Success', response, 'success', 5000)
+            }
+            else {
+                return response
+            }
+        }
+        // ERROR
+        else {
+            alertStore.showAlert('Error', JSON.stringify(response.data), 'error', 5000)
+        }
+
     }
     catch (error) {
-        console.log(error) 
-    }
-}
-
-export async function updateData(data, type) {
-    const alertStore = useAlertStore()
-    try {
-        const url = `http://127.0.0.1:8000/api/${type}/`
-        const payload = JSON.stringify(data)
-        const call = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: payload   
-        })
-        const response = await call.json()
-        if (call.status == 201) {
-            alertStore.showAlert('Success', 'Data updated successfully.', 'success', 5000)
-        } else {
-            alertStore.showAlert('Error', `Could not update data. ${JSON.stringify(response)}`, 'error', 5000)
-        }
-    }
-    catch (error) {
-        alertStore.showAlert('Error', 'Could not update data. Database is unavailable', 'error', 5000)
-    }
-}
-
-export async function deleteData(data, type) {
-    const alertStore = useAlertStore()
-    try {
-        const url = `http://127.0.0.1:8000/api/${type}/`
-        const call = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        if (call.status == 204) {
-            alertStore.showAlert('Success', 'Data deleted successfully.', 'success', 5000)
-        } else {
-            alertStore.showAlert('Error', `Could not delete data.`, 'error', 5000)
-        }
-    }
-    catch (error) {
-        console.log(error) 
+        console.log(error)
+        alertStore.showAlert('Error', error, 'error', 5000)
     }
 }

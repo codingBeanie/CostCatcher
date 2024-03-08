@@ -85,7 +85,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { ref } from 'vue'
-import { getData, updateData } from '../composables/API.js'
+import { API } from '../composables/API.js'
 import { useUpdateStore } from '../stores/UpdateStore.js'
 
 const active = ref(false)
@@ -121,24 +121,23 @@ const save = (async() => {
         decimalSeparator: decimalSeparator.value,
         dateFormat: dateFormat.value
     }
-    const update = await updateData(data, 'schema')
+    const update = await API('schema', 'PUT', data)
     updateStore.closeSchema()
     active.value = false
 })
 
 onMounted(async () => {
     try {
-        const schema = await getData('schema')
-
-        rowFirst.value = schema[0].rowFirst
-        rowLast.value = schema[0].rowLast
-        colDate.value = schema[0].colDate
-        colRecipient.value = schema[0].colRecipient
-        colDescription.value = schema[0].colDescription
-        colAmount.value = schema[0].colAmount
-        delimiter.value = schema[0].delimiter
-        thousandsSeparator.value = schema[0].thousandsSeparator
-        decimalSeparator.value = schema[0].decimalSeparator
+        const schema = await API('schema', 'GET')
+        rowFirst.value = schema.rowFirst
+        rowLast.value = schema.rowLast
+        colDate.value = schema.colDate
+        colRecipient.value = schema.colRecipient
+        colDescription.value = schema.colDescription
+        colAmount.value = schema.colAmount
+        delimiter.value = schema.delimiter
+        thousandsSeparator.value = schema.thousandsSeparator
+        decimalSeparator.value = schema.decimalSeparator
     } catch (error) {
         console.log(error)
     }

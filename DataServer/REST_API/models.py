@@ -12,7 +12,7 @@ class Transaction(models.Model):
     description = models.CharField(max_length=100)
     category = models.ForeignKey(
         'Category', on_delete=models.SET_NULL, null=True)
-    keywords = models.ManyToManyField(
+    assignments = models.ManyToManyField(
         'Assignment', related_name='transaction', blank=True, default=None)
     overruled = models.BooleanField(default=False)
 
@@ -21,9 +21,9 @@ class ImportSchema(models.Model):
     rowFirst = models.IntegerField(default=1)
     rowLast = models.IntegerField(default=0)
     colDate = models.IntegerField(default=1)
-    colRecipient = models.IntegerField(default=1)
-    colDescription = models.IntegerField(default=1)
-    colAmount = models.IntegerField(default=1)
+    colRecipient = models.IntegerField(default=2)
+    colDescription = models.IntegerField(default=3)
+    colAmount = models.IntegerField(default=4)
     delimiter = models.CharField(max_length=1, default=';')
     thousandsSeparator = models.CharField(max_length=1, default='.')
     decimalSeparator = models.CharField(max_length=1, default=',')
@@ -32,8 +32,6 @@ class ImportSchema(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    transactionType = models.CharField(
-        max_length=100, null=True, default="Expense")
 
 
 class Assignment(models.Model):

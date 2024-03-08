@@ -17,9 +17,6 @@
                     <v-col>
                         <v-text-field v-model="newCategory" label="Category Name"></v-text-field>
                     </v-col>
-                    <v-col>
-                        <v-select v-model="newType" label="Expense Type" :items="['Expense', 'Income']"></v-select>
-                    </v-col>
                 </v-row>
             </v-container>
         </v-card-text>
@@ -36,16 +33,15 @@
 
 <script setup>
 import { ref } from 'vue'
-import { updateData } from '../composables/API.js'
+import { API } from '../composables/API.js'
 import { useUpdateStore } from '../stores/UpdateStore';
 
 const active = ref(false)
 const props = defineProps({
-  inputCategory: String,
-  inputType: String
+  id: Number,
+  inputCategory: String
 })
 const newCategory = ref(props.inputCategory)
-const newType = ref(props.inputType)
 const updateStore = useUpdateStore()
 
 const close = () => {
@@ -54,11 +50,10 @@ const close = () => {
 
 const save = async () => {
     const data = {
-        oldName: props.inputCategory,
-        newName: newCategory.value,
-        newType: newType.value
+        id: props.id,
+        name: newCategory.value,
     }
-    await updateData(data, 'categories') 
+    await API('categories', 'PUT', data) 
     updateStore.closeEditCategory()
     active.value = false
 }

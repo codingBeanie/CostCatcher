@@ -49,7 +49,7 @@
         <v-row>
             <v-data-table :items="data">
                 <template v-slot:item.action="{ item }">
-                    <EditAssignment :keyword="item.keyword" :category="item.category" :recipient="item.checkRecipient" :description="item.checkDescription"/>
+                    <EditAssignment :keyword="item.keyword" :category="item.category" :id="item.id" :recipient="item.checkRecipient" :description="item.checkDescription"/>
                     <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
                     </v-btn>
                 </template>
@@ -75,7 +75,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { getData, deleteData, postData } from '../composables/API.js'
+import { API } from '../composables/API.js'
 import { useAlertStore } from '../stores/AlertStore'
 import { useUpdateStore } from '../stores/UpdateStore'
 import EditAssignment from '../components/EditAssignment.vue'
@@ -94,17 +94,17 @@ const updateStore = useUpdateStore()
 
 // Methods
 const loadTable = async () => {
-    const rawData = await getData('assignments')
+    const rawData = await API('assignments', 'GET')
     data.value = rawData.map(item => ({ ...item, action: null }))
 }
 
 const loadCategoryItems = async () => {
-    const rawData = await getData('categories')
+    const rawData = await API('categories', 'GET')
     categoryItems.value = rawData.map(item => item.name)
 }
 
 const loadDataUnmatched = async () => {
-    const rawData = await getData('transactions/without_category')
+    const rawData = await API('transactions/without_category', 'GET')
     dataUnmatched.value = rawData.map(item => ({ ...item, action: null }))
 }
 
@@ -119,17 +119,16 @@ const createAssignment = async () => {
             checkDescription: description.value,
             category: category.value
         }
-        await postData(assignment, 'assignments')
+        await API('assignments', 'POST', assignment)
         keyword.value = ''
         category.value = ''
         loadTable()
+        loadDataUnmatched()
     }
 }
 
-const editItem = async () => { }
-
 const deleteItem = async (item) => {
-    await deleteData(item, 'assignments')
+    await API('assignments', 'DELETE', item)
     loadTable()
 }
 
