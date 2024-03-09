@@ -16,7 +16,7 @@
     <div v-if="previewData.length > 0">
         <v-divider class="mb-8"></v-divider>
         <v-row>
-            <h3 class="ml-3">Preview Table</h3>
+            <h2 class="ml-3">Preview Table</h2>
         </v-row>
         <v-row>
             <v-col>
@@ -29,12 +29,22 @@
             </v-col> 
         </v-row>
         <v-row>
-            <v-data-table :items="previewData" density="compact"/>
+            <v-data-table :items="previewData" :headers="headers" density="compact">
+                <!--Date-->
+                <template v-slot:item.date="{ item }">
+                    {{ new Date(item.date).toLocaleDateString() }}
+                </template>
+
+                <!--Amount-->
+                <template v-slot:item.amount="{ item }">
+                    <v-row class="justify-end mr-12">
+                        {{ parseFloat(item.amount).toFixed(2) }}
+                    </v-row>
+                </template>
+            </v-data-table>
         </v-row>
     </div>
 
-
- 
 </template>
 
 <script setup>
@@ -54,6 +64,13 @@ const updateAlert = useAlertStore()
 const fileLoaded = ref(false)
 const inputFile = ref()
 const router = useRouter()
+
+const headers = [
+    { title: 'Date', value: 'date' },
+    { title: 'Recipient', value: 'recipient' },
+    { title: 'Description', value: 'description' },
+    { title: 'Amount', value: 'amount', align: 'center'}
+]
 
 // load the file from input
 const loadFile = async (e) => { 

@@ -8,7 +8,7 @@
 
     <!--File-Table-->
     <div>
-        <v-data-table :items="data" :headers="headers.value">
+        <v-data-table :items="data" :headers="headers">
             <template v-slot:item.action="{ item }">
                 <v-btn density="compact" icon="mdi-delete" color="" @click="deleteItem(item)">
                 </v-btn>
@@ -23,7 +23,7 @@ import { API } from '../composables/API.js'
 
 const data = ref([])
 const headers = [
-    { text: 'File Name', value: 'fileName' },
+    { title: 'File Name', value: 'fileName' },
     { text: 'File Date', value: 'fileDate' },
     { text: 'Actions', value: 'action'}
 ]
