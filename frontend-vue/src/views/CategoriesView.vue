@@ -21,7 +21,11 @@
 
     <!--File-Table-->
     <div>
-        <v-data-table :items="data">
+        <v-data-table :items="data" :headers="headers">
+            <!--Category-->
+            <template v-slot:item.name="{ item }">
+                <v-chip> {{ item.name }}</v-chip> 
+            </template>
             <template v-slot:item.action="{ item }">
                 <EditCategory :inputCategory="item.name" :id="item.id"/>
                 <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
@@ -43,6 +47,11 @@ const inputCategory = ref('')
 const data = ref([])
 const alertStore = useAlertStore()
 const updateStore = useUpdateStore()
+
+const headers= [
+    { title: 'Category Name', value: 'name' },
+    { title: 'Actions', value: 'action', align: 'center'}
+]
 
 // Methods
 const loadTable = async () => {
