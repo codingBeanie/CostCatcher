@@ -27,4 +27,5 @@ urlpatterns = [
     path('api/schema/', Schema.as_view()),
     path('api/categories/', Categories.as_view()),
     path('api/assignments/', Assignments.as_view()),
+    path('api/assignments/conflicts/', AssignmentsConflicts.as_view()),
 ]

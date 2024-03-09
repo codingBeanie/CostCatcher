@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import *
@@ -177,3 +178,12 @@ class Assignments(APIView):
         deleteBinding(assignment)
         assignment.delete()
         return Response(status=200, data="Assignment has been deleted")
+
+
+class AssignmentsConflicts(APIView):
+    def get(self, request):
+        transactionConflicts = Transaction.objects.annotate(
+            num_assignments=Count('assignments')).filter(num_assignments__gt=1)
+        assignments = Assignment.objects.filter(
+            transaction__in=transactionConflicts).values_list('id', flat=True).distinct()
+        return Response(status=200, data=assignments)

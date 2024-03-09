@@ -16,10 +16,10 @@
                 <v-select label="Category" v-model="category" :items="categoryItems"></v-select>
             </v-col>
             <v-col cols="2">
-                <v-checkbox v-model="recipient" label="Must be in Recipient"/>
+                <v-checkbox v-model="recipient" label="keyword in recipient"/>
             </v-col>
             <v-col cols="2">
-                <v-checkbox v-model="description" label="Must be in Description"/>
+                <v-checkbox v-model="description" label="keyword in description"/>
             </v-col>
             <v-col cols="2" class="mt-2">
                 <v-btn class="" color="accent" @click="createAssignment" prependIcon="mdi-plus">Create</v-btn>
@@ -32,15 +32,57 @@
     <div>
         <v-row>
             <v-col>
-                <h3 class="">Assignments</h3>
+                <h2 class="">Assignments</h2>
             </v-col>
         </v-row>
         <v-row>
-            <v-data-table :items="data">
+            <v-data-table :items="data" :headers="headers">
+
+                <!--Keyword-->
+                <template v-slot:item.keyword="{ item }">
+                    <v-row class="align-center">
+                        <div class="ml-4 mr-1 " v-if="conflicts.includes(item.id)">
+                            <v-tooltip text="Conflict with another assignment">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn color="red" v-bind="props" density="compact" icon="mdi-alert-circle"></v-btn>
+                                </template>
+                            </v-tooltip>
+                        </div> 
+                        <div class="ml-4">
+                            {{ item.keyword }} 
+                        </div>
+                    </v-row>
+                </template>
+
+                <!--Category-->
+                <template v-slot:item.category="{ item }">
+                    <v-chip>{{ item.category }}</v-chip>
+                </template>
+
+                <!--Recipient-->
+                <template v-slot:item.checkRecipient="{ item }">
+                    <v-row class="justify-center">
+                        <v-icon v-if="item.checkRecipient">mdi-check</v-icon>
+                        <v-icon v-else>mdi-close</v-icon>  
+                    </v-row>
+               </template>
+
+                <!--Description-->
+                <template v-slot:item.checkDescription="{ item }">
+                   <v-row class="justify-center">
+                        <v-icon v-if="item.checkDescription">mdi-check</v-icon>
+                        <v-icon v-else>mdi-close</v-icon>  
+                    </v-row>
+               </template>
+
+                <!--Action-->
                 <template v-slot:item.action="{ item }">
-                    <EditAssignment :keyword="item.keyword" :category="item.category" :id="item.id" :recipient="item.checkRecipient" :description="item.checkDescription"/>
-                    <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
-                    </v-btn>
+                    <v-row class="justify-center">
+                        <EditAssignment :keyword="item.keyword" :category="item.category" :id="item.id" :recipient="item.checkRecipient" :description="item.checkDescription"/>
+                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
+                        </v-btn>                   
+                    </v-row>
+
                 </template>
             </v-data-table>
         </v-row>
@@ -51,11 +93,22 @@
     <div>
         <v-row>
             <v-col>
-                <h3 class="mt-8">Transactions without a category</h3>
+                <h2 class="mt-8">Transactions without a category</h2>
             </v-col>
         </v-row>
         <v-row>
-            <v-data-table :items="dataUnmatched">
+            <v-data-table :items="dataUnmatched" :headers="headersUnmatched">
+                <!--Date-->
+                <template v-slot:item.date="{ item }">
+                    {{ new Date(item.date).toLocaleDateString() }}
+                </template>
+
+                <!--Amount-->
+                <template v-slot:item.amount="{ item }">
+                    <v-row class="justify-end mr-12">
+                        {{ item.amount.toFixed(2) }}
+                    </v-row>
+                </template>
             </v-data-table>
         </v-row>
     </div>
@@ -75,11 +128,26 @@ const recipient = ref(true)
 const description = ref(true)
 const category = ref('')
 const categoryItems = ref([])
+const headers = [
+    { title: 'Keyword', value: 'keyword', sortable: true},
+    { title: 'Category', value: 'category', sortable: true},
+    { title: 'Recipient', value: 'checkRecipient', sortable: true, align: 'center'},
+    { title: 'Description', value: 'checkDescription', sortable: true, align: 'center'},
+    { title: 'Action', value: 'action', sortable: false, align: 'center'},
+]
 
+const headersUnmatched = [
+    { title: 'Date', value: 'date', sortable: true },
+    { title: 'Recipient', value: 'recipient', sortable: true},
+    { title: 'Description', value: 'description', sortable: true},
+    { title: 'Amount', value: 'amount', sortable: true, align: 'center'},
+
+]
 const data = ref([])
 const dataUnmatched = ref([])
 const alertStore = useAlertStore()
 const updateStore = useUpdateStore()
+var conflicts = []
 
 // Methods
 const loadTable = async () => {
@@ -97,6 +165,10 @@ const loadDataUnmatched = async () => {
     dataUnmatched.value = rawData.map(item => ({ ...item, action: null }))
 }
 
+const loadConflicts = async () => {
+    conflicts = await API('assignments/conflicts', 'GET')
+}
+
 const createAssignment = async () => {
     if (keyword.value === '' || category.value === '' || (!recipient.value && !description.value)) {
         alertStore.showAlert('Input Failure', 'Please check your input fields', 'error', 4000)
@@ -111,6 +183,7 @@ const createAssignment = async () => {
         await API('assignments', 'POST', assignment)
         keyword.value = ''
         category.value = ''
+        loadConflicts()
         loadTable()
         loadDataUnmatched()
     }
@@ -118,18 +191,21 @@ const createAssignment = async () => {
 
 const deleteItem = async (item) => {
     await API('assignments', 'DELETE', item)
+    loadConflicts()
     loadTable()
 }
 
 
 // Lifecycle
 onMounted(async () => {
+    loadConflicts()
     loadTable()
     loadDataUnmatched()
     loadCategoryItems()
 })
 
 watch(() => updateStore.dialogTrigger, () => {
+    loadConflicts()    
     loadTable()
     loadDataUnmatched()
 })
