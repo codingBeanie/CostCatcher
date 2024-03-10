@@ -45,3 +45,28 @@ def deleteBinding(assignment):
 
         transaction.save()
     return
+
+
+def createBindingByTransactions(transactions):
+    for transaction in transactions:
+        for assignment in Assignment.objects.all():
+            # Recipient True / Description False
+            if assignment.checkRecipient and not assignment.checkDescription:
+                if assignment.keyword.lower() in transaction.recipient.lower():
+                    transaction.category = assignment.category
+                    transaction.assignments.add(assignment.id)
+
+            # Recipient False / Description True
+            elif not assignment.checkRecipient and assignment.checkDescription:
+                if assignment.keyword.lower() in transaction.description.lower():
+                    transaction.category = assignment.category
+                    transaction.assignments.add(assignment.id)
+
+            # Recipient True / Description True
+            elif assignment.checkRecipient and assignment.checkDescription:
+                if assignment.keyword.lower() in transaction.recipient.lower() and assignment.keyword.lower() in transaction.description.lower():
+                    transaction.category = assignment.category
+                    transaction.assignments.add(assignment.id)
+
+        transaction.save()
+    return

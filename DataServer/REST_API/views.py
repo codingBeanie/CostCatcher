@@ -22,6 +22,7 @@ class Transactions(APIView):
         serializer = TransactionSerializer(data=data, many=True)
         if serializer.is_valid():
             serializer.save()
+            createBindingByTransactions(serializer.instance)
             return Response(status=200, data="Transactions have been uploaded")
         return Response(status=500, data="Transactions could not be uploaded")
 
