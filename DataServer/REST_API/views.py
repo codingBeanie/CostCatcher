@@ -10,12 +10,19 @@ from .assignment import *
 
 class Transactions(APIView):
     def get(self, request):
-        try:
-            data = Transaction.objects.all()
-            serializer = TransactionSerializer(data, many=True)
-            return Response(status=200, data=serializer.data)
-        except:
-            return Response(status=500, data="Transactions could not be queried")
+        categories_string = request.query_params.get('categories', None)
+        categories = categories_string.split('%') if categories_string else []
+        datefrom = request.query_params.get('datefrom', None)
+        dateto = request.query_params.get('dateto', None)
+
+        print(categories, datefrom, dateto)
+        filters = {}
+        if categories:
+            filters['category__name__in'] = categories
+
+        data = Transaction.objects.filter(**filters)
+        serializer = TransactionSerializer(data, many=True)
+        return Response(status=200, data=serializer.data)
 
     def post(self, request):
         data = request.data

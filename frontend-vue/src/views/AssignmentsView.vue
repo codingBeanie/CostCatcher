@@ -161,12 +161,12 @@ const loadCategoryItems = async () => {
 }
 
 const loadDataUnmatched = async () => {
-    const rawData = await API('transactions/without_category', 'GET')
+    const rawData = await API('transactions_without_category', 'GET')
     dataUnmatched.value = rawData.map(item => ({ ...item, action: null }))
 }
 
 const loadConflicts = async () => {
-    conflicts = await API('assignments/conflicts', 'GET')
+    conflicts = await API('assignments_conflicts', 'GET')
 }
 
 const createAssignment = async () => {
