@@ -13,15 +13,20 @@ class Transactions(APIView):
         categories_string = request.query_params.get('categories', None)
         categories = categories_string.split('%') if categories_string else []
         datefrom = request.query_params.get('datefrom', None)
-        dateto = request.query_params.get('dateto', None)
+        dateto = request.query_params.get('dateto', None).replace('/', '')
 
-        print(categories, datefrom, dateto)
+        print("api call:", categories, datefrom, dateto)
         filters = {}
         if categories:
             filters['category__name__in'] = categories
+        if datefrom and datefrom != 'null':
+            filters['date__gte'] = datefrom
+        if dateto and dateto != 'null':
+            filters['date__lte'] = dateto
 
-        data = Transaction.objects.filter(**filters)
+        data = Transaction.objects.filter(**filters).order_by('-date')
         serializer = TransactionSerializer(data, many=True)
+
         return Response(status=200, data=serializer.data)
 
     def post(self, request):
@@ -34,8 +39,17 @@ class Transactions(APIView):
         return Response(status=500, data="Transactions could not be uploaded")
 
     def put(self, request):
+        print("DATA", request.data)
         data = request.data
         transaction = Transaction.objects.get(id=data['id'])
+        print(data)
+
+        if 'category' in data:
+            data['category'] = Category.objects.get(name=data['category']).id
+            previousCategory = transaction.category.id
+            if previousCategory != data['category']:
+                data['overruled'] = True
+
         serializer = TransactionSerializer(transaction, data=data)
         if serializer.is_valid():
             serializer.save()
@@ -56,6 +70,15 @@ class TransactionsWithoutCategory(APIView):
             return Response(status=200, data=serializer.data)
         except:
             return Response(status=500, data="Transactions could not be queried")
+
+
+class TransactionUnlock(APIView):
+    def put(self, request):
+        data = request.data
+        transaction = Transaction.objects.get(id=data['id'])
+        transaction.overruled = False
+        transaction.save()
+        return Response(status=200, data="Transaction has been updated")
 
 
 class Files(APIView):

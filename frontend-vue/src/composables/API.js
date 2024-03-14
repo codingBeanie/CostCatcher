@@ -4,7 +4,7 @@ import { useAlertStore } from "../stores/AlertStore"
 export async function API(resource, method, payload=null) {
     const alertStore = useAlertStore()
     try {
-        const url = `http://127.0.0.1:8000/api/${resource}`
+        const url = `http://127.0.0.1:8000/api/${resource}/`
         let request = null
 
         if (method === 'GET') {

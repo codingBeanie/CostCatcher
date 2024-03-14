@@ -20,10 +20,34 @@
                 ></v-text-field>
             </div>
         </v-col>
+
+        <!--fromDate-->
+        <v-col>
+            <v-text-field clearable label="From Date" 
+                        type="date"
+                        v-model="dateFrom" 
+                        placeholder="e.g. 01.01.23"
+                        @update:model-value="loadTable"
+                        >
+            </v-text-field>
+        </v-col>
+
+        <!--toDate-->
+        <v-col>
+            <v-text-field clearable label="To Date" 
+                        type="date"
+                        v-model="dateTo" 
+                        placeholder="e.g. 01.01.23"
+                        @update:model-value="loadTable"
+                        >
+            </v-text-field>
+        </v-col>
+
+        <!--Categories-->
         <v-col>
             <v-select
                 v-model="selectedCategories"
-                 :items="categories.map(category => category.name)"
+                :items="categoriesNames"
                 clearable
                 chips
                 multiple
@@ -44,7 +68,12 @@
 
             <!--Category-->
             <template v-slot:item.categoryName="{ item }">
-                <v-chip v-if="item.categoryName"> {{ item.categoryName }} </v-chip>
+                <v-tooltip v-if="item.overruled" text="Category is locked. Click to unlock.">
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" density="compact" icon="mdi-lock" @click="unlock(item)" ></v-btn>
+                    </template>
+                </v-tooltip>
+                <v-chip class="ml-4" v-if="item.categoryName"> {{ item.categoryName }} </v-chip>      
             </template>
 
             <!--Amount-->
@@ -56,6 +85,7 @@
 
             <!--Action-->
             <template v-slot:item.action="{ item }">
+                <EditTransaction :item="item" :id="item.id" :date="item.date" :recipient="item.recipient" :description="item.description" :amount="item.amount" :category="item.categoryName" :categories="categoriesNames"/>
                 <v-btn density="compact" icon="mdi-delete" color="" @click="deleteItem(item)">
                 </v-btn>
             </template>
@@ -66,11 +96,18 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import { API } from '../composables/API.js'
+import { useUpdateStore } from '../stores/UpdateStore'
+import EditTransaction from '@/components/EditTransaction.vue';
 
 const data = ref([])
 const search = ref('')
+const dateFrom = ref('')
+const dateTo = ref('')
 let categories = ref(['Test'])
+let categoriesNames = ref([])
 const selectedCategories = ref([])
+
+const updateStore = useUpdateStore()
 
 const headers = [
     { title: 'Date', value: 'date', sortable: true},
@@ -84,9 +121,16 @@ const headers = [
 // Methods
 const loadTable = async () => {
     const categoryQuery = selectedCategories.value.map(category => category).join('%')  
-    const rawData = await API(`transactions/?categories=${categoryQuery}&datefrom=asdf&dateto=asdf`, 'GET')
+    const rawData = await API(`transactions/?categories=${categoryQuery}&datefrom=${dateFrom.value}&dateto=${dateTo.value}`, 'GET')
+
     categories.value = await API('categories', 'GET')
+    categoriesNames.value = categories.value.map(category => category.name)
     data.value = rawData.map(item => ({ ...item, action: null, categoryName: categories.value.find(category => category.id === item.category)?.name }))
+}
+
+const unlock = async (item) => {
+    await API('transaction_unlock', 'PUT', item)
+    loadTable()
 }
 
 const deleteItem = async (item) => {
@@ -104,4 +148,9 @@ onMounted(async () => {
 watch(selectedCategories, () => {
     loadTable()
 })
+
+watch(() => updateStore.dialogTrigger, () => {
+    loadTable()
+})
+
 </script>

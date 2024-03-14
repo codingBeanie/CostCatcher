@@ -6,7 +6,7 @@ from django.dispatch import receiver
 class Transaction(models.Model):
     fileName = models.CharField(max_length=100, null=True)
     fileDate = models.DateTimeField(null=True)
-    date = models.DateTimeField()
+    date = models.DateField()
     amount = models.FloatField()
     recipient = models.CharField(max_length=100)
     description = models.CharField(max_length=100)

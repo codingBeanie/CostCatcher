@@ -13,6 +13,37 @@
 
         <v-card-text>
             <v-container>
+                <v-row>
+                    <v-col>
+                        <v-text-field label="Recipient" v-model="newRecipient"></v-text-field>
+                    </v-col>
+                </v-row>
+                
+                <v-row>
+                    <v-col>
+                        <v-text-field label="Description" v-model="newDescription"></v-text-field>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col>
+                        <v-text-field type="Date" label="Date" v-model="newDate"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field type="Number" label="Amount" v-model="newAmount"></v-text-field>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col>
+                        <v-select
+                            v-model="newCategory"
+                            :items="props.categories"
+                            label="Category"
+                        ></v-select>
+                    </v-col>
+                </v-row>
+
             </v-container>
         </v-card-text>
 
@@ -40,7 +71,8 @@ const props = defineProps({
     recipient: String,
     description: String,
     amount: Number,
-    category: Number
+    category: String,
+    categories: Array
 })
 const newDate = ref(props.date)
 const newRecipient = ref(props.recipient)
