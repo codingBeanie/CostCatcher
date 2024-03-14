@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db.models import Count
+from django.db.models import Count, Sum, Avg
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import *
@@ -42,12 +42,12 @@ class Transactions(APIView):
         print("DATA", request.data)
         data = request.data
         transaction = Transaction.objects.get(id=data['id'])
-        print(data)
 
         if 'category' in data:
             data['category'] = Category.objects.get(name=data['category']).id
-            previousCategory = transaction.category.id
-            if previousCategory != data['category']:
+            if transaction.category == None:
+                data['overruled'] = True
+            elif transaction.category.id != data['category']:
                 data['overruled'] = True
 
         serializer = TransactionSerializer(transaction, data=data)
@@ -77,8 +77,30 @@ class TransactionUnlock(APIView):
         data = request.data
         transaction = Transaction.objects.get(id=data['id'])
         transaction.overruled = False
+        assignment = transaction.assignments.first()
+        if assignment:
+            transaction.category = assignment.category
+        else:
+            transaction.category = None
         transaction.save()
         return Response(status=200, data="Transaction has been updated")
+
+
+class Statistics(APIView):
+    def get(self, request):
+        data = []
+
+        categories = Category.objects.all()
+        for category in categories:
+            entry = {}
+            entry['category'] = category.name
+            entry['amount'] = Transaction.objects.filter(
+                category=category).aggregate(Sum('amount'))['amount__sum']
+            entry['average'] = round(Transaction.objects.filter(category=category).aggregate(
+                Avg('amount'))['amount__avg'], 2)
+            data.append(entry)
+
+        return Response(status=200, data=data)
 
 
 class Files(APIView):

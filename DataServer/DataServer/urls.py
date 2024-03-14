@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/categories/', Categories.as_view()),
     path('api/assignments/', Assignments.as_view()),
     path('api/assignments_conflicts/', AssignmentsConflicts.as_view()),
+    path('api/statistics/', Statistics.as_view())
 ]

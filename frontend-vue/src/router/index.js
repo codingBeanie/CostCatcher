@@ -4,6 +4,7 @@ import FilesView from '../views/FilesView.vue'
 import CategoriesView from '../views/CategoriesView.vue'
 import AssignmentsView from '../views/AssignmentsView.vue'
 import ReviewView from '../views/ReviewView.vue'
+import StatisticsView from '../views/StatisticsView.vue'
 
 const routes = [
   { path: '/', redirect: '/import' },
@@ -32,6 +33,11 @@ const routes = [
     path: '/review',
     name: 'review',
     component: ReviewView
+  },
+  {
+    path: '/statistics',
+    name: 'statistics',
+    component: StatisticsView
   }
 ]
 

@@ -20,6 +20,8 @@
             </v-list-item>
             <v-list-item prepend-icon="mdi-book-search" title="Review" to="/review">
             </v-list-item>
+            <v-list-item prepend-icon="mdi-chart-bar" title="Statistics" to="/statistics">
+            </v-list-item>  
           </v-list>
 
       </v-navigation-drawer>
