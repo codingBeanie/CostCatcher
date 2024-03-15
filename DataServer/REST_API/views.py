@@ -105,6 +105,8 @@ class Statistics(APIView):
             data.append(createStatisticsObject(category, dates))
         data.append(createStatisticsObject(None, dates))
 
+        data = sorted(data, key=lambda x: x['sum'], reverse=True)
+
         return Response(status=200, data=data)
 
 
