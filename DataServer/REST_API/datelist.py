@@ -3,7 +3,6 @@ import calendar
 
 
 def datelist(fromdate, todate):
-    print(fromdate, todate)
     returnlist = []
 
     # check if dates are provided
@@ -21,7 +20,7 @@ def datelist(fromdate, todate):
         # same month case
         if todate_monthID == fromedate_monthID:
             returnlist.append(
-                {'datefrom': fromdate.strftime('%Y-%m-%d'), 'dateto': todate.strftime('%Y-%m-%d')})
+                {'month-year': fromdate.strftime('%Y-%m'), 'datefrom': fromdate.strftime('%Y-%m-%d'), 'dateto': todate.strftime('%Y-%m-%d')})
             return returnlist
 
         # different month case
@@ -33,16 +32,16 @@ def datelist(fromdate, todate):
 
             if cycles == 0:
                 returnlist.append(
-                    {'datefrom': fromdate.strftime('%Y-%m-%d'), 'dateto': datetime.datetime(year, month, last_day).strftime('%Y-%m-%d')})
+                    {'month-year': fromdate.strftime('%Y-%m'), 'datefrom': fromdate.strftime('%Y-%m-%d'), 'dateto': datetime.datetime(year, month, last_day).strftime('%Y-%m-%d')})
 
             else:
-                returnlist.append({'datefrom': datetime.datetime(year, month, 1).strftime(
+                returnlist.append({'month-year': datetime.datetime(year, month, 1).strftime('%Y-%m'), 'datefrom': datetime.datetime(year, month, 1).strftime(
                     '%Y-%m-%d'), 'dateto': datetime.datetime(year, month, last_day).strftime('%Y-%m-%d')})
 
             cycles += 1
 
         # add last month
-        returnlist.append({'datefrom': datetime.datetime(todate.year, todate.month, 1).strftime(
+        returnlist.append({'month-year': todate.strftime('%Y-%m'), 'datefrom': datetime.datetime(todate.year, todate.month, 1).strftime(
             '%Y-%m-%d'), 'dateto': todate.strftime('%Y-%m-%d')})
 
     return returnlist
