@@ -36,7 +36,7 @@ export async function API(resource, method, payload=null) {
         }
         // ERROR
         else {
-            alertStore.showAlert('Error', JSON.stringify(response.data), 'error', 5000)
+            alertStore.showAlert('Error', response, 'error', 5000)
         }
 
     }

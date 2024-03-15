@@ -6,6 +6,8 @@ from .models import *
 from .serializer import *
 from rest_framework.views import APIView
 from .assignment import *
+from statistics import median
+from .datelist import datelist
 
 
 class Transactions(APIView):
@@ -89,15 +91,29 @@ class TransactionUnlock(APIView):
 class Statistics(APIView):
     def get(self, request):
         data = []
+        dateto = request.query_params.get('dateto', None)
+        dateto = dateto.replace('/', '') if dateto else None
+        datefrom = request.query_params.get('datefrom', None)
+
+        dates = datelist(datefrom, dateto)
+        print("dates", dates)
+        if dates == []:
+            return Response(status=400, data="Invalid date range")
 
         categories = Category.objects.all()
         for category in categories:
             entry = {}
+
+            # Statistics
             entry['category'] = category.name
-            entry['amount'] = Transaction.objects.filter(
-                category=category).aggregate(Sum('amount'))['amount__sum']
+            entry['sum'] = round(Transaction.objects.filter(
+                category=category).aggregate(Sum('amount'))['amount__sum'], 2)
             entry['average'] = round(Transaction.objects.filter(category=category).aggregate(
                 Avg('amount'))['amount__avg'], 2)
+            amounts = list(Transaction.objects.filter(
+                category=category).values_list('amount', flat=True))
+            entry['median'] = round(median(amounts) if amounts else None, 2)
+
             data.append(entry)
 
         return Response(status=200, data=data)
