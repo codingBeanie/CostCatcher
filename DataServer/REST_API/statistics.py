@@ -28,3 +28,50 @@ def createStatisticsObject(category, dates):
     entry['Median'] = round(median(sumlist), 2)
 
     return entry
+
+
+def createStatisticsTotals(dates):
+    totals = []
+
+    # INCOME
+    income = {}
+    income['Category'] = 'Income'
+    for daterange in dates:
+        filters = {'date__gte': daterange['datefrom'],
+                   'date__lte': daterange['dateto'],
+                   'amount__gte': 0}
+        try:
+            income[daterange['month-year']] = round(Transaction.objects.filter(**filters).aggregate(
+                Sum('amount'))['amount__sum'], 2)
+        except:
+            income[daterange['month-year']] = 0
+
+    # Expenses
+    expenses = {}
+    expenses['Category'] = 'Expenses'
+    for daterange in dates:
+        filters = {'date__gte': daterange['datefrom'],
+                   'date__lte': daterange['dateto'],
+                   'amount__lt': 0}
+        try:
+            expenses[daterange['month-year']] = round(Transaction.objects.filter(**filters).aggregate(
+                Sum('amount'))['amount__sum'], 2)
+        except:
+            expenses[daterange['month-year']] = 0
+
+    # NET
+    net = {}
+    net['Category'] = 'Net'
+    for daterange in dates:
+        filters = {'date__gte': daterange['datefrom'],
+                   'date__lte': daterange['dateto']}
+        try:
+            net[daterange['month-year']] = round(Transaction.objects.filter(**filters).aggregate(
+                Sum('amount'))['amount__sum'], 2)
+        except:
+            net[daterange['month-year']] = 0
+
+    totals.append(income)
+    totals.append(expenses)
+    totals.append(net)
+    return totals

@@ -7,7 +7,7 @@ from .serializer import *
 from rest_framework.views import APIView
 from .assignment import *
 from .datelist import datelist
-from .statistics import createStatisticsObject
+from .statistics import createStatisticsObject, createStatisticsTotals
 
 
 class Transactions(APIView):
@@ -99,12 +99,19 @@ class Statistics(APIView):
         if dates == []:
             return Response(status=400, data="Invalid date range")
 
+        # Period/Category statistics
         categories = Category.objects.all()
         for category in categories:
             data.append(createStatisticsObject(category, dates))
         data.append(createStatisticsObject(None, dates))
 
         data = sorted(data, key=lambda x: x['Sum'], reverse=True)
+
+        # Totals
+        totals = createStatisticsTotals(dates)
+        print("Totals", totals)
+        for total in totals:
+            data.append(total)
 
         return Response(status=200, data=data)
 
