@@ -17,7 +17,6 @@ class Transactions(APIView):
         datefrom = request.query_params.get('datefrom', None)
         dateto = request.query_params.get('dateto', None).replace('/', '')
 
-        print("api call:", categories, datefrom, dateto)
         filters = {}
         if categories:
             filters['category__name__in'] = categories
@@ -105,7 +104,7 @@ class Statistics(APIView):
             data.append(createStatisticsObject(category, dates))
         data.append(createStatisticsObject(None, dates))
 
-        data = sorted(data, key=lambda x: x['sum'], reverse=True)
+        data = sorted(data, key=lambda x: x['Sum'], reverse=True)
 
         return Response(status=200, data=data)
 

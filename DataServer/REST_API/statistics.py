@@ -5,7 +5,7 @@ from statistics import mean, median
 
 def createStatisticsObject(category, dates):
     entry = {}
-    entry['category'] = category.name if category else 'None'
+    entry['Category'] = category.name if category else 'None'
 
     sumlist = []
     # monthly statistics
@@ -22,9 +22,9 @@ def createStatisticsObject(category, dates):
             sumlist.append(0)
 
     # Statistics
-    entry['sum'] = round(Transaction.objects.filter(
+    entry['Sum'] = round(Transaction.objects.filter(
         category=category).aggregate(Sum('amount'))['amount__sum'], 2)
-    entry['avg'] = round(mean(sumlist), 2)
-    entry['median'] = round(median(sumlist), 2)
+    entry['Average'] = round(mean(sumlist), 2)
+    entry['Median'] = round(median(sumlist), 2)
 
     return entry
