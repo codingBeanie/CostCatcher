@@ -44,9 +44,9 @@
 
                 <tbody>
                     <tr v-for="row in data" :key="row.id">
-                        <td v-for="column in columns" :key="column" class="text-right">
+                        <td v-for="column in columns" :key="column" class="text-right pa-0">
                             <!--First Column-->
-                            <div v-if="column=='Category'">
+                            <div v-if="column=='Category'" class="pa-2">
                                 <!--Income-->
                                 <div v-if="row[column]==='Income'">
                                     <v-icon color="success" size="x-large">mdi-cash-plus</v-icon>
@@ -69,7 +69,7 @@
                             </div>
                             
                             <!--Month Columns-->
-                            <div v-else-if="column!='Sum' && column!='Average' && column!='Median'" class="cursor-pointer" @click="loadDetail(row['Category'], column)">
+                            <div v-else-if="column!='Sum' && column!='Average' && column!='Median'" class="cursor-pointer pa-2" @click="loadDetail(row['Category'], column)">
 
                                 <!--Income--> 
                                 <div v-if="row['Category'] === 'Income'" class="">
@@ -94,8 +94,8 @@
                             </div>
 
                             <!--Statistics Column-->
-                            <div v-else class="align-end">
-                                {{ row[column] }}
+                            <div v-else class="justify-end pa-2 align-center bg-primaryLight d-flex fill-height fill-width grow">
+                                {{ row[column].toLocaleString() }}
                             </div>
                         </td>
                     </tr>
