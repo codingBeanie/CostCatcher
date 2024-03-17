@@ -45,14 +45,35 @@
                 <tbody>
                     <tr v-for="row in data" :key="row.id">
                         <td v-for="column in columns" :key="column" class="text-right">
-                            <!--Category-->
+                            <!--First Column-->
                             <div v-if="column=='Category'">
-                                <v-chip>{{ row[column] }}</v-chip>
+                                <!--Income-->
+                                <div v-if="row[column]==='Income'">
+                                    <v-icon color="success" size="x-large">mdi-cash-plus</v-icon>
+                                </div>
+
+                                <!--Expenses-->
+                                <div v-else-if="row[column]==='Expenses'">
+                                    <v-icon color="error" size="x-large">mdi-cash-minus</v-icon>
+                                </div>
+
+                                <!--Net-->
+                                <div v-else-if="row[column]==='Net'">
+                                    <v-icon color="info" size="x-large">mdi-cash-multiple</v-icon>
+                                </div>
+
+                                <!--Categories-->
+                                <div v-else>
+                                    <v-chip>{{ row[column] }}</v-chip>
+                                </div>
                             </div>
-                            <!--Amounts-->
+                            
+                            <!--Month Columns-->
                             <div v-else-if="column!='Sum' && column!='Average' && column!='Median'" class="cursor-pointer" @click="loadDetail(row['Category'], column)">
                                 {{ row[column] }}
                             </div>
+
+                            <!--Statistics Column-->
                             <div v-else class="align-end">
                                 {{ row[column] }}
                             </div>

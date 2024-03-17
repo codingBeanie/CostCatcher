@@ -1,6 +1,6 @@
 <template>
   <v-app class="bg-primary">
-    <v-app-bar flat color="secondary">
+    <v-app-bar flat color="primary">
         <v-app-bar-title>
           <div class="text-center bg-error" v-if="alertStore.appState==='error'">The application is not working properly. Please come back later.</div>
           <div v-else>COSTCATCHER</div>

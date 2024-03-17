@@ -13,6 +13,8 @@ from .statistics import createStatisticsObject, createStatisticsTotals
 class Transactions(APIView):
     def get(self, request):
         categories_string = request.query_params.get('categories', None)
+        special_categories = categories_string if categories_string == 'Income' or categories_string == 'Expenses' or categories_string == 'Net' else None
+        categories_string = "" if special_categories else categories_string
         categories = categories_string.split('%') if categories_string else []
         datefrom = request.query_params.get('datefrom', None)
         dateto = request.query_params.get('dateto', None).replace('/', '')
@@ -20,6 +22,10 @@ class Transactions(APIView):
         filters = {}
         if categories:
             filters['category__name__in'] = categories
+        if special_categories == 'Income':
+            filters['amount__gte'] = 0
+        if special_categories == 'Expenses':
+            filters['amount__lt'] = 0
         if datefrom and datefrom != 'null':
             filters['date__gte'] = datefrom
         if dateto and dateto != 'null':
@@ -109,7 +115,6 @@ class Statistics(APIView):
 
         # Totals
         totals = createStatisticsTotals(dates)
-        print("Totals", totals)
         for total in totals:
             data.append(total)
 
