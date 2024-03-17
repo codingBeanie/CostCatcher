@@ -102,16 +102,18 @@ const convertData = async (data) => {
         data.forEach((entry, index) => {
             if (index >= schema.rowFirst && index < maxRows - schema.rowLast) {
                 const rawDate = entry[schema.colDate - 1]
-                const parsedDate = moment(rawDate, 'DD.MM.YYYY')
+                const parsedDate = moment(rawDate, schema.dateFormat)
                 const date = parsedDate.format('YYYY-MM-DD')
                 const recipient = entry[schema.colRecipient - 1]
                 const description = entry[schema.colDescription - 1]
+                console.log("Schema col amount", entry[schema.colAmount - 1])
                 const amount = entry[schema.colAmount - 1].replace(schema.thousandsSeparator, '').replace(schema.decimalSeparator, '.')
                 previewData.value.push({ date, recipient, description, amount, fileName, fileDate })
             }
         })
     } catch (error) {
-        updateAlert.showAlert('Error', 'The import scheme is not valid. Please check the import scheme in the settings.', 'error', 5000)
+        console.log("Error converting data: ", error)
+        updateAlert.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
     }
 }
 

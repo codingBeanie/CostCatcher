@@ -138,6 +138,7 @@ onMounted(async () => {
         delimiter.value = schema.delimiter
         thousandsSeparator.value = schema.thousandsSeparator
         decimalSeparator.value = schema.decimalSeparator
+        dateFormat.value = schema.dateFormat
     } catch (error) {
         console.log(error)
     }
