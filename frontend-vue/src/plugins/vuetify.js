@@ -17,7 +17,7 @@ export default createVuetify({
           error: '#c1121f',
           warning: '#D63484',
           info: '#a78a7f',
-          success: '#60d394',
+          success: '#3D9565',
         },
       },
     },

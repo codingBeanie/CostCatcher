@@ -70,7 +70,27 @@
                             
                             <!--Month Columns-->
                             <div v-else-if="column!='Sum' && column!='Average' && column!='Median'" class="cursor-pointer" @click="loadDetail(row['Category'], column)">
-                                {{ row[column] }}
+
+                                <!--Income--> 
+                                <div v-if="row['Category'] === 'Income'" class="">
+                                 <v-chip color="info">{{ row[column].toLocaleString() }}</v-chip>
+                                </div>
+
+                                <!--Expenses-->
+                                <div v-else-if="row['Category'] === 'Expenses'">
+                                    <v-chip color="info">{{ row[column].toLocaleString() }}</v-chip>
+                                </div>
+
+                                <!--Net-->
+                                <div v-else-if="row['Category'] === 'Net'">
+                                    <v-chip v-if="row[column] < 0" color="error">{{ row[column].toLocaleString() }}</v-chip>
+                                    <v-chip v-if="row[column] >= 0" color="success">{{ row[column].toLocaleString() }}</v-chip>
+                                </div>
+
+                                <!--Categories-->
+                                <div v-else>
+                                    {{ row[column].toLocaleString() }}
+                                </div>
                             </div>
 
                             <!--Statistics Column-->
