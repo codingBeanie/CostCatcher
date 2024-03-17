@@ -2,10 +2,14 @@
   <v-app class="bg-primary">
     <v-app-bar flat color="primary">
         <v-app-bar-title>
-          <div class="text-center bg-error" v-if="alertStore.appState==='error'">The application is not working properly. Please come back later.</div>
-          <div v-else>COSTCATCHER</div>
+          COSTCATCHER
         </v-app-bar-title>
+
+        <template v-slot:append>
+         <DialogSettings/>
+        </template>
     </v-app-bar>
+    
     <v-card>
       <v-navigation-drawer permanent rail expand-on-hover class="bg-secondary">
           <v-divider></v-divider>
@@ -23,7 +27,6 @@
             <v-list-item prepend-icon="mdi-chart-bar" title="Statistics" to="/statistics">
             </v-list-item>  
           </v-list>
-
       </v-navigation-drawer>
     </v-card>
 
@@ -33,14 +36,12 @@
       </v-container>
     </v-main>
   </v-app>
-<Alert/>
-
+<Alert></Alert>
 </template>
 
 
 <script setup>
+import DialogSettings from './components/DialogSettings.vue'
 import Alert from './components/Alert.vue'
-import { useAlertStore } from './stores/AlertStore.js'
-const alertStore = useAlertStore()
 </script>
 
