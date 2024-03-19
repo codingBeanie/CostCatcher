@@ -6,7 +6,9 @@
         </v-app-bar-title>
 
         <template v-slot:append>
-         <DialogSettings/>
+          <v-btn icon @click="openSettings">
+            <v-icon>mdi-cog</v-icon>
+          </v-btn>
         </template>
     </v-app-bar>
     
@@ -14,9 +16,7 @@
       <v-navigation-drawer permanent rail expand-on-hover class="bg-secondary">
           <v-divider></v-divider>
           <v-list density="compact" nav>
-            <v-list-item prepend-icon="mdi-upload" title="Import CSV" to="/import">
-            </v-list-item>
-             <v-list-item prepend-icon="mdi-file-multiple" title="Manage Files" to="/files">
+            <v-list-item prepend-icon="mdi-file-multiple" title="CSV Management" to="/import">
             </v-list-item>
             <v-list-item prepend-icon="mdi-bookmark-check" title="Categories" to="/categories">
             </v-list-item>
@@ -37,11 +37,21 @@
     </v-main>
   </v-app>
 <Alert></Alert>
+<DialogSettings></DialogSettings>
 </template>
 
 
 <script setup>
-import DialogSettings from './components/DialogSettings.vue'
+import DialogSettings from './components/DialogSettings.vue';
+import { useDialogStore } from './stores/DialogStore'
 import Alert from './components/Alert.vue'
+
+// Operations
+const dialogStore = useDialogStore()
+
+// Methods
+const openSettings = () => {
+    dialogStore.settings = !dialogStore.settings
+ }
 </script>
 

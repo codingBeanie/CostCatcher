@@ -1,23 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ImportView from '../views/ImportView.vue'
-import FilesView from '../views/FilesView.vue'
+import CSV_View from '../views/CSV_View.vue'
 import CategoriesView from '../views/CategoriesView.vue'
 import AssignmentsView from '../views/AssignmentsView.vue'
 import ReviewView from '../views/ReviewView.vue'
 import StatisticsView from '../views/StatisticsView.vue'
 
 const routes = [
-  { path: '/', redirect: '/import' },
+  { path: '/', redirect: '/csvmanagement' },
   {
-    path: '/import',
-    name: 'import',
-    component: ImportView
+    path: '/csvmanagement',
+    name: 'csvmanagement',
+    component: CSV_View
   }
   ,
   {
-    path: '/files',
-    name: 'files',
-    component: FilesView
+    path: '/import',
+    name: 'import',
+    component: CSV_View
   },
   {
     path: '/categories',

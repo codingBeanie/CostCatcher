@@ -1,33 +1,24 @@
 <template>
     <!--Titles-->
     <div>
-        <h1 class="mb-3 text-h3 font-weight-bold">Import</h1>
-        <p class="mb-4 text-h7">Upload a csv-file with your transaction data here.</p>
+        <h1 class="">CSV Management</h1>
+        <p class="mb-4 text-h6 font-weight-light">Upload a new csv-file with your transaction data or delete previous uploaded ones if neccesary.</p>
     </div>
     <v-divider class="mb-8"></v-divider>
 
     <!--File-Input-->
     <v-row>
-        <v-col cols="10"><v-file-input label="Select a csv-file" accept=".csv" @change="loadFile" v-model="inputFile"></v-file-input></v-col>
-        <v-col cols="2" class="mt-2"><ImportDialog/></v-col>
+        <v-col><v-file-input label="Upload a new csv-file" accept=".csv" @change="loadFile" v-model="inputFile"></v-file-input></v-col>
     </v-row>
 
+    <v-divider class="mb-8"></v-divider>
+
     <!--Preview-Table-->
-    <div v-if="previewData.length > 0">
-        <v-divider class="mb-8"></v-divider>
+    <div v-if="fileLoaded"> 
         <v-row>
-            <h2 class="ml-3">Preview Table</h2>
+            <h2 class="mb-4">Preview</h2>
         </v-row>
-        <v-row>
-            <v-col>
-                <p class="text-h7">Check if your data is recognised correctly. Adjust the schema settings if needed.</p>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <v-btn color="accent" @click="uploadData" prependIcon="mdi-upload">Upload</v-btn>
-            </v-col> 
-        </v-row>
+
         <v-row>
             <v-data-table :items="previewData" :headers="headers" density="compact">
                 <!--Date-->
@@ -43,35 +34,92 @@
                 </template>
             </v-data-table>
         </v-row>
+
+        <v-row class="">
+            <v-col cols="10" class="mt-2 text-end">
+                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn> if needed:</p>     
+            </v-col>
+            <v-col cols="2" class="mt-2">
+                <v-btn color="accent" @click="uploadData" prependIcon="mdi-upload">Confirm</v-btn>
+            </v-col> 
+        </v-row>
     </div>
+
+    <!--Uploaded Files Table-->       
+    <div v-else>
+        <v-row>
+            <h2 class="mt-10 mb-4">Uploaded Files</h2>
+        </v-row>
+        <v-row>
+            <v-data-table :items="dataUploads" :headers="headersFiles">
+                <!--Date-->
+                <template v-slot:item.fileDate="{ item }">
+                    {{ new Date(item.fileDate).toLocaleString() }}
+                </template>
+
+                <template v-slot:item.action="{ item }">
+                    <v-btn density="compact" icon="mdi-delete" color="" @click="deleteItem(item)">
+                    </v-btn>
+                </template>
+            </v-data-table>
+        </v-row>
+    </div>
+
+<DialogDeleteConfirmation :item="itemDelete" :itemName="itemDeleteName" :resource="'files'"></DialogDeleteConfirmation>
 
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import moment from 'moment'
 import { API } from '../composables/API.js'
-import ImportDialog from '../components/ImportDialog.vue'
 import { watch } from 'vue'
-import { useUpdateStore } from '../stores/UpdateStore.js'
+import { useDialogStore } from '../stores/DialogStore.js'
 import { useAlertStore } from '../stores/AlertStore.js'
-import { useRouter } from 'vue-router'
+import DialogDeleteConfirmation from '@/components/DialogDeleteConfirmation.vue'
 
+// Data
 const rawData = ref([])
 const previewData = ref([])
-const updateStore = useUpdateStore()
+const dataUploads = ref([])
+
+// Operational
+const dialogStore = useDialogStore()
 const updateAlert = useAlertStore()
 const fileLoaded = ref(false)
 const inputFile = ref()
-const router = useRouter()
+const itemDelete = ref()
+const itemDeleteName = ref()
 
+// tables
+const headersFiles = [
+    { title: 'File Name', value: 'fileName' },
+    { title: 'Upload Date', value: 'fileDate' },
+    { title: 'Actions', value: 'action', align: 'center'}
+]
 const headers = [
     { title: 'Date', value: 'date' },
     { title: 'Recipient', value: 'recipient' },
     { title: 'Description', value: 'description' },
-    { title: 'Amount', value: 'amount', align: 'center'}
+    { title: 'Amount', value: 'amount' }
 ]
 
+// Methods
+// Load the table
+// Methods
+const loadTable = async () => {
+    const apiData = await API('files', 'GET')
+    dataUploads.value = apiData.map(item => ({ ...item, action: null }))
+}
+
+const deleteItem = async (item) => {
+    itemDelete.value = item
+    itemDeleteName.value = item.fileName
+    dialogStore.delete = !dialogStore.delete
+}
+
+
+// FILE UPLOAD
 // load the file from input
 const loadFile = async (e) => { 
     const file = e.target.files[0]
@@ -106,7 +154,6 @@ const convertData = async (data) => {
                 const date = parsedDate.format('YYYY-MM-DD')
                 const recipient = entry[schema.colRecipient - 1]
                 const description = entry[schema.colDescription - 1]
-                console.log("Schema col amount", entry[schema.colAmount - 1])
                 const amount = entry[schema.colAmount - 1].replace(schema.thousandsSeparator, '').replace(schema.decimalSeparator, '.')
                 previewData.value.push({ date, recipient, description, amount, fileName, fileDate })
             }
@@ -121,17 +168,32 @@ const convertData = async (data) => {
 const uploadData = async () => {
     try {
         await API('transactions', 'POST', previewData.value)
-        router.push('/files')
+        loadTable()
+        inputFile.value = null
+        fileLoaded.value = false
     }
     catch (error) {
         console.log(error)
     }
 }
 
-watch(() => updateStore.dialogTrigger, () => {
+const openSettings = () => {
+    dialogStore.settings = !dialogStore.settings
+}
+
+// Lifecycle
+onMounted(async () => {
+    loadTable()
+})
+
+watch(() => dialogStore.settings, () => {
     if (fileLoaded.value) {
         previewData.value = []
         convertData(rawData.value)
     }
     })
+watch(() => dialogStore.dialog, () => { 
+    loadTable()
+})
+
 </script>

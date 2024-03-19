@@ -1,13 +1,6 @@
 <template>
     <v-row justify="center">
         <v-dialog v-model="active" max-width="600px">
-
-            <!--Button Definition-->
-            <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" icon="mdi-cog" color="info" size="x-large" class="">
-                </v-btn>
-            </template>
-
             <!--Dialog Content-->
             <template v-slot:default="{ active }">
                 <v-card>
@@ -174,15 +167,18 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, defineProps, watch } from 'vue';
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
-import { useUpdateStore } from '../stores/UpdateStore.js'
+import { useDialogStore } from '../stores/DialogStore.js'
 
 // Operator variables
 const active = ref(false)
 const tab = ref('CSV')
-const updateStore = useUpdateStore()
+const dialogStore = useDialogStore()
+const props = defineProps({
+    buttonSize: String
+})
 
 // Info Texts
 const infoRowFirst = 'The number of rows to ignore at the beginning of the file. This is useful if the file contains a header or other information that should be ignored.'
@@ -228,7 +224,6 @@ const save = (async() => {
         dateFormat: dateFormat.value
     }
     const update = await API('schema', 'PUT', data)
-    updateStore.closeDialog()
     active.value = false
 })
 
@@ -250,5 +245,9 @@ onMounted(async () => {
         console.log(error)
     }
      })
+
+watch(() => dialogStore.settings, () => {
+    active.value = true
+})
 
 </script>
