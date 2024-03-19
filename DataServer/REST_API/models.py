@@ -30,6 +30,11 @@ class ImportSchema(models.Model):
     dateFormat = models.CharField(max_length=100, default='DD.MM.YYYY')
 
 
+class Setting(models.Model):
+    currency = models.CharField(max_length=1, default='€')
+    rounding = models.IntegerField(default=0)
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
@@ -45,3 +50,4 @@ class Assignment(models.Model):
 @receiver(post_migrate)
 def create_default_entry(sender, **kwargs):
     ImportSchema.objects.get_or_create()
+    Setting.objects.get_or_create()

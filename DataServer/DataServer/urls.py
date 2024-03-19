@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/transaction_unlock/', TransactionUnlock.as_view()),
     path('api/files/', Files.as_view()),
     path('api/schema/', Schema.as_view()),
+    path('api/settings/', Settings.as_view()),
     path('api/categories/', Categories.as_view()),
     path('api/assignments/', Assignments.as_view()),
     path('api/assignments_conflicts/', AssignmentsConflicts.as_view()),

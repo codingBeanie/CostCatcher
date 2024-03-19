@@ -146,7 +146,29 @@
                             
                             <!--General Settings-->
                             <v-window-item value="general">
-                            General
+                                <v-container>
+                                    <v-row>
+                                        <h4>General settings</h4>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col class="d-flex">
+                                            <v-text-field label="Currency" v-model="currency"></v-text-field>
+                                            <v-tooltip :text="infoCurrency">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                </template>
+                                            </v-tooltip>
+                                        </v-col>
+                                        <v-col class="d-flex">
+                                            <v-text-field label="Rounding" v-model="rounding" type="number"></v-text-field>
+                                            <v-tooltip :text="infoRounding">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                </template>
+                                            </v-tooltip>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
                             </v-window-item>
 
                         </v-window>
@@ -191,6 +213,8 @@ const infoDelimiter = 'The character that separates the columns in the CSV file.
 const infoThousandsSeparator = 'The character that separates the thousands in the amount. Typically this is a dot (US) or a comma.'
 const infoDecimalSeparator = 'The character that separates the decimal in the amount. Typically this is a comma (US) or a dot.'
 const infoDateFormat = 'The format of the date in the CSV file. This is used to parse the date correctly.'
+const infoCurrency = 'The currency you want to use for the amounts. (Just for display)'
+const infoRounding = 'The number of decimal places to round the amounts to. (Just for display)'
 
 // Default values
 const rowFirst = ref(1)
@@ -205,6 +229,9 @@ const delimiter = ref(';')
 const thousandsSeparator = ref('.')
 const decimalSeparator = ref(',')
 const dateFormat = ref('DD.MM.YYYY')
+
+const currency = ref()
+const rounding = ref()
 
 // Methods
 const close = () => {
@@ -221,9 +248,15 @@ const save = (async() => {
         delimiter: delimiter.value,
         thousandsSeparator: thousandsSeparator.value,
         decimalSeparator: decimalSeparator.value,
-        dateFormat: dateFormat.value
+        dateFormat: dateFormat.value,
     }
     const update = await API('schema', 'PUT', data)
+
+    const settings = {
+        currency: currency.value,
+        rounding: rounding.value
+    }
+    const updateSettings = await API('settings', 'PUT', settings)
     active.value = false
 })
 
@@ -241,6 +274,11 @@ onMounted(async () => {
         thousandsSeparator.value = schema.thousandsSeparator
         decimalSeparator.value = schema.decimalSeparator
         dateFormat.value = schema.dateFormat
+
+        const settings = await API('settings', 'GET')
+        currency.value = settings.currency
+        rounding.value = settings.rounding
+        
     } catch (error) {
         console.log(error)
     }
