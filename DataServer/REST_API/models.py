@@ -41,8 +41,7 @@ class Category(models.Model):
 
 class Assignment(models.Model):
     keyword = models.CharField(max_length=100)
-    checkRecipient = models.BooleanField(default=False)
-    checkDescription = models.BooleanField(default=True)
+    checkMode = models.CharField(max_length=100)
     category = models.ForeignKey(
         'Category', on_delete=models.SET_NULL, null=True)
 

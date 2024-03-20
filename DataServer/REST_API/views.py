@@ -236,8 +236,7 @@ class Assignments(APIView):
         assignment = Assignment.objects.get(id=data['id'])
         deleteBinding(assignment)
         assignment.keyword = data['keyword']
-        assignment.checkRecipient = data['checkRecipient']
-        assignment.checkDescription = data['checkDescription']
+        assignment.checkMode = data['checkMode']
         assignment.category = Category.objects.get(name=data['category'])
         assignment.save()
         createBinding(assignment)

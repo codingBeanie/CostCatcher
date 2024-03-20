@@ -3,18 +3,24 @@ from django.db.models import Q
 
 
 def createBinding(assignment):
-    # Recipient True / Description False
-    if assignment.checkRecipient and not assignment.checkDescription:
+
+    # Check-Mode: recipient_only
+    if assignment.checkMode == "recipient_only":
         transactions = Transaction.objects.filter(
             recipient__icontains=assignment.keyword)
 
-    # Recipient False / Description True
-    elif not assignment.checkRecipient and assignment.checkDescription:
+    # Check-Mode: description_only
+    elif assignment.checkMode == "description_only":
         transactions = Transaction.objects.filter(
             description__icontains=assignment.keyword)
 
-    # Recipient True / Description True
-    elif assignment.checkRecipient and assignment.checkDescription:
+    # Check-Mode: recipient_and_description
+    elif assignment.checkMode == "recipient_and_description":
+        transactions = Transaction.objects.filter(
+            Q(recipient__icontains=assignment.keyword) & Q(description__icontains=assignment.keyword))
+
+    # Check-Mode: recipient_or_description
+    elif assignment.checkMode == "recipient_or_description":
         transactions = Transaction.objects.filter(
             Q(recipient__icontains=assignment.keyword) | Q(description__icontains=assignment.keyword))
 
@@ -50,21 +56,27 @@ def deleteBinding(assignment):
 def createBindingByTransactions(transactions):
     for transaction in transactions:
         for assignment in Assignment.objects.all():
-            # Recipient True / Description False
-            if assignment.checkRecipient and not assignment.checkDescription:
+            # Check-Mode: recipient_only
+            if assignment.checkMode == "recipient_only":
                 if assignment.keyword.lower() in transaction.recipient.lower():
                     transaction.category = assignment.category
                     transaction.assignments.add(assignment.id)
 
-            # Recipient False / Description True
-            elif not assignment.checkRecipient and assignment.checkDescription:
+            # Check-Mode: description_only
+            elif assignment.checkMode == "description_only":
                 if assignment.keyword.lower() in transaction.description.lower():
                     transaction.category = assignment.category
                     transaction.assignments.add(assignment.id)
 
-            # Recipient True / Description True
-            elif assignment.checkRecipient and assignment.checkDescription:
+            # Check-Mode: recipient_and_description
+            elif assignment.checkMode == "recipient_and_description":
                 if assignment.keyword.lower() in transaction.recipient.lower() and assignment.keyword.lower() in transaction.description.lower():
+                    transaction.category = assignment.category
+                    transaction.assignments.add(assignment.id)
+
+            # Check-Mode: recipient_or_description
+            elif assignment.checkMode == "recipient_or_description":
+                if assignment.keyword.lower() in transaction.recipient.lower() or assignment.keyword.lower() in transaction.description.lower():
                     transaction.category = assignment.category
                     transaction.assignments.add(assignment.id)
 

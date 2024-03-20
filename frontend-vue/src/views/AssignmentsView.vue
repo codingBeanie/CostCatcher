@@ -1,8 +1,8 @@
 <template>
     <!--Titles-->
     <div>
-        <h1 class="mb-3 text-h3 font-weight-bold">Assignments</h1>
-        <p class="mb-4 text-h7">Create rules for automatic assignment of categories to your transactions.</p>
+        <h1 class="mb-3 text-h3 font-weight-bold">Categorization</h1>
+        <p class="mb-4 text-h7">You can create custom categories that are assigned automatically based on a ruleset to your transactions.</p>
     </div>
     <v-divider class="mb-8"></v-divider>
 

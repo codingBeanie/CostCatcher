@@ -8,8 +8,15 @@
 
     <!--File-Input-->
     <v-row>
+        <v-col>
+            <p v-if="importStatus" class="text-h7">Please upload a csv-file with your transaction data.</p>
+            <p v-else class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn>.</p>
+        </v-col>
+    </v-row>
+    <v-row class="">
         <v-col><v-file-input label="Upload a new csv-file" accept=".csv" @change="loadFile" v-model="inputFile"></v-file-input></v-col>
     </v-row>
+
 
     <v-divider class="mb-8"></v-divider>
 
@@ -101,6 +108,7 @@ const itemDelete = ref()
 const itemDeleteName = ref()
 const currency = ref('€')
 const rounding = ref(0)
+const importStatus = ref(true)
 
 // tables
 const headersFiles = [
@@ -145,6 +153,7 @@ const loadFile = async (e) => {
         })
     }
     reader.readAsText(file, 'ISO-8859-1')
+    fileLoaded.value = true 
     convertData(rawData.value)
 }
 
@@ -172,9 +181,10 @@ const convertData = async (data) => {
                 previewData.value.push({ date, recipient, description, amount, fileName, fileDate })
             }
         })
-       fileLoaded.value = true 
+        importStatus.value = true
     } catch (error) {
         console.log("Error converting data: ", error)
+        importStatus.value = false
         updateAlert.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
     }
 }
@@ -185,6 +195,9 @@ const uploadData = async () => {
         await API('transactions', 'POST', previewData.value)
         loadTable()
         inputFile.value = null
+        importStatus.value = true
+        rawData.value = []
+        previewData.value = []
         fileLoaded.value = false
     }
     catch (error) {
@@ -202,13 +215,11 @@ onMounted(async () => {
 })
 
 watch(() => updateStore.refresh, () => {
-    if(fileLoaded.value) {
+    if (fileLoaded.value) {
         previewData.value = []
         convertData(rawData.value)
     }
-    else {
-        loadTable()
-    }
+    loadTable()
 })
 
 </script>
