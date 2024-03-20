@@ -193,11 +193,13 @@ import { onMounted, defineProps, watch } from 'vue';
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
 import { useDialogStore } from '../stores/DialogStore.js'
+import { useUpdateStore } from '../stores/UpdateStore.js'
 
 // Operator variables
 const active = ref(false)
 const tab = ref('CSV')
 const dialogStore = useDialogStore()
+const updateStore = useUpdateStore()
 const props = defineProps({
     buttonSize: String
 })
@@ -257,6 +259,7 @@ const save = (async() => {
         rounding: rounding.value
     }
     const updateSettings = await API('settings', 'PUT', settings)
+    updateStore.refresh = !updateStore.refresh
     active.value = false
 })
 

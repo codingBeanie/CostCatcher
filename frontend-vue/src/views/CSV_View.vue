@@ -29,7 +29,8 @@
                 <!--Amount-->
                 <template v-slot:item.amount="{ item }">
                     <v-row class="justify-end mr-12">
-                        {{ parseFloat(item.amount).toFixed(2) }}
+                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
+                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
                     </v-row>
                 </template>
             </v-data-table>
@@ -57,6 +58,12 @@
                     {{ new Date(item.fileDate).toLocaleString() }}
                 </template>
 
+                <template v-slot:item.amount="{ item }">
+                    <v-row class="justify-end mr-12">
+                    {{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}
+                    </v-row>
+                </template>
+
                 <template v-slot:item.action="{ item }">
                     <v-btn density="compact" icon="mdi-delete" color="" @click="deleteItem(item)">
                     </v-btn>
@@ -75,6 +82,7 @@ import moment from 'moment'
 import { API } from '../composables/API.js'
 import { watch } from 'vue'
 import { useDialogStore } from '../stores/DialogStore.js'
+import { useUpdateStore } from '@/stores/UpdateStore.js'
 import { useAlertStore } from '../stores/AlertStore.js'
 import DialogDeleteConfirmation from '@/components/DialogDeleteConfirmation.vue'
 
@@ -86,10 +94,13 @@ const dataUploads = ref([])
 // Operational
 const dialogStore = useDialogStore()
 const updateAlert = useAlertStore()
+const updateStore = useUpdateStore()
 const fileLoaded = ref(false)
 const inputFile = ref()
 const itemDelete = ref()
 const itemDeleteName = ref()
+const currency = ref('€')
+const rounding = ref(0)
 
 // tables
 const headersFiles = [
@@ -101,7 +112,7 @@ const headers = [
     { title: 'Date', value: 'date' },
     { title: 'Recipient', value: 'recipient' },
     { title: 'Description', value: 'description' },
-    { title: 'Amount', value: 'amount' }
+    { title: 'Amount', value: 'amount', align: 'center' }
 ]
 
 // Methods
@@ -134,7 +145,6 @@ const loadFile = async (e) => {
         })
     }
     reader.readAsText(file, 'ISO-8859-1')
-    fileLoaded.value = true
     convertData(rawData.value)
 }
 
@@ -145,6 +155,10 @@ const convertData = async (data) => {
     const maxRows = data.length
     const fileName = inputFile.value[0].name
     const fileDate = new Date().toISOString()
+
+    const settings = await API('settings', 'GET')
+    currency.value = settings.currency
+    rounding.value = settings.rounding
 
     try { 
         data.forEach((entry, index) => {
@@ -158,6 +172,7 @@ const convertData = async (data) => {
                 previewData.value.push({ date, recipient, description, amount, fileName, fileDate })
             }
         })
+       fileLoaded.value = true 
     } catch (error) {
         console.log("Error converting data: ", error)
         updateAlert.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
@@ -186,14 +201,14 @@ onMounted(async () => {
     loadTable()
 })
 
-watch(() => dialogStore.settings, () => {
-    if (fileLoaded.value) {
+watch(() => updateStore.refresh, () => {
+    if(fileLoaded.value) {
         previewData.value = []
         convertData(rawData.value)
     }
-    })
-watch(() => dialogStore.dialog, () => { 
-    loadTable()
+    else {
+        loadTable()
+    }
 })
 
 </script>

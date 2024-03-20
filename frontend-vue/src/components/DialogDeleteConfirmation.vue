@@ -26,10 +26,12 @@
 <script setup>
 import { ref, watch, defineProps } from 'vue'
 import { useDialogStore } from '../stores/DialogStore.js'
+import { useUpdateStore } from '@/stores/UpdateStore.js';
 import { API } from '../composables/API.js'
 
 // Operational Variables
 const dialogStore = useDialogStore()
+const updateStore = useUpdateStore()
 const active = ref(false)
 
 // Props
@@ -47,7 +49,7 @@ const close = () => {
 const confirm = async () => {
     await API(props.resource, 'DELETE', props.item)
     active.value = false
-    dialogStore.dialog = !dialogStore.dialog
+    updateStore.refresh = !updateStore.refresh
 }
 
 // Lifecycle
