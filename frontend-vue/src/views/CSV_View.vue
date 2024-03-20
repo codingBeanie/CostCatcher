@@ -4,13 +4,12 @@
         <h1 class="">CSV Management</h1>
         <p class="mb-4 text-h6 font-weight-light">Upload a new csv-file with your transaction data or delete previous uploaded ones if neccesary.</p>
     </div>
-    <v-divider class="mb-8"></v-divider>
+    <v-divider class="mb-2"></v-divider>
 
     <!--File-Input-->
     <v-row>
         <v-col>
-            <p v-if="importStatus" class="text-h7">Please upload a csv-file with your transaction data.</p>
-            <p v-else class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn>.</p>
+            <p v-if="importStatus==false" class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn>.</p>
         </v-col>
     </v-row>
     <v-row class="">
@@ -45,9 +44,9 @@
 
         <v-row class="">
             <v-col cols="10" class="mt-2 text-end">
-                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn> if needed:</p>     
+                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn> if needed.</p>     
             </v-col>
-            <v-col cols="2" class="mt-2">
+            <v-col cols="2" class="mt-2 text-end">
                 <v-btn color="accent" @click="uploadData" prependIcon="mdi-upload">Confirm</v-btn>
             </v-col> 
         </v-row>
