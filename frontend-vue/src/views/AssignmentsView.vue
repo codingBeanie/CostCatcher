@@ -9,19 +9,23 @@
     <!--Create Form-->
     <div>
         <v-row>
+            <!--Keyword-->
             <v-col cols="3">
                 <v-text-field v-model="keyword" label="Keyword"></v-text-field>
             </v-col>
+
+            <!--Category-->
             <v-col cols="3">
                 <v-select label="Category" v-model="category" :items="categoryItems"></v-select>
             </v-col>
-            <v-col cols="2">
-                <v-checkbox v-model="recipient" label="keyword in recipient"/>
+
+            <!--CheckMode-->
+            <v-col cols="4">
+                <v-select v-model="checkMode" label="Check-Mode" :items="checkItems" item-title="title" item-value="value"/>
             </v-col>
-            <v-col cols="2">
-                <v-checkbox v-model="description" label="keyword in description"/>
-            </v-col>
-            <v-col cols="2" class="mt-2">
+            
+            <!--Button-->
+            <v-col cols="2" class="mt-2 text-center">
                 <v-btn class="" color="accent" @click="createAssignment" prependIcon="mdi-plus">Create</v-btn>
             </v-col>
         </v-row>
@@ -123,11 +127,24 @@ import { useUpdateStore } from '../stores/UpdateStore'
 import EditAssignment from '../components/EditAssignment.vue'
 import { watch } from 'vue'
 
+// Operational
 const keyword = ref('')
-const recipient = ref(true)
-const description = ref(true)
+const checkMode = ref('')
 const category = ref('')
 const categoryItems = ref([])
+
+// Data
+const data = ref([])
+const dataUnmatched = ref([])
+const alertStore = useAlertStore()
+const updateStore = useUpdateStore()
+var conflicts = []
+const checkItems = [{ 'value': 'recipient_or_description', 'title': 'Keyword must be in recipient or description' },
+                    { 'value': 'recipient_only', 'title': 'Keyword must be in recipient only' },
+                    { 'value': 'description_only', 'title': 'Keyword must be in description only' },
+                    { 'value': 'recipient_and_description', 'title': 'Keyword must be in recipient and description' }]
+
+// Table Variables
 const headers = [
     { title: 'Keyword', value: 'keyword', sortable: true},
     { title: 'Category', value: 'category', sortable: true},
@@ -143,11 +160,7 @@ const headersUnmatched = [
     { title: 'Amount', value: 'amount', sortable: true, align: 'center'},
 
 ]
-const data = ref([])
-const dataUnmatched = ref([])
-const alertStore = useAlertStore()
-const updateStore = useUpdateStore()
-var conflicts = []
+
 
 // Methods
 const loadTable = async () => {
@@ -170,14 +183,13 @@ const loadConflicts = async () => {
 }
 
 const createAssignment = async () => {
-    if (keyword.value === '' || category.value === '' || (!recipient.value && !description.value)) {
+    if (keyword.value === '' || category.value === '' || checkMode.value === '') {
         alertStore.showAlert('Input Failure', 'Please check your input fields', 'error', 4000)
         return
     } else {
         const assignment = {
             keyword: keyword.value,
-            checkRecipient: recipient.value,
-            checkDescription: description.value,
+            checkMode: checkMode.value,
             category: category.value
         }
         await API('assignments', 'POST', assignment)
