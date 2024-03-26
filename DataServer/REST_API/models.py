@@ -37,6 +37,7 @@ class Setting(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    color = models.CharField(max_length=7, default='#444444')
 
 
 class Assignment(models.Model):

@@ -29,7 +29,7 @@
                                             <v-text-field label="Ignore # first rows" v-model="rowFirst" type="number" :rules="[value => (value >= 0 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoRowFirst">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -39,7 +39,7 @@
                                             <v-text-field label="Ignore # last rows" v-model="rowLast" type="number" :rules="[value => (value >= 0 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoRowLast">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -55,7 +55,7 @@
                                             <v-text-field label="Column # Date" v-model="colDate" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColDate">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -65,7 +65,7 @@
                                             <v-text-field label="Column # Recipient" v-model="colRecipient" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColRecipient">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -77,7 +77,7 @@
                                             <v-text-field label="Column # Description" v-model="colDescription" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColDescription">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -87,7 +87,7 @@
                                             <v-text-field label="Column # Amount" v-model="colAmount" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColAmount">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -103,7 +103,7 @@
                                             <v-text-field label="CSV delimeter" v-model="delimiter" :rules="[value => (value === ';' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                             <v-tooltip :text="infoDelimiter">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -113,7 +113,7 @@
                                             <v-text-field label="Thousands seperator" v-model="thousandsSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                             <v-tooltip :text="infoThousandsSeparator">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -125,7 +125,7 @@
                                             <v-text-field label="Decimal seperator" v-model="decimalSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                             <v-tooltip :text="infoDecimalSeparator">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -135,7 +135,7 @@
                                             <v-text-field label="Date format" v-model="dateFormat"></v-text-field>
                                             <v-tooltip :text="infoDateFormat">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -155,7 +155,7 @@
                                             <v-text-field label="Currency" v-model="currency"></v-text-field>
                                             <v-tooltip :text="infoCurrency">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
@@ -163,7 +163,7 @@
                                             <v-text-field label="Rounding" v-model="rounding" type="number"></v-text-field>
                                             <v-tooltip :text="infoRounding">
                                                 <template v-slot:activator="{ props }">
-                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-help-circle</v-icon>
+                                                    <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
                                             </v-tooltip>
                                         </v-col>

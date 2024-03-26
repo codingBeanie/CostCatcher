@@ -8,20 +8,40 @@
 
     <!--Create Form-->
     <div>
-        <v-row>
+        <v-row class="">
             <!--Keyword-->
-            <v-col cols="3">
+            <v-col class="d-flex" cols="3">
                 <v-text-field v-model="keyword" label="Keyword"></v-text-field>
+                <v-tooltip :text="infoKeyword">
+                    <template v-slot:activator="{ props }">
+                        <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            
+            <!--CheckMode-->
+            <v-col cols="2" class="d-flex">
+                <v-select v-model="checkMode" label="Check-Mode" :items="checkItems" item-title="title" item-value="value"/>
+                    <v-tooltip :text="infoCheckMode">
+                        <template v-slot:activator="{ props }">
+                            <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
+                        </template>
+                </v-tooltip>
             </v-col>
 
             <!--Category-->
-            <v-col cols="3">
+            <v-col cols="2" class="d-flex">
                 <v-select label="Category" v-model="category" :items="categoryItems"></v-select>
+                <v-tooltip :text="infoCategory">
+                    <template v-slot:activator="{ props }">
+                        <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
+                    </template>
+                </v-tooltip>
             </v-col>
 
-            <!--CheckMode-->
-            <v-col cols="4">
-                <v-select v-model="checkMode" label="Check-Mode" :items="checkItems" item-title="title" item-value="value"/>
+            <!--Category Button-->
+            <v-col cols="3" class="mt-2 text-start">
+                <v-btn class="" color="info" @click="">Edit Categories</v-btn>
             </v-col>
             
             <!--Button-->
@@ -29,6 +49,7 @@
                 <v-btn class="" color="accent" @click="createAssignment" prependIcon="mdi-plus">Create</v-btn>
             </v-col>
         </v-row>
+
     </div>
     <v-divider class="mb-8"></v-divider>
 
@@ -129,7 +150,7 @@ import { watch } from 'vue'
 
 // Operational
 const keyword = ref('')
-const checkMode = ref('')
+const checkMode = ref('recipient_or_description')
 const category = ref('')
 const categoryItems = ref([])
 
@@ -161,6 +182,10 @@ const headersUnmatched = [
 
 ]
 
+// Tooltips
+const infoKeyword = 'These characters will be search for in the transactions. The keyword is case-insensitive.'
+const infoCheckMode = 'The check mode determines where the keyword will be searched for in the transaction.'
+const infoCategory = 'The category that will be assigned to the transaction if the keyword is found.'
 
 // Methods
 const loadTable = async () => {
