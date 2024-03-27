@@ -20,6 +20,7 @@ const alertStore = useAlertStore()
   left: 50%;
   bottom: 50px;
   transform: translate(-50%, -50%);
-  margin: 0 auto; 
+  margin: 0 auto;
+  z-index: 9999; 
 }
 </style>

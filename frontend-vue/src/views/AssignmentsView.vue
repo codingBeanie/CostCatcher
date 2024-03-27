@@ -30,7 +30,7 @@
             </v-col>
 
             <!--Category-->
-            <v-col cols="2" class="d-flex">
+            <v-col cols="3" class="d-flex">
                 <v-select label="Category" v-model="category" :items="categoryItems"></v-select>
                 <v-tooltip :text="infoCategory">
                     <template v-slot:activator="{ props }">
@@ -40,13 +40,15 @@
             </v-col>
 
             <!--Category Button-->
-            <v-col cols="3" class="mt-2 text-start">
-                <v-btn class="" color="info" @click="">Edit Categories</v-btn>
+            <v-col cols="2" class="mt-2 text-start">
+                <v-btn v-if="display.mdAndDown.value" color="info" @click="openCategoryDialog" icon="mdi-bookshelf"></v-btn>
+                <v-btn v-else class="" color="info" @click="openCategoryDialog">Edit Categories</v-btn>
             </v-col>
             
             <!--Button-->
             <v-col cols="2" class="mt-2 text-center">
-                <v-btn class="" color="accent" @click="createAssignment" prependIcon="mdi-plus">Create</v-btn>
+                <v-btn v-if="display.mdAndDown.value" class="" color="accent" @click="createAssignment" icon="mdi-plus"></v-btn>
+                <v-btn v-else class="" color="accent" @click="createAssignment">Create</v-btn>
             </v-col>
         </v-row>
 
@@ -138,13 +140,17 @@
         </v-row>
     </div>
     <v-divider class="mt-8"></v-divider>    
+    <DialogCategoryEdit/>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
+import { useDisplay } from 'vuetify'
 import { API } from '../composables/API.js'
 import { useAlertStore } from '../stores/AlertStore'
 import { useUpdateStore } from '../stores/UpdateStore'
+import { useDialogStore } from '../stores/DialogStore'
+import DialogCategoryEdit from '../components/DialogCategoryEdit.vue'
 import EditAssignment from '../components/EditAssignment.vue'
 import { watch } from 'vue'
 
@@ -153,12 +159,14 @@ const keyword = ref('')
 const checkMode = ref('recipient_or_description')
 const category = ref('')
 const categoryItems = ref([])
+const display = useDisplay()
 
 // Data
 const data = ref([])
 const dataUnmatched = ref([])
 const alertStore = useAlertStore()
 const updateStore = useUpdateStore()
+const dialogStore = useDialogStore()
 var conflicts = []
 const checkItems = [{ 'value': 'recipient_or_description', 'title': 'Keyword must be in recipient or description' },
                     { 'value': 'recipient_only', 'title': 'Keyword must be in recipient only' },
@@ -230,6 +238,10 @@ const deleteItem = async (item) => {
     await API('assignments', 'DELETE', item)
     loadConflicts()
     loadTable()
+}
+
+const openCategoryDialog = () => {
+    dialogStore.category = !dialogStore.category
 }
 
 

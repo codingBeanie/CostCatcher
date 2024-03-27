@@ -183,8 +183,8 @@ class Categories(APIView):
 
     def put(self, request):
         data = request.data
-        print(data)
         category = Category.objects.get(id=data['id'])
+
         serializer = CategorySerializer(category, data=data)
         if serializer.is_valid():
             serializer.save()

@@ -1,10 +1,5 @@
 <template>
-  <v-dialog v-model="active" max-width="600px">
-
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" icon="mdi-pencil" density="compact">
-      </v-btn>
-    </template>
+  <v-dialog v-model="active" max-width="700px">
 
     <v-card>
         <v-card-title>
@@ -15,7 +10,25 @@
             <v-container>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="newCategory" label="Category Name"></v-text-field>
+                        <v-text-field v-model="newCategory" label="Category Name" clearable></v-text-field>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col>
+                        <h4 class="mb-1 font-weight-thin">Color</h4>
+                    </v-col>
+                    <v-col>
+                        <h4 class="mb-1 font-weight-thin">Preview</h4>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col>
+                        <v-color-picker v-model="newColor" hide-inputs></v-color-picker>
+                    </v-col>
+                    <v-col class="text-center">
+                        <v-chip :color="newColor" size="large">{{ newCategory }}</v-chip>
                     </v-col>
                 </v-row>
             </v-container>
@@ -23,8 +36,8 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text="Cancel" color="sucess" @click="close"></v-btn>
-            <v-btn text="Save" color="sucess" @click="save"></v-btn>
+            <v-btn text="Cancel" color="info" @click="close"></v-btn>
+            <v-btn text="Save" color="success" @click="save"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -32,30 +45,42 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { API } from '../composables/API.js'
-import { useUpdateStore } from '../stores/UpdateStore';
+import { useDialogStore } from '../stores/DialogStore.js'
+import { useUpdateStore } from '../stores/UpdateStore.js'
 
 const active = ref(false)
 const props = defineProps({
-  id: Number,
-  inputCategory: String
+    item: Object,
 })
-const newCategory = ref(props.inputCategory)
+const newCategory = ref('')
+const newColor = ref('')
+const dialogStore = useDialogStore()
 const updateStore = useUpdateStore()
 
 const close = () => {
     active.value = false
+    newCategory.value = ''
+    newColor.value = ''
 }
 
 const save = async () => {
     const data = {
-        id: props.id,
+        id: props.item.id,
         name: newCategory.value,
+        color: newColor.value
     }
     await API('categories', 'PUT', data) 
-    updateStore.closeDialog()
+    dialogStore.category = !dialogStore.category
+    updateStore.refresh = !updateStore.refresh
     active.value = false
 }
+
+watch(() => dialogStore.categoryEdit, () => {
+    active.value = true
+    newCategory.value = props.item.name
+    newColor.value = props.item.color
+})
 
 </script>
