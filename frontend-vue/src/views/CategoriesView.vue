@@ -38,15 +38,14 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { API } from '../composables/API.js'
-import { useAlertStore } from '../stores/AlertStore'
-import { useUpdateStore } from '../stores/UpdateStore'
+import { useMainStore } from '../stores/MainStore.js'
 import EditCategory from '../components/EditCategory.vue'
 import { watch } from 'vue'
 
 const inputCategory = ref('')
 const data = ref([])
-const alertStore = useAlertStore()
-const updateStore = useUpdateStore()
+const alertStore = useMainStore()
+const updateStore = useMainStore()
 
 const headers= [
     { title: 'Category Name', value: 'name' },

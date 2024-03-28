@@ -1,8 +1,8 @@
-import { useAlertStore } from "../stores/AlertStore"
+import { useMainStore } from "../stores/MainStore"
 
 
 export async function API(resource, method, payload=null) {
-    const alertStore = useAlertStore()
+    const mainStore = useMainStore()
     try {
         const url = `http://127.0.0.1:8000/api/${resource}/`
         let request = null
@@ -28,7 +28,7 @@ export async function API(resource, method, payload=null) {
         // SUCESS
         if (request.status == 200) {
             if (method != 'GET') {
-                alertStore.showAlert('Success', response, 'success', 5000)
+                mainStore.showAlert('Success', response, 'success', 5000)
             }
             else {
                 return response
@@ -36,13 +36,13 @@ export async function API(resource, method, payload=null) {
         }
         // ERROR
         else {
-            alertStore.showAlert('Error', response, 'error', 5000)
+            mainStore.showAlert('Error', response, 'error', 5000)
             return []
         }
 
     }
     catch (error) {
         console.log(error)
-        alertStore.showAlert('Error', error, 'error', 5000)
+        mainStore.showAlert('Error', error, 'error', 5000)
     }
 }

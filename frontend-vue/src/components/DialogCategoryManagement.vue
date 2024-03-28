@@ -155,4 +155,4 @@ watch(() => dialogStore.category, () => {
 watch(() => updateStore.refresh, () => {
     loadTable()
 })
-</script>
+</script>../stores/MainStore.js

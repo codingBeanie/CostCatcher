@@ -9,7 +9,7 @@
     <!--File-Input-->
     <v-row>
         <v-col>
-            <p v-if="importError==true" class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn>.</p>
+            <p v-if="importError==true" class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings()" class="mb-1"></v-btn>.</p>
         </v-col>
     </v-row>
     <v-row class="">
@@ -44,7 +44,7 @@
 
         <v-row class="">
             <v-col cols="10" class="mt-2 text-end">
-                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn> if needed.</p>     
+                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings()" class="mb-1"></v-btn> if needed.</p>     
             </v-col>
             <v-col cols="2" class="mt-2 text-end">
                 <v-btn color="accent" @click="uploadData()" prependIcon="mdi-upload">Confirm</v-btn>
@@ -71,7 +71,7 @@
                 </template>
 
                 <template v-slot:item.action="{ item }">
-                    <v-btn density="compact" icon="mdi-delete" color="" @click="deleteItem(item)">
+                    <v-btn density="compact" icon="mdi-delete" color="" @click="mainStore.openDelete('files', { fileName: `${item.fileName}`, fileDate: `${item.fileDate}` }, `${item.fileName}`)">
                     </v-btn>
                 </template>
             </v-data-table>
@@ -85,18 +85,13 @@ import { ref, onMounted } from 'vue'
 import moment from 'moment'
 import { API } from '../composables/API.js'
 import { watch } from 'vue'
-import { useDialogStore } from '../stores/DialogStore.js'
-import { useUpdateStore } from '@/stores/UpdateStore.js'
-import { useAlertStore } from '../stores/AlertStore.js'
+import { useMainStore } from '../stores/MainStore.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
-
 // State Management
-const dialogStore = useDialogStore()
-const updateAlert = useAlertStore()
-const updateStore = useUpdateStore()
+const mainStore = useMainStore()
 const fileLoaded = ref(false)
 const importError = ref(false)
 
@@ -108,6 +103,8 @@ const settings = ref([])
 
 // Input Objects
 const inputFile = ref()
+const fileName = ref('')
+const fileDate = ref('')
 
 // Display Objects
 const currency = ref('€')
@@ -129,7 +126,6 @@ const headersPreview = [
 ////////////////////////////////////////////////////////////////
 // Data Methods
 ////////////////////////////////////////////////////////////////
-
 // Load the table
 const loadTableUploads = async () => {
     const data = await API('files', 'GET')
@@ -178,11 +174,10 @@ const parseData = (data) => {
     } catch (error) {
         console.log("Error converting data: ", error)
         importError.value = true
-        updateAlert.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
+        mainStore.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
     }
 }
 
-// uploading data
 const uploadData = async () => {
     await API('transactions', 'POST', dataPreview.value)
     inputFile.value = null
@@ -192,25 +187,8 @@ const uploadData = async () => {
 }
 
 ////////////////////////////////////////////////////////////////
-// CRUD and Store Methods
-////////////////////////////////////////////////////////////////
-
-const openSettings = () => {
-    dialogStore.settings.trigger = !dialogStore.settings.trigger
-}
-
-const deleteItem = async (item) => {
-    dialogStore.delete.trigger = !dialogStore.delete.trigger
-    dialogStore.delete.title = item.fileName
-    dialogStore.delete.resource = 'files'
-    // need to construct a proxy id because there is no real id, only the filename and date as reference
-    dialogStore.delete.itemID = { fileName: item.fileName, fileDate: item.fileDate }
-}
-
-////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
-
 const load = async () => {
     schema.value = await API('schema', 'GET')
     settings.value = await API('settings', 'GET')
@@ -221,12 +199,11 @@ const load = async () => {
     }
 }
 
-
 onMounted(async () => {
     load()
 })
 
-watch(() => updateStore.refresh, () => {
+watch(() => mainStore.app.refresh, () => {
     load()
 })
 

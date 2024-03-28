@@ -60,9 +60,9 @@
 <script setup>
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
-import { useUpdateStore } from '../stores/UpdateStore'
+import { useMainStore } from '../stores/MainStore.js'
 
-const updateStore = useUpdateStore()
+const updateStore = useMainStore()
 
 const active = ref(false)
 const props = defineProps({

@@ -6,7 +6,7 @@
         </v-app-bar-title>
 
         <template v-slot:append>
-          <v-btn icon @click="openSettings">
+          <v-btn icon @click="mainStore.openSettings">
             <v-icon>mdi-cog</v-icon>
           </v-btn>
         </template>
@@ -44,19 +44,15 @@
 
 </template>
 
-
 <script setup>
+import { useMainStore } from './stores/MainStore.js'
 import DialogSettings from './components/DialogSettings.vue'
-import { useDialogStore } from './stores/DialogStore'
 import Alert from './components/Alert.vue'
 import DialogDelete from './components/DialogDelete.vue'
 
-// Operations
-const dialogStore = useDialogStore()
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
+const mainStore = useMainStore()
 
-// Methods
-const openSettings = () => {
-  dialogStore.settings.trigger = !dialogStore.settings.trigger
-}
 </script>
-

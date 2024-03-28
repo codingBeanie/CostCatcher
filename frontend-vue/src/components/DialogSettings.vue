@@ -189,21 +189,21 @@
 </template>
 
 <script setup>
-import { onMounted, defineProps, watch } from 'vue';
+import { onMounted, defineProps, watch } from 'vue'
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
-import { useDialogStore } from '../stores/DialogStore.js'
-import { useUpdateStore } from '../stores/UpdateStore.js'
+import { useMainStore } from '../stores/MainStore'
 
-// Operator variables
+////////////////////////////////////////////////////////////////
+// State Management
+////////////////////////////////////////////////////////////////
 const active = ref(false)
 const tab = ref('CSV')
-const dialogStore = useDialogStore()
-const updateStore = useUpdateStore()
-const props = defineProps({
-    buttonSize: String
-})
+const mainStore = useMainStore()
 
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
 // Info Texts
 const infoRowFirst = 'The number of rows to ignore at the beginning of the file. This is useful if the file contains a header or other information that should be ignored.'
 const infoRowLast = 'The number of rows to ignore at the end of the file. This is useful if the file contains a footer or other information that should be ignored.'
@@ -221,24 +221,24 @@ const infoRounding = 'The number of decimal places to round the amounts to. (Jus
 // Default values
 const rowFirst = ref(1)
 const rowLast = ref(0)
-
 const colDate = ref(1)
 const colRecipient = ref(2)
 const colDescription = ref(3)
 const colAmount = ref(4)
-
 const delimiter = ref(';')
 const thousandsSeparator = ref('.')
 const decimalSeparator = ref(',')
 const dateFormat = ref('DD.MM.YYYY')
-
 const currency = ref()
 const rounding = ref()
 
-// Methods
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
 const close = () => {
     active.value = false
 }
+
 const save = (async() => {
     const data = {
         rowFirst: rowFirst.value,
@@ -259,11 +259,13 @@ const save = (async() => {
         rounding: rounding.value
     }
     const updateSettings = await API('settings', 'PUT', settings)
-    updateStore.refresh = !updateStore.refresh
+    mainStore.refreshApp()
     active.value = false
 })
 
-// Lifecycle
+////////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////////
 onMounted(async () => {
     try {
         const schema = await API('schema', 'GET')
@@ -287,7 +289,7 @@ onMounted(async () => {
     }
      })
 
-watch(() => dialogStore.settings.trigger, () => {
+watch(() => mainStore.settings.trigger, () => {
     active.value = true
 })
 

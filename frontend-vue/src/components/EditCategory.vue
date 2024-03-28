@@ -47,15 +47,14 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { API } from '../composables/API.js'
-import { useDialogStore } from '../stores/DialogStore.js'
-import { useUpdateStore } from '../stores/UpdateStore.js'
+import { useMainStore } from '../stores/MainStore.js'
 
 const active = ref(false)
 
 const newCategory = ref('')
 const newColor = ref('')
-const dialogStore = useDialogStore()
-const updateStore = useUpdateStore()
+const dialogStore = useMainStore()
+const updateStore = useMainStore()
 const id = ref(dialogStore.categoryEditId)
 
 const close = () => {

@@ -134,21 +134,14 @@
         </v-row>
     </div>
     <v-divider class="mt-8"></v-divider>    
-    <DialogCategoryManagement/>
-    <EditCategory></EditCategory>
-    <EditAssignment></EditAssignment>
+
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { API } from '../composables/API.js'
-import { useAlertStore } from '../stores/AlertStore'
-import { useUpdateStore } from '../stores/UpdateStore'
-import { useDialogStore } from '../stores/DialogStore'
-import DialogCategoryManagement from '../components/DialogCategoryManagement.vue'
-import EditAssignment from '../components/EditAssignment.vue'
-import EditCategory from '@/components/EditCategory.vue'
+import { useMainStore } from '../stores/MainStore'
 import { watch } from 'vue'
 
 // Operational
@@ -271,4 +264,4 @@ watch(() => updateStore.dialogTrigger, () => {
 watch(() => updateStore.refresh, () => {
     load()
 })
-</script>
+</script>../stores/MainStore.js

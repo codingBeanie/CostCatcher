@@ -25,15 +25,13 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useDialogStore } from '../stores/DialogStore.js'
-import { useUpdateStore } from '@/stores/UpdateStore.js';
+import { useMainStore} from '../stores/MainStore.js'
 import { API } from '../composables/API.js'
 
 ////////////////////////////////////////////////////////////////
 // State Management
 ////////////////////////////////////////////////////////////////
-const dialogStore = useDialogStore()
-const updateStore = useUpdateStore()
+const mainStore = useMainStore()
 const active = ref(false)
 
 ////////////////////////////////////////////////////////////////
@@ -51,19 +49,18 @@ const close = () => {
 }
 
 const confirm = async () => {
-    console.log('Deleting item', itemID.value, 'from', resource.value)
     await API(resource.value, 'DELETE', itemID.value)
     active.value = false
-    updateStore.refresh = !updateStore.refresh
+    mainStore.refreshApp()
 }
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
-watch(() => dialogStore.delete.trigger, () => {
-    title.value = dialogStore.delete.title
-    itemID.value = dialogStore.delete.itemID
-    resource.value = dialogStore.delete.resource
+watch(() => mainStore.delete.trigger, () => {
+    title.value = mainStore.delete.title
+    itemID.value = mainStore.delete.itemID
+    resource.value = mainStore.delete.resource
     active.value = true
 })
 

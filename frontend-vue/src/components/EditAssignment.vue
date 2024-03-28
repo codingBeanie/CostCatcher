@@ -36,14 +36,13 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useUpdateStore } from '../stores/UpdateStore'
-import { useDialogStore } from '../stores/DialogStore'
+import { useMainStore } from '@/stores/MainStore';
 import { API } from '../composables/API.js'
 
 // Control Variables
 const active = ref(false)
-const updateStore = useUpdateStore()
-const dialogStore = useDialogStore()
+const updateStore = useMainStore()
+const dialogStore = useMainStore()
 
 // Data Variables
 const id = ref(dialogStore.assignmentEditId)
@@ -83,3 +82,4 @@ watch(() => dialogStore.assignmentEdit, () => {
 
 
 </script>
+../stores/MainStore

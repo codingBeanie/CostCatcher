@@ -96,7 +96,6 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import { API } from '../composables/API.js'
-import { useUpdateStore } from '../stores/UpdateStore'
 import EditTransaction from '@/components/EditTransaction.vue';
 
 const data = ref([])
