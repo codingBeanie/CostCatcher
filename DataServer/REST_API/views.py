@@ -163,12 +163,15 @@ class Schema(APIView):
 
 class Categories(APIView):
     def get(self, request):
-        try:
+        queryID = request.query_params.get('id', None)
+        if queryID:
+            queryID = queryID.replace('/', '')
+            data = Category.objects.get(id=queryID)
+            serializer = CategorySerializer(data)
+        else:
             data = Category.objects.all()
             serializer = CategorySerializer(data, many=True)
-            return Response(status=200, data=serializer.data)
-        except:
-            return Response(status=500, data="Categories could not be queried")
+        return Response(status=200, data=serializer.data)
 
     def post(self, request):
         data = request.data
@@ -206,9 +209,6 @@ class Assignments(APIView):
         try:
             data = Assignment.objects.all()
             serializer = AssignmentSerializer(data, many=True)
-            for assignment in serializer.data:
-                assignment['category'] = Category.objects.get(
-                    id=assignment['category']).name
             return Response(status=200, data=serializer.data)
         except:
             return Response(status=500, data="Assignments could not be queried")

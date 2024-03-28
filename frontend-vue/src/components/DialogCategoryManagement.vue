@@ -62,10 +62,10 @@
                             <v-data-table :items="data" :headers="headers">
                                 <!--Category-->
                                 <template v-slot:item.name="{ item }">
-                                <v-chip :color="item.color"> {{ item.name }}</v-chip> 
+                                <v-chip :color="item.color" link @click="editCategoryItem(item)"> {{ item.name }}</v-chip> 
                                 </template>
                                 <template v-slot:item.action="{ item }">
-                                    <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="editItem(item)">
+                                    <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="editCategoryItem(item)">
                                     </v-btn>
                                     <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
                                     </v-btn>
@@ -85,14 +85,13 @@
             </v-card>
         </v-dialog>
     </v-row>
-<EditCategory :item="itemEdit"></EditCategory>
+
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { useDialogStore } from '../stores/DialogStore.js'
 import { useUpdateStore } from '@/stores/UpdateStore.js'
-import EditCategory from './EditCategory.vue'
 import { API } from '../composables/API.js'
 
 // Operational Variables
@@ -104,7 +103,7 @@ const active = ref(false)
 const data = ref([])
 const inputCategory = ref('')
 const inputColor = ref('#444444')
-const itemEdit = ref(null)
+const itemEdit = ref('0')
 
 // Table Headers
 const headers = [
@@ -134,9 +133,9 @@ const createCategory = async () => {
     loadTable()
 }
 
-const editItem = (item) => {
+const editCategoryItem = (item) => {
+    dialogStore.categoryEditId = item.id
     dialogStore.categoryEdit = !dialogStore.categoryEdit
-    itemEdit.value = item
 }
 
 const deleteItem = async (item) => {

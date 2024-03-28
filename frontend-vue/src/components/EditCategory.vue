@@ -51,13 +51,12 @@ import { useDialogStore } from '../stores/DialogStore.js'
 import { useUpdateStore } from '../stores/UpdateStore.js'
 
 const active = ref(false)
-const props = defineProps({
-    item: Object,
-})
+
 const newCategory = ref('')
 const newColor = ref('')
 const dialogStore = useDialogStore()
 const updateStore = useUpdateStore()
+const id = ref(dialogStore.categoryEditId)
 
 const close = () => {
     active.value = false
@@ -67,20 +66,26 @@ const close = () => {
 
 const save = async () => {
     const data = {
-        id: props.item.id,
+        id: id.value,
         name: newCategory.value,
         color: newColor.value
     }
     await API('categories', 'PUT', data) 
-    dialogStore.category = !dialogStore.category
     updateStore.refresh = !updateStore.refresh
     active.value = false
 }
 
+// Lifecycle
 watch(() => dialogStore.categoryEdit, () => {
-    active.value = true
-    newCategory.value = props.item.name
-    newColor.value = props.item.color
+    id.value = dialogStore.categoryEditId
+    loadData()
+    active.value = true  
 })
+
+const loadData = async () => {
+    const data = await API(`categories/?id=${id.value}`, 'GET')
+    newCategory.value = data.name
+    newColor.value = data.color
+}
 
 </script>

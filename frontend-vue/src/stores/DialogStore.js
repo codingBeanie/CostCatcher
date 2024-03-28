@@ -7,5 +7,6 @@ export const useDialogStore = defineStore('dialog', {
         dialog: false,
         category: false,
         categoryEdit: false,
+        categoryEditId: null,
     })
 })

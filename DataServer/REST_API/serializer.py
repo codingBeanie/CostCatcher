@@ -34,6 +34,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
+    color = serializers.SerializerMethodField()
+    categoryName = serializers.SerializerMethodField()
+
     class Meta:
         model = Assignment
         fields = '__all__'
+
+    def get_color(self, obj):
+        color = obj.category.color
+        return color
+
+    def get_categoryName(self, obj):
+        categoryName = obj.category.name
+        return categoryName

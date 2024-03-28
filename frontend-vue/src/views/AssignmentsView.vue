@@ -59,7 +59,7 @@
     <div>
         <v-row>
             <v-col>
-                <h2 class="">Assignments</h2>
+                <h2 class="">Created Categorizations</h2>
             </v-col>
         </v-row>
         <v-row>
@@ -83,7 +83,7 @@
 
                 <!--Category-->
                 <template v-slot:item.category="{ item }">
-                    <v-chip>{{ item.category }}</v-chip>
+                    <v-chip :color="item.color" link @click="openCategoryEdit(item)">{{ item.categoryName }}</v-chip>
                 </template>
 
                 <!--Recipient-->
@@ -105,7 +105,7 @@
                 <!--Action-->
                 <template v-slot:item.action="{ item }">
                     <v-row class="justify-center">
-                        <EditAssignment :keyword="item.keyword" :category="item.category" :id="item.id" :recipient="item.checkRecipient" :description="item.checkDescription"/>
+                        <EditAssignment :keyword="item.keyword" :category="item.categoryName" :id="item.id" :recipient="item.checkRecipient" :description="item.checkDescription"/>
                         <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
                         </v-btn>                   
                     </v-row>
@@ -140,7 +140,8 @@
         </v-row>
     </div>
     <v-divider class="mt-8"></v-divider>    
-    <DialogCategoryEdit/>
+    <DialogCategoryManagement/>
+    <EditCategory></EditCategory>
 </template>
 
 <script setup>
@@ -150,8 +151,9 @@ import { API } from '../composables/API.js'
 import { useAlertStore } from '../stores/AlertStore'
 import { useUpdateStore } from '../stores/UpdateStore'
 import { useDialogStore } from '../stores/DialogStore'
-import DialogCategoryEdit from '../components/DialogCategoryEdit.vue'
+import DialogCategoryManagement from '../components/DialogCategoryManagement.vue'
 import EditAssignment from '../components/EditAssignment.vue'
+import EditCategory from '@/components/EditCategory.vue'
 import { watch } from 'vue'
 
 // Operational
@@ -160,6 +162,7 @@ const checkMode = ref('recipient_or_description')
 const category = ref('')
 const categoryItems = ref([])
 const display = useDisplay()
+
 
 // Data
 const data = ref([])
@@ -177,8 +180,7 @@ const checkItems = [{ 'value': 'recipient_or_description', 'title': 'Keyword mus
 const headers = [
     { title: 'Keyword', value: 'keyword', sortable: true},
     { title: 'Category', value: 'category', sortable: true},
-    { title: 'Recipient', value: 'checkRecipient', sortable: true, align: 'center'},
-    { title: 'Description', value: 'checkDescription', sortable: true, align: 'center'},
+    { title: 'Check-Mode', value: 'checkMode', sortable: true, align: 'center' },
     { title: 'Action', value: 'action', sortable: false, align: 'center'},
 ]
 
@@ -240,22 +242,33 @@ const deleteItem = async (item) => {
     loadTable()
 }
 
+const openCategoryEdit = (item) => {
+    dialogStore.categoryEditId = item.category
+    dialogStore.categoryEdit = !dialogStore.categoryEdit
+}
+
 const openCategoryDialog = () => {
     dialogStore.category = !dialogStore.category
 }
 
 
 // Lifecycle
-onMounted(async () => {
-    loadConflicts()
+const load = () => {
     loadTable()
     loadDataUnmatched()
     loadCategoryItems()
+    loadConflicts()
+}
+
+onMounted(async () => {
+    load()
 })
 
 watch(() => updateStore.dialogTrigger, () => {
-    loadConflicts()    
-    loadTable()
-    loadDataUnmatched()
+    load()
+})
+
+watch(() => updateStore.refresh, () => {
+    load()
 })
 </script>
