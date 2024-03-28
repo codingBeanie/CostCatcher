@@ -7,8 +7,7 @@ export const useAlertStore = defineStore('alert', {
             title: 'Error',
             message: 'Test Message',
             type: 'error'
-        },
-        appState: 'normal'
+        }
     }),
     actions: {
         showAlert(title, message, type, timeout) {

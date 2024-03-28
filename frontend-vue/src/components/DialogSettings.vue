@@ -287,7 +287,7 @@ onMounted(async () => {
     }
      })
 
-watch(() => dialogStore.settings, () => {
+watch(() => dialogStore.settings.trigger, () => {
     active.value = true
 })
 

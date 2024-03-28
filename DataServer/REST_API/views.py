@@ -10,65 +10,6 @@ from .datelist import datelist
 from .statistics import createStatisticsObject, createStatisticsTotals
 
 
-class Transactions(APIView):
-    def get(self, request):
-        categories_string = request.query_params.get('categories', None)
-        special_categories = categories_string if categories_string == 'Income' or categories_string == 'Expenses' or categories_string == 'Net' else None
-        categories_string = "" if special_categories else categories_string
-        categories = categories_string.split('%') if categories_string else []
-        datefrom = request.query_params.get('datefrom', None)
-        dateto = request.query_params.get('dateto', None).replace('/', '')
-
-        filters = {}
-        if categories:
-            filters['category__name__in'] = categories
-        if special_categories == 'Income':
-            filters['amount__gte'] = 0
-        if special_categories == 'Expenses':
-            filters['amount__lt'] = 0
-        if datefrom and datefrom != 'null':
-            filters['date__gte'] = datefrom
-        if dateto and dateto != 'null':
-            filters['date__lte'] = dateto
-
-        data = Transaction.objects.filter(**filters).order_by('-date')
-        serializer = TransactionSerializer(data, many=True)
-
-        return Response(status=200, data=serializer.data)
-
-    def post(self, request):
-        data = request.data
-        serializer = TransactionSerializer(data=data, many=True)
-        if serializer.is_valid():
-            serializer.save()
-            createBindingByTransactions(serializer.instance)
-            return Response(status=200, data="Transactions have been uploaded")
-        return Response(status=500, data="Transactions could not be uploaded")
-
-    def put(self, request):
-        print("DATA", request.data)
-        data = request.data
-        transaction = Transaction.objects.get(id=data['id'])
-
-        if 'category' in data:
-            data['category'] = Category.objects.get(name=data['category']).id
-            if transaction.category == None:
-                data['overruled'] = True
-            elif transaction.category.id != data['category']:
-                data['overruled'] = True
-
-        serializer = TransactionSerializer(transaction, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=200, data="Transaction has been updated")
-        return Response(status=500, data="Transaction could not be updated")
-
-    def delete(self, request):
-        data = request.data
-        Transaction.objects.filter(id=data['id']).delete()
-        return Response(status=200, data="Transaction has been deleted")
-
-
 class TransactionsWithoutCategory(APIView):
     def get(self, request):
         try:
@@ -119,27 +60,6 @@ class Statistics(APIView):
             data.append(total)
 
         return Response(status=200, data=data)
-
-
-class Files(APIView):
-    def get(self, request):
-        try:
-            data = Transaction.objects.values(
-                'fileName', 'fileDate').distinct()
-            return Response(status=200, data=data)
-        except:
-            return Response(status=500, data="Files could not be queried")
-
-    def delete(self, request):
-        try:
-            data = request.data
-            fileName = data['fileName']
-            fileDate = data['fileDate']
-            Transaction.objects.filter(
-                fileName=fileName, fileDate=fileDate).delete()
-            return Response(status=200, data="File has been deleted")
-        except:
-            return Response(status=500, data="File could not be deleted")
 
 
 class Schema(APIView):
@@ -206,12 +126,15 @@ class Categories(APIView):
 
 class Assignments(APIView):
     def get(self, request):
-        try:
+        queryID = request.query_params.get('id', None)
+        if queryID:
+            queryID = queryID.replace('/', '')
+            data = Assignment.objects.get(id=queryID)
+            serializer = AssignmentSerializer(data)
+        else:
             data = Assignment.objects.all()
             serializer = AssignmentSerializer(data, many=True)
-            return Response(status=200, data=serializer.data)
-        except:
-            return Response(status=500, data="Assignments could not be queried")
+        return Response(status=200, data=serializer.data)
 
     def post(self, request):
         try:

@@ -37,6 +37,7 @@ export async function API(resource, method, payload=null) {
         // ERROR
         else {
             alertStore.showAlert('Error', response, 'error', 5000)
+            return []
         }
 
     }

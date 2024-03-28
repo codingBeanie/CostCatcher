@@ -2,11 +2,14 @@ import { defineStore } from 'pinia'
 
 export const useDialogStore = defineStore('dialog', {
     state: () => ({
-        settings: false,
-        delete: false, 
-        dialog: false,
-        category: false,
-        categoryEdit: false,
-        categoryEditId: null,
+        settings: {
+            trigger: false,
+        },
+        delete: {
+            trigger: false,
+            title: null,
+            itemID: null,
+            resource: null
+        }
     })
 })

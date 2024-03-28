@@ -9,7 +9,7 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <h4>{{ props.itemName }}</h4>
+                    <h4>{{ title }}</h4>
                 </v-card-text>
 
                 <v-card-actions>
@@ -24,36 +24,47 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps } from 'vue'
+import { ref, watch } from 'vue'
 import { useDialogStore } from '../stores/DialogStore.js'
 import { useUpdateStore } from '@/stores/UpdateStore.js';
 import { API } from '../composables/API.js'
 
-// Operational Variables
+////////////////////////////////////////////////////////////////
+// State Management
+////////////////////////////////////////////////////////////////
 const dialogStore = useDialogStore()
 const updateStore = useUpdateStore()
 const active = ref(false)
 
-// Props
-const props = defineProps({
-    item: Object,
-    itemName: String,
-    resource: String
-})
+////////////////////////////////////////////////////////////////
+// Operational Variables
+////////////////////////////////////////////////////////////////
+const title = ref('')
+const itemID = ref('')
+const resource = ref('')
 
-// Methods
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
 const close = () => {
     active.value = false
 }
 
 const confirm = async () => {
-    await API(props.resource, 'DELETE', props.item)
+    console.log('Deleting item', itemID.value, 'from', resource.value)
+    await API(resource.value, 'DELETE', itemID.value)
     active.value = false
     updateStore.refresh = !updateStore.refresh
 }
 
-// Lifecycle
-watch(() => dialogStore.delete, () => {
+////////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////////
+watch(() => dialogStore.delete.trigger, () => {
+    title.value = dialogStore.delete.title
+    itemID.value = dialogStore.delete.itemID
+    resource.value = dialogStore.delete.resource
     active.value = true
 })
+
 </script>

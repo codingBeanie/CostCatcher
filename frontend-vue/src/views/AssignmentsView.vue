@@ -76,7 +76,7 @@
                             </v-tooltip>
                         </div> 
                         <div class="ml-4">
-                            {{ item.keyword }} 
+                            <v-btn variant="text" @click="openAssignmentEdit(item)">{{ item.keyword }}</v-btn>
                         </div>
                     </v-row>
                 </template>
@@ -87,25 +87,19 @@
                 </template>
 
                 <!--Recipient-->
-                <template v-slot:item.checkRecipient="{ item }">
-                    <v-row class="justify-center">
-                        <v-icon v-if="item.checkRecipient">mdi-check</v-icon>
-                        <v-icon v-else>mdi-close</v-icon>  
-                    </v-row>
-               </template>
-
-                <!--Description-->
-                <template v-slot:item.checkDescription="{ item }">
-                   <v-row class="justify-center">
-                        <v-icon v-if="item.checkDescription">mdi-check</v-icon>
-                        <v-icon v-else>mdi-close</v-icon>  
+                <template v-slot:item.checkMode="{ item }">
+                    <v-row class="justify-start">
+                        <v-btn v-if="item.checkMode==='recipient_or_description'" variant="plain" @click="openAssignmentEdit(item)">Recipient OR Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_only'" variant="plain" @click="openAssignmentEdit(item)">Recipient</v-btn>
+                        <v-btn v-if="item.checkMode==='description_only'" variant="plain" @click="openAssignmentEdit(item)">Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_and_description'" variant="plain" @click="openAssignmentEdit(item)">Recipient AND Description</v-btn>
                     </v-row>
                </template>
 
                 <!--Action-->
                 <template v-slot:item.action="{ item }">
                     <v-row class="justify-center">
-                        <EditAssignment :keyword="item.keyword" :category="item.categoryName" :id="item.id" :recipient="item.checkRecipient" :description="item.checkDescription"/>
+                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="openAssignmentEdit(item)"></v-btn>  
                         <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
                         </v-btn>                   
                     </v-row>
@@ -142,6 +136,7 @@
     <v-divider class="mt-8"></v-divider>    
     <DialogCategoryManagement/>
     <EditCategory></EditCategory>
+    <EditAssignment></EditAssignment>
 </template>
 
 <script setup>
@@ -180,7 +175,7 @@ const checkItems = [{ 'value': 'recipient_or_description', 'title': 'Keyword mus
 const headers = [
     { title: 'Keyword', value: 'keyword', sortable: true},
     { title: 'Category', value: 'category', sortable: true},
-    { title: 'Check-Mode', value: 'checkMode', sortable: true, align: 'center' },
+    { title: 'Check-Mode', value: 'checkMode', sortable: true, align: 'start' },
     { title: 'Action', value: 'action', sortable: false, align: 'center'},
 ]
 
@@ -234,6 +229,11 @@ const createAssignment = async () => {
         loadTable()
         loadDataUnmatched()
     }
+}
+
+const openAssignmentEdit = (item) => {
+    dialogStore.assignmentEditId = item.id
+    dialogStore.assignmentEdit = !dialogStore.assignmentEdit
 }
 
 const deleteItem = async (item) => {

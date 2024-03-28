@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from REST_API.views import *
+from REST_API.endpoints.files import Files
+from REST_API.endpoints.transactions import Transactions
 
 urlpatterns = [
     path('admin/', admin.site.urls),

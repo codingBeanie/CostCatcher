@@ -36,22 +36,27 @@
       </v-container>
     </v-main>
   </v-app>
+
+<!--Dialogs and Alerts-->
 <Alert></Alert>
 <DialogSettings></DialogSettings>
+<DialogDelete></DialogDelete>
+
 </template>
 
 
 <script setup>
-import DialogSettings from './components/DialogSettings.vue';
+import DialogSettings from './components/DialogSettings.vue'
 import { useDialogStore } from './stores/DialogStore'
 import Alert from './components/Alert.vue'
+import DialogDelete from './components/DialogDelete.vue'
 
 // Operations
 const dialogStore = useDialogStore()
 
 // Methods
 const openSettings = () => {
-    dialogStore.settings = !dialogStore.settings
- }
+  dialogStore.settings.trigger = !dialogStore.settings.trigger
+}
 </script>
 

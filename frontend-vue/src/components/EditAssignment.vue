@@ -1,11 +1,6 @@
 <template>
   <v-dialog v-model="active" max-width="600px">
 
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" icon="mdi-pencil" density="compact">
-      </v-btn>
-    </template>
-
     <v-card>
         <v-card-title>
             <h2>Edit Assignment</h2>
@@ -15,18 +10,15 @@
             <v-container>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="newKeyword" label="Keyword"></v-text-field>
+                        <v-text-field v-model="keyword" label="Keyword"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-select v-model="newCategory" label="Category" :items="categories"></v-select>
+                        <v-select v-model="category" label="Category" :items="categories"></v-select>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-checkbox v-model="newRecipient" label="Recipient"/>
-                    </v-col>
-                    <v-col>
-                        <v-checkbox v-model="newDescription" label="Description"/>
+                        <v-select v-model="checkMode" label="Check Mode" :items="checkModes"></v-select>
                     </v-col>
                 </v-row>
             </v-container>
@@ -43,47 +35,51 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useUpdateStore } from '../stores/UpdateStore'
+import { useDialogStore } from '../stores/DialogStore'
 import { API } from '../composables/API.js'
 
+// Control Variables
 const active = ref(false)
-const props = defineProps({
-    id: Number,
-    keyword: String,
-    category: String,
-    recipient: Boolean,
-    description: Boolean
-})
-const newCategory = ref(props.category)
-const newKeyword = ref(props.keyword)
-const newRecipient = ref(props.recipient)
-const newDescription = ref(props.description)
 const updateStore = useUpdateStore()
+const dialogStore = useDialogStore()
 
+// Data Variables
+const id = ref(dialogStore.assignmentEditId)
+const keyword = ref('')
+const category = ref('')
 const categories = ref([])
+const checkMode = ref([])
+const checkModes = ref([])
 
-
+// Dialog Controls
 const close = () => {
+    updateStore.refresh = !updateStore.refresh
     active.value = false
 }
 
 const save = async () => {
     const data = {
-        id: props.id,
-        keyword: newKeyword.value,
-        category: newCategory.value,
-        checkRecipient: newRecipient.value,
-        checkDescription: newDescription.value
     }
     await API('assignments', 'PUT', data) 
-    updateStore.closeDialog()
     active.value = false
+    updateStore.refresh = !updateStore.refresh
 }
 
-onMounted(async () => {
-    const rawData = await API('categories', 'GET')
-    categories.value = rawData.map(item => item.name)
+// Lifecycle
+const load = async () => {
+    const data = await API(`assignments/?id=${id.value}`, 'GET')
+    keyword.value = data.keyword
+    category.value = data.categoryName
+    checkMode.value = data.checkMode
+}
+
+watch(() => dialogStore.assignmentEdit, () => {
+    id.value = dialogStore.assignmentEditId
+    load()
+    active.value = true  
 })
 
-</script>../stores/UpdateStore.js
+
+</script>

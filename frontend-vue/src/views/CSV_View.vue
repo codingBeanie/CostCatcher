@@ -9,24 +9,24 @@
     <!--File-Input-->
     <v-row>
         <v-col>
-            <p v-if="importStatus==false" class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn>.</p>
+            <p v-if="importError==true" class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn>.</p>
         </v-col>
     </v-row>
     <v-row class="">
-        <v-col><v-file-input label="Upload a new csv-file" accept=".csv" @change="loadFile" v-model="inputFile"></v-file-input></v-col>
+        <v-col><v-file-input label="Upload a new csv-file" accept=".csv" @change="readFile" v-model="inputFile"></v-file-input></v-col>
     </v-row>
 
 
     <v-divider class="mb-8"></v-divider>
 
     <!--Preview-Table-->
-    <div v-if="fileLoaded"> 
+    <div v-if="fileLoaded && !importError"> 
         <v-row>
             <h2 class="mb-4">Preview</h2>
         </v-row>
 
         <v-row>
-            <v-data-table :items="previewData" :headers="headers" density="compact">
+            <v-data-table :items="dataPreview" :headers="headersPreview" density="compact">
                 <!--Date-->
                 <template v-slot:item.date="{ item }">
                     {{ new Date(item.date).toLocaleDateString() }}
@@ -47,7 +47,7 @@
                 <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="openSettings" class="mb-1"></v-btn> if needed.</p>     
             </v-col>
             <v-col cols="2" class="mt-2 text-end">
-                <v-btn color="accent" @click="uploadData" prependIcon="mdi-upload">Confirm</v-btn>
+                <v-btn color="accent" @click="uploadData()" prependIcon="mdi-upload">Confirm</v-btn>
             </v-col> 
         </v-row>
     </div>
@@ -78,8 +78,6 @@
         </v-row>
     </div>
 
-<DialogDeleteConfirmation :item="itemDelete" :itemName="itemDeleteName" :resource="'files'"></DialogDeleteConfirmation>
-
 </template>
 
 <script setup>
@@ -90,135 +88,146 @@ import { watch } from 'vue'
 import { useDialogStore } from '../stores/DialogStore.js'
 import { useUpdateStore } from '@/stores/UpdateStore.js'
 import { useAlertStore } from '../stores/AlertStore.js'
-import DialogDeleteConfirmation from '@/components/DialogDeleteConfirmation.vue'
 
-// Data
-const rawData = ref([])
-const previewData = ref([])
-const dataUploads = ref([])
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
 
-// Operational
+// State Management
 const dialogStore = useDialogStore()
 const updateAlert = useAlertStore()
 const updateStore = useUpdateStore()
 const fileLoaded = ref(false)
+const importError = ref(false)
+
+// Data Objects
+const dataPreview = ref([])
+const dataUploads = ref([])
+const schema = ref([])
+const settings = ref([])
+
+// Input Objects
 const inputFile = ref()
-const itemDelete = ref()
-const itemDeleteName = ref()
+
+// Display Objects
 const currency = ref('€')
 const rounding = ref(0)
-const importStatus = ref(true)
 
-// tables
+// Table Details
 const headersFiles = [
     { title: 'File Name', value: 'fileName' },
     { title: 'Upload Date', value: 'fileDate' },
     { title: 'Actions', value: 'action', align: 'center'}
 ]
-const headers = [
+const headersPreview = [
     { title: 'Date', value: 'date' },
     { title: 'Recipient', value: 'recipient' },
     { title: 'Description', value: 'description' },
     { title: 'Amount', value: 'amount', align: 'center' }
 ]
 
-// Methods
+////////////////////////////////////////////////////////////////
+// Data Methods
+////////////////////////////////////////////////////////////////
+
 // Load the table
-// Methods
-const loadTable = async () => {
-    const apiData = await API('files', 'GET')
-    dataUploads.value = apiData.map(item => ({ ...item, action: null }))
+const loadTableUploads = async () => {
+    const data = await API('files', 'GET')
+    dataUploads.value = data.map(item => ({ ...item, action: null }))
 }
 
-const deleteItem = async (item) => {
-    itemDelete.value = item
-    itemDeleteName.value = item.fileName
-    dialogStore.delete = !dialogStore.delete
-}
-
-
-// FILE UPLOAD
-// load the file from input
-const loadFile = async (e) => { 
-    const file = e.target.files[0]
-    const schema = await API('schema', 'GET')
+const readFile = () => { 
+    const data = []
+    const file = inputFile.value[0]
     const reader = new FileReader()
-    reader.onload = (e) => { 
-        const content = e.target.result.replace(/"/g, '')
+    reader.onload = (input) => { 
+        const content = input.target.result.replace(/"/g, '')
         const lines = content.split('\n')
         lines.forEach(line => { 
-            const values = line.split(schema.delimiter)
-            rawData.value.push(values)
+            const values = line.split(schema.value.delimiter)
+            data.push(values)
         })
+        fileLoaded.value = true
+        parseData(data)
     }
     reader.readAsText(file, 'ISO-8859-1')
-    fileLoaded.value = true 
-    convertData(rawData.value)
 }
 
-// converting data based on import scheme
-const convertData = async (data) => {
-    // get the import scheme
-    const schema = await API('schema', 'GET')
-    const maxRows = data.length
+const parseData = (data) => {
     const fileName = inputFile.value[0].name
     const fileDate = new Date().toISOString()
+    currency.value = settings.value.currency
+    rounding.value = settings.value.rounding
 
-    const settings = await API('settings', 'GET')
-    currency.value = settings.currency
-    rounding.value = settings.rounding
+    dataPreview.value = []
 
     try { 
         data.forEach((entry, index) => {
-            if (index >= schema.rowFirst && index < maxRows - schema.rowLast) {
-                const rawDate = entry[schema.colDate - 1]
-                const parsedDate = moment(rawDate, schema.dateFormat)
+            if (index >= schema.value.rowFirst && index < data.length - schema.value.rowLast) {
+                const originalDate = entry[schema.value.colDate - 1]
+                const parsedDate = moment(originalDate, schema.value.dateFormat)
                 const date = parsedDate.format('YYYY-MM-DD')
-                const recipient = entry[schema.colRecipient - 1]
-                const description = entry[schema.colDescription - 1]
-                const amount = entry[schema.colAmount - 1].replace(schema.thousandsSeparator, '').replace(schema.decimalSeparator, '.')
-                previewData.value.push({ date, recipient, description, amount, fileName, fileDate })
+                const recipient = entry[schema.value.colRecipient - 1]
+                const description = entry[schema.value.colDescription - 1]
+                const amount = entry[schema.value.colAmount - 1].replace(schema.value.thousandsSeparator, '').replace(schema.value.decimalSeparator, '.')
+                dataPreview.value.push({ date, recipient, description, amount, fileName, fileDate })
             }
         })
-        importStatus.value = true
+        importError.value = false
+
     } catch (error) {
         console.log("Error converting data: ", error)
-        importStatus.value = false
+        importError.value = true
         updateAlert.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
     }
 }
 
 // uploading data
 const uploadData = async () => {
-    try {
-        await API('transactions', 'POST', previewData.value)
-        loadTable()
-        inputFile.value = null
-        importStatus.value = true
-        rawData.value = []
-        previewData.value = []
-        fileLoaded.value = false
-    }
-    catch (error) {
-        console.log(error)
-    }
+    await API('transactions', 'POST', dataPreview.value)
+    inputFile.value = null
+    fileLoaded.value = false
+    importError.value = false
+    load()
 }
+
+////////////////////////////////////////////////////////////////
+// CRUD and Store Methods
+////////////////////////////////////////////////////////////////
 
 const openSettings = () => {
-    dialogStore.settings = !dialogStore.settings
+    dialogStore.settings.trigger = !dialogStore.settings.trigger
 }
 
-// Lifecycle
+const deleteItem = async (item) => {
+    dialogStore.delete.trigger = !dialogStore.delete.trigger
+    dialogStore.delete.title = item.fileName
+    dialogStore.delete.resource = 'files'
+    // need to construct a proxy id because there is no real id, only the filename and date as reference
+    dialogStore.delete.itemID = { fileName: item.fileName, fileDate: item.fileDate }
+}
+
+////////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////////
+
+const load = async () => {
+    schema.value = await API('schema', 'GET')
+    settings.value = await API('settings', 'GET')
+    loadTableUploads()
+
+    if(fileLoaded.value) {
+        readFile()
+    }
+}
+
+
 onMounted(async () => {
-    loadTable()
+    load()
 })
 
 watch(() => updateStore.refresh, () => {
-    if (fileLoaded.value) {
-        previewData.value = []
-        convertData(rawData.value)
-    }
-    loadTable()
+    load()
 })
 
 </script>
