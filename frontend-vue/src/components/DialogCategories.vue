@@ -62,12 +62,12 @@
                             <v-data-table :items="data" :headers="headers">
                                 <!--Category-->
                                 <template v-slot:item.name="{ item }">
-                                <v-chip :color="item.color" link @click="editCategoryItem(item)"> {{ item.name }}</v-chip> 
+                                <v-chip :color="item.color" link @click="mainStore.openCategoryEdit(item.id)"> {{ item.name }}</v-chip> 
                                 </template>
                                 <template v-slot:item.action="{ item }">
-                                    <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="editCategoryItem(item)">
+                                    <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openCategoryEdit(item.id)">
                                     </v-btn>
-                                    <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
+                                    <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('categories', item.id, item.name)">
                                     </v-btn>
                                 </template>
                             </v-data-table>
@@ -90,13 +90,14 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { useDialogStore } from '../stores/DialogStore.js'
-import { useUpdateStore } from '@/stores/UpdateStore.js'
+import { useMainStore } from '../stores/MainStore.js'
 import { API } from '../composables/API.js'
 
-// Operational Variables
-const dialogStore = useDialogStore()
-const updateStore = useUpdateStore()
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
+// State Management
+const mainStore = useMainStore()
 const active = ref(false)
 
 // Data
@@ -111,17 +112,17 @@ const headers = [
     { title: 'Action', value: 'action', sortable: false, align: 'center'}
 ]
 
-// Methods
+////////////////////////////////////////////////////////////////
+// Load Data
+////////////////////////////////////////////////////////////////
 const loadTable = async () => {
-    const rawData = await API('categories', 'GET')
-    data.value = rawData.map(item => ({ ...item, action: null }))
+    const originalData = await API('categories', 'GET')
+    data.value = originalData.map(item => ({ ...item, action: null }))
 }
 
-const close = () => {
-    active.value = false
-}
-
-
+////////////////////////////////////////////////////////////////
+// CRUD Operations
+////////////////////////////////////////////////////////////////
 const createCategory = async () => {
     const body = {
         name: inputCategory.value,
@@ -130,29 +131,33 @@ const createCategory = async () => {
     await API('categories', 'POST', body)
     inputCategory.value = ''
     inputColor.value = '#444444'
+    load()
+}
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+const close = () => {
+    mainStore.refreshApp()
+    active.value = false
+}
+////////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////////
+const load = () => {
     loadTable()
 }
 
-const editCategoryItem = (item) => {
-    dialogStore.categoryEditId = item.id
-    dialogStore.categoryEdit = !dialogStore.categoryEdit
-}
-
-const deleteItem = async (item) => {
-    await API('categories', 'DELETE', item)
-    loadTable()
-}
-
-// Lifecycle
 onMounted(async () => {
-    loadTable()
+    load()
 })
 
-watch(() => dialogStore.category, () => {
+watch(() => mainStore.categories.trigger, () => {
+    load()
     active.value = true
 })
 
-watch(() => updateStore.refresh, () => {
-    loadTable()
+watch(() => mainStore.app.refresh, () => {
+    load()
 })
-</script>../stores/MainStore.js
+</script>

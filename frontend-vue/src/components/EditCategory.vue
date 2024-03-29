@@ -49,14 +49,31 @@ import { ref, watch } from 'vue'
 import { API } from '../composables/API.js'
 import { useMainStore } from '../stores/MainStore.js'
 
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
+// State Management
 const active = ref(false)
+const mainStore = useMainStore()
 
+// Input
 const newCategory = ref('')
 const newColor = ref('')
-const dialogStore = useMainStore()
-const updateStore = useMainStore()
-const id = ref(dialogStore.categoryEditId)
+const id = ref('')
 
+////////////////////////////////////////////////////////////////
+// Loads
+////////////////////////////////////////////////////////////////
+const loadData = async () => {
+    id.value = mainStore.categoryEdit.id
+    const data = await API(`categories/?id=${id.value}`, 'GET')
+    newCategory.value = data.name
+    newColor.value = data.color
+}
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
 const close = () => {
     active.value = false
     newCategory.value = ''
@@ -70,21 +87,22 @@ const save = async () => {
         color: newColor.value
     }
     await API('categories', 'PUT', data) 
-    updateStore.refresh = !updateStore.refresh
+    mainStore.refreshApp()
     active.value = false
 }
 
+////////////////////////////////////////////////////////////////
 // Lifecycle
-watch(() => dialogStore.categoryEdit, () => {
-    id.value = dialogStore.categoryEditId
+////////////////////////////////////////////////////////////////
+const load = () => {
     loadData()
+}
+
+watch(() => mainStore.categoryEdit.trigger, () => {
+    load()
     active.value = true  
 })
 
-const loadData = async () => {
-    const data = await API(`categories/?id=${id.value}`, 'GET')
-    newCategory.value = data.name
-    newColor.value = data.color
-}
+
 
 </script>

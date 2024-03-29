@@ -31,7 +31,7 @@
 
             <!--Category-->
             <v-col cols="3" class="d-flex">
-                <v-select label="Category" v-model="category" :items="categoryItems"></v-select>
+                <v-select label="Category" v-model="category" :items="categories" item-title="name" item-value="id"></v-select>
                 <v-tooltip :text="infoCategory">
                     <template v-slot:activator="{ props }">
                         <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
@@ -41,8 +41,8 @@
 
             <!--Category Button-->
             <v-col cols="2" class="mt-2 text-start">
-                <v-btn v-if="display.mdAndDown.value" color="info" @click="openCategoryDialog" icon="mdi-bookshelf"></v-btn>
-                <v-btn v-else class="" color="info" @click="openCategoryDialog">Edit Categories</v-btn>
+                <v-btn v-if="display.mdAndDown.value" color="info" @click="mainStore.openCategories()" icon="mdi-bookshelf"></v-btn>
+                <v-btn v-else class="" color="info" @click="mainStore.openCategories()">Edit Categories</v-btn>
             </v-col>
             
             <!--Button-->
@@ -63,7 +63,7 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-data-table :items="data" :headers="headers">
+            <v-data-table :items="data" :headers="headersAssignments">
 
                 <!--Keyword-->
                 <template v-slot:item.keyword="{ item }">
@@ -144,28 +144,34 @@ import { API } from '../composables/API.js'
 import { useMainStore } from '../stores/MainStore'
 import { watch } from 'vue'
 
-// Operational
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
+// State Management
+const mainStore = useMainStore()
+
+// Input
 const keyword = ref('')
 const checkMode = ref('recipient_or_description')
 const category = ref('')
-const categoryItems = ref([])
-const display = useDisplay()
-
-
-// Data
-const data = ref([])
-const dataUnmatched = ref([])
-const alertStore = useAlertStore()
-const updateStore = useUpdateStore()
-const dialogStore = useDialogStore()
-var conflicts = []
+const categories = ref([])
 const checkItems = [{ 'value': 'recipient_or_description', 'title': 'Keyword must be in recipient or description' },
                     { 'value': 'recipient_only', 'title': 'Keyword must be in recipient only' },
                     { 'value': 'description_only', 'title': 'Keyword must be in description only' },
                     { 'value': 'recipient_and_description', 'title': 'Keyword must be in recipient and description' }]
 
+// Tooltips
+const infoKeyword = 'These characters will be search for in the transactions. The keyword is case-insensitive.'
+const infoCheckMode = 'The check mode determines where the keyword will be searched for in the transaction.'
+const infoCategory = 'The category that will be assigned to the transaction if the keyword is found.'
+
+// Data
+const data = ref([])
+const dataUnmatched = ref([])
+var conflicts = []
+
 // Table Variables
-const headers = [
+const headersAssignments = [
     { title: 'Keyword', value: 'keyword', sortable: true},
     { title: 'Category', value: 'category', sortable: true},
     { title: 'Check-Mode', value: 'checkMode', sortable: true, align: 'start' },
@@ -180,31 +186,20 @@ const headersUnmatched = [
 
 ]
 
-// Tooltips
-const infoKeyword = 'These characters will be search for in the transactions. The keyword is case-insensitive.'
-const infoCheckMode = 'The check mode determines where the keyword will be searched for in the transaction.'
-const infoCategory = 'The category that will be assigned to the transaction if the keyword is found.'
+// Utilities
+const display = useDisplay()
 
-// Methods
-const loadTable = async () => {
-    const rawData = await API('assignments', 'GET')
-    data.value = rawData.map(item => ({ ...item, action: null }))
+
+////////////////////////////////////////////////////////////////
+// Table Methods
+////////////////////////////////////////////////////////////////
+const loadCategories = async () => {
+    categories.value = await API('categories', 'GET')
 }
 
-const loadCategoryItems = async () => {
-    const rawData = await API('categories', 'GET')
-    categoryItems.value = rawData.map(item => item.name)
-}
-
-const loadDataUnmatched = async () => {
-    const rawData = await API('transactions_without_category', 'GET')
-    dataUnmatched.value = rawData.map(item => ({ ...item, action: null }))
-}
-
-const loadConflicts = async () => {
-    conflicts = await API('assignments_conflicts', 'GET')
-}
-
+////////////////////////////////////////////////////////////////
+// CRUD Methods
+////////////////////////////////////////////////////////////////
 const createAssignment = async () => {
     if (keyword.value === '' || category.value === '' || checkMode.value === '') {
         alertStore.showAlert('Input Failure', 'Please check your input fields', 'error', 4000)
@@ -224,44 +219,18 @@ const createAssignment = async () => {
     }
 }
 
-const openAssignmentEdit = (item) => {
-    dialogStore.assignmentEditId = item.id
-    dialogStore.assignmentEdit = !dialogStore.assignmentEdit
-}
-
-const deleteItem = async (item) => {
-    await API('assignments', 'DELETE', item)
-    loadConflicts()
-    loadTable()
-}
-
-const openCategoryEdit = (item) => {
-    dialogStore.categoryEditId = item.category
-    dialogStore.categoryEdit = !dialogStore.categoryEdit
-}
-
-const openCategoryDialog = () => {
-    dialogStore.category = !dialogStore.category
-}
-
-
-// Lifecycle
+////////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////////
 const load = () => {
-    loadTable()
-    loadDataUnmatched()
-    loadCategoryItems()
-    loadConflicts()
+    loadCategories()
 }
 
 onMounted(async () => {
     load()
 })
 
-watch(() => updateStore.dialogTrigger, () => {
+watch([() => mainStore.app.refresh, () => mainStore.categories.trigger], () => {
     load()
 })
-
-watch(() => updateStore.refresh, () => {
-    load()
-})
-</script>../stores/MainStore.js
+</script>

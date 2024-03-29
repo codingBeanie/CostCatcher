@@ -19,6 +19,13 @@ export const useMainStore = defineStore('main', {
             title: null,
             itemID: null,
             resource: null
+        },
+        categories: {
+            trigger: false,
+        },
+        categoryEdit: {
+            trigger: false,
+            id: null,
         }
     }),
     actions: {
@@ -44,5 +51,12 @@ export const useMainStore = defineStore('main', {
             this.delete.itemID = itemID
             this.delete.resource = resource
         },
+        openCategories() {
+            this.categories.trigger = !this.categories.trigger
+        },
+        openCategoryEdit(id) {
+            this.categoryEdit.trigger = !this.categoryEdit.trigger
+            this.categoryEdit.id = id
+        }
     }
 })

@@ -41,7 +41,8 @@
 <Alert></Alert>
 <DialogSettings></DialogSettings>
 <DialogDelete></DialogDelete>
-
+<DialogCategories></DialogCategories>
+<EditCategory></EditCategory>
 </template>
 
 <script setup>
@@ -49,6 +50,8 @@ import { useMainStore } from './stores/MainStore.js'
 import DialogSettings from './components/DialogSettings.vue'
 import Alert from './components/Alert.vue'
 import DialogDelete from './components/DialogDelete.vue'
+import DialogCategories from './components/DialogCategories.vue'
+import EditCategory from './components/EditCategory.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

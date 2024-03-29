@@ -19,6 +19,7 @@ from django.urls import path
 from REST_API.views import *
 from REST_API.endpoints.files import Files
 from REST_API.endpoints.transactions import Transactions
+from REST_API.endpoints.categories import Categories
 
 urlpatterns = [
     path('admin/', admin.site.urls),
