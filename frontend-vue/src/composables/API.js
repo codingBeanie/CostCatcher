@@ -3,8 +3,15 @@ import { useMainStore } from "../stores/MainStore"
 
 export async function API(resource, method, payload=null) {
     const mainStore = useMainStore()
+    let url = null
     try {
-        const url = `http://127.0.0.1:8000/api/${resource}/`
+        // If there is a query string in the resource, do not add a trailing slash
+        if (resource.includes('?')) {
+            url = `http://127.0.0.1:8000/api/${resource}`
+        }
+        else {
+            url = `http://127.0.0.1:8000/api/${resource}/`
+        }
         let request = null
 
         if (method === 'GET') {

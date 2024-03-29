@@ -44,7 +44,7 @@ class Assignment(models.Model):
     keyword = models.CharField(max_length=100)
     checkMode = models.CharField(max_length=100)
     category = models.ForeignKey(
-        'Category', on_delete=models.SET_NULL, null=True)
+        'Category', on_delete=models.CASCADE, null=False)
 
 
 @receiver(post_migrate)

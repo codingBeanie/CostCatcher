@@ -114,11 +114,12 @@
     <div>
         <v-row>
             <v-col>
-                <h2 class="mt-8">Transactions without a category</h2>
+                <h2 class="mt-4">Transactions without a category</h2>
+                <p class=" text-h7">See which transactions do not have a category, so you can create a categorization accordingly.</p>
             </v-col>
         </v-row>
         <v-row>
-            <v-data-table :items="dataUnmatched" :headers="headersUnmatched">
+            <v-data-table :items="dataNoCategory" :headers="headersNoCategory">
                 <!--Date-->
                 <template v-slot:item.date="{ item }">
                     {{ new Date(item.date).toLocaleDateString() }}
@@ -127,7 +128,8 @@
                 <!--Amount-->
                 <template v-slot:item.amount="{ item }">
                     <v-row class="justify-end mr-12">
-                        {{ item.amount.toFixed(2) }}
+                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
+                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
                     </v-row>
                 </template>
             </v-data-table>
@@ -150,6 +152,10 @@ import { watch } from 'vue'
 // State Management
 const mainStore = useMainStore()
 
+// Settings
+const currency = ref('€')
+const rounding = ref(0)
+
 // Input
 const keyword = ref('')
 const checkMode = ref('recipient_or_description')
@@ -167,7 +173,7 @@ const infoCategory = 'The category that will be assigned to the transaction if t
 
 // Data
 const data = ref([])
-const dataUnmatched = ref([])
+const dataNoCategory = ref([])
 var conflicts = []
 
 // Table Variables
@@ -178,7 +184,7 @@ const headersAssignments = [
     { title: 'Action', value: 'action', sortable: false, align: 'center'},
 ]
 
-const headersUnmatched = [
+const headersNoCategory = [
     { title: 'Date', value: 'date', sortable: true },
     { title: 'Recipient', value: 'recipient', sortable: true},
     { title: 'Description', value: 'description', sortable: true},
@@ -189,16 +195,25 @@ const headersUnmatched = [
 // Utilities
 const display = useDisplay()
 
+////////////////////////////////////////////////////////////////
+// Loading Methods
+////////////////////////////////////////////////////////////////
+const loadSettings = async () => {
+    const settingsData = await API('settings', 'GET')
+    currency.value = settingsData.currency
+    rounding.value = settingsData.rounding
+}
 
-////////////////////////////////////////////////////////////////
-// Table Methods
-////////////////////////////////////////////////////////////////
 const loadCategories = async () => {
-    categories.value = await API('categories', 'GET')
+    categories.value = await API('categories', 'GET') 
 }
 
 const loadAssignments = async () => {
     data.value = await API('assignments', 'GET')
+}
+
+const loadNoCategory = async () => {
+    dataNoCategory.value = await API("transactions/?categories=[0]", 'GET')
 }
 
 ////////////////////////////////////////////////////////////////
@@ -225,8 +240,10 @@ const createAssignment = async () => {
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
 const load = () => {
+    loadSettings()
     loadCategories()
     loadAssignments()
+    loadNoCategory()
 }
 
 onMounted(async () => {

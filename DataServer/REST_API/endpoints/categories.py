@@ -12,7 +12,7 @@ class Categories(APIView):
             data = Category.objects.get(id=queryID)
             serializer = CategorySerializer(data)
         else:
-            data = Category.objects.all()
+            data = Category.objects.all().order_by('name')
             serializer = CategorySerializer(data, many=True)
         return Response(status=200, data=serializer.data)
 

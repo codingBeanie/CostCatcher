@@ -64,12 +64,6 @@
                     {{ new Date(item.fileDate).toLocaleString() }}
                 </template>
 
-                <template v-slot:item.amount="{ item }">
-                    <v-row class="justify-end mr-12">
-                    {{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}
-                    </v-row>
-                </template>
-
                 <template v-slot:item.action="{ item }">
                     <v-btn density="compact" icon="mdi-delete" color="" @click="mainStore.openDelete('files', { fileName: `${item.fileName}`, fileDate: `${item.fileDate}` }, `${item.fileName}`)">
                     </v-btn>

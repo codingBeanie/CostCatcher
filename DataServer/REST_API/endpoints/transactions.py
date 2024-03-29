@@ -9,27 +9,35 @@ class Transactions(APIView):
 
     def get(self, request):
         try:
-            # Get query parameters
-            categories_string = request.query_params.get('categories', None)
-            special_categories = categories_string if categories_string == 'Income' or categories_string == 'Expenses' or categories_string == 'Net' else None
-            categories_string = "" if special_categories else categories_string
-            categories = categories_string.split(
-                '%') if categories_string else []
-            datefrom = request.query_params.get('datefrom', None)
-            dateto = request.query_params.get('dateto', None).replace('/', '')
-
-            # Filtering
+            print(request.data, request.query_params)
+            categories = request.query_params.get('categories', None)
+            print(categories)
             filters = {}
-            if categories:
-                filters['category__name__in'] = categories
-            if special_categories == 'Income':
-                filters['amount__gte'] = 0
-            if special_categories == 'Expenses':
-                filters['amount__lt'] = 0
-            if datefrom and datefrom != 'null':
-                filters['date__gte'] = datefrom
-            if dateto and dateto != 'null':
-                filters['date__lte'] = dateto
+            if categories == "[0]":
+                filters['category__isnull'] = True
+            elif categories:
+                filters['category__id__in'] = categories
+            # Get query parameters
+            # categories_string = request.query_params.get('categories', None)
+            # special_categories = categories_string if categories_string == 'Income' or categories_string == 'Expenses' or categories_string == 'Net' else None
+            # categories_string = "" if special_categories else categories_string
+            # categories = categories_string.split(
+            #     '%') if categories_string else []
+            # datefrom = request.query_params.get('datefrom', None)
+            # dateto = request.query_params.get('dateto', None).replace('/', '')
+
+            # # Filtering
+            # filters = {}
+            # if categories:
+            #     filters['category__name__in'] = categories
+            # if special_categories == 'Income':
+            #     filters['amount__gte'] = 0
+            # if special_categories == 'Expenses':
+            #     filters['amount__lt'] = 0
+            # if datefrom and datefrom != 'null':
+            #     filters['date__gte'] = datefrom
+            # if dateto and dateto != 'null':
+            #     filters['date__lte'] = dateto
 
             data = Transaction.objects.filter(**filters).order_by('-date')
             serializer = TransactionSerializer(data, many=True)
