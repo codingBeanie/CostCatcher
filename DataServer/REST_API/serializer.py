@@ -42,9 +42,11 @@ class AssignmentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_color(self, obj):
-        color = obj.category.color
-        return color
+        if obj.category:
+            color = obj.category.color
+            return color
 
     def get_categoryName(self, obj):
-        categoryName = obj.category.name
-        return categoryName
+        if obj.category:
+            categoryName = obj.category.name
+            return categoryName

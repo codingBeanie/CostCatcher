@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..models import Transaction
 from ..serializer import TransactionSerializer
-from ..assignment import *
+from ..bindings import createBindingByTransactions
 
 
 class Transactions(APIView):

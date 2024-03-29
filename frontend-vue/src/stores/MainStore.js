@@ -26,6 +26,10 @@ export const useMainStore = defineStore('main', {
         categoryEdit: {
             trigger: false,
             id: null,
+        },
+        assignmentEdit: {
+            trigger: false,
+            id: null,
         }
     }),
     actions: {
@@ -57,6 +61,10 @@ export const useMainStore = defineStore('main', {
         openCategoryEdit(id) {
             this.categoryEdit.trigger = !this.categoryEdit.trigger
             this.categoryEdit.id = id
+        },
+        openAssignmentEdit(id) {
+            this.assignmentEdit.trigger = !this.assignmentEdit.trigger
+            this.assignmentEdit.id = id
         }
     }
 })

@@ -39,9 +39,8 @@ class Categories(APIView):
 
     def delete(self, request):
         try:
-            queryID = request.data
-            if queryID:
-                category = Category.objects.get(id=queryID)
+            if request.data:
+                category = Category.objects.get(id=request.data)
                 category.delete()
                 return Response(status=200, data="Category has been deleted")
             return Response(status=400, data="Invalid Category ID")

@@ -13,12 +13,12 @@
                         <v-text-field v-model="keyword" label="Keyword"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-select v-model="category" label="Category" :items="categories"></v-select>
+                        <v-select v-model="category" label="Category" :items="categories" item-title="name" item-value="id"></v-select>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-select v-model="checkMode" label="Check Mode" :items="checkModes"></v-select>
+                        <v-select v-model="checkMode" label="Check Mode" :items="checkItems" item-title="title" item-value="value"></v-select>
                     </v-col>
                 </v-row>
             </v-container>
@@ -39,43 +39,57 @@ import { ref, watch } from 'vue'
 import { useMainStore } from '@/stores/MainStore';
 import { API } from '../composables/API.js'
 
-// Control Variables
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
+// State Management
 const active = ref(false)
-const updateStore = useMainStore()
-const dialogStore = useMainStore()
+const mainStore = useMainStore()
 
-// Data Variables
-const id = ref(dialogStore.assignmentEditId)
+// Input
+const id = ref('')
 const keyword = ref('')
 const category = ref('')
 const categories = ref([])
 const checkMode = ref([])
-const checkModes = ref([])
+const checkItems = [{ 'value': 'recipient_or_description', 'title': 'Keyword must be in recipient or description' },
+                    { 'value': 'recipient_only', 'title': 'Keyword must be in recipient only' },
+                    { 'value': 'description_only', 'title': 'Keyword must be in description only' },
+                    { 'value': 'recipient_and_description', 'title': 'Keyword must be in recipient and description' }]
 
-// Dialog Controls
+////////////////////////////////////////////////////////////////
+// Controls
+////////////////////////////////////////////////////////////////
 const close = () => {
-    updateStore.refresh = !updateStore.refresh
     active.value = false
 }
 
 const save = async () => {
     const data = {
+        id: id.value,
+        keyword: keyword.value,
+        category: category.value,
+        checkMode: checkMode.value
     }
     await API('assignments', 'PUT', data) 
     active.value = false
-    updateStore.refresh = !updateStore.refresh
+    mainStore.refreshApp()
 }
 
+////////////////////////////////////////////////////////////////
 // Lifecycle
+////////////////////////////////////////////////////////////////
 const load = async () => {
+    id.value = mainStore.assignmentEdit.id
     const data = await API(`assignments/?id=${id.value}`, 'GET')
     keyword.value = data.keyword
-    category.value = data.categoryName
+    category.value = data.category
     checkMode.value = data.checkMode
+
+    categories.value = await API('categories', 'GET')
 }
 
-watch(() => dialogStore.assignmentEdit, () => {
-    id.value = dialogStore.assignmentEditId
+watch(() => mainStore.assignmentEdit.trigger, () => {
     load()
     active.value = true  
 })

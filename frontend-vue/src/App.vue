@@ -43,6 +43,7 @@
 <DialogDelete></DialogDelete>
 <DialogCategories></DialogCategories>
 <EditCategory></EditCategory>
+<EditAssignment></EditAssignment>
 </template>
 
 <script setup>
@@ -52,6 +53,7 @@ import Alert from './components/Alert.vue'
 import DialogDelete from './components/DialogDelete.vue'
 import DialogCategories from './components/DialogCategories.vue'
 import EditCategory from './components/EditCategory.vue'
+import EditAssignment from './components/EditAssignment.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

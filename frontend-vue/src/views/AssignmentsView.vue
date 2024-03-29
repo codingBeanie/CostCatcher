@@ -76,31 +76,31 @@
                             </v-tooltip>
                         </div> 
                         <div class="ml-4">
-                            <v-btn variant="text" @click="openAssignmentEdit(item)">{{ item.keyword }}</v-btn>
+                            <v-btn variant="text" @click="mainStore.openAssignmentEdit(item.id)">{{ item.keyword }}</v-btn>
                         </div>
                     </v-row>
                 </template>
 
                 <!--Category-->
                 <template v-slot:item.category="{ item }">
-                    <v-chip :color="item.color" link @click="openCategoryEdit(item)">{{ item.categoryName }}</v-chip>
+                    <v-chip :color="item.color" link @click="mainStore.openCategoryEdit(item.category)">{{ item.categoryName }}</v-chip>
                 </template>
 
                 <!--Recipient-->
                 <template v-slot:item.checkMode="{ item }">
                     <v-row class="justify-start">
-                        <v-btn v-if="item.checkMode==='recipient_or_description'" variant="plain" @click="openAssignmentEdit(item)">Recipient OR Description</v-btn>
-                        <v-btn v-if="item.checkMode==='recipient_only'" variant="plain" @click="openAssignmentEdit(item)">Recipient</v-btn>
-                        <v-btn v-if="item.checkMode==='description_only'" variant="plain" @click="openAssignmentEdit(item)">Description</v-btn>
-                        <v-btn v-if="item.checkMode==='recipient_and_description'" variant="plain" @click="openAssignmentEdit(item)">Recipient AND Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_or_description'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Recipient OR Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_only'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Recipient</v-btn>
+                        <v-btn v-if="item.checkMode==='description_only'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_and_description'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Recipient AND Description</v-btn>
                     </v-row>
                </template>
 
                 <!--Action-->
                 <template v-slot:item.action="{ item }">
                     <v-row class="justify-center">
-                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="openAssignmentEdit(item)"></v-btn>  
-                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="deleteItem(item)">
+                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openAssignmentEdit(item.id)"></v-btn>  
+                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('assignments', item.id, item.keyword)">
                         </v-btn>                   
                     </v-row>
 
@@ -197,12 +197,16 @@ const loadCategories = async () => {
     categories.value = await API('categories', 'GET')
 }
 
+const loadAssignments = async () => {
+    data.value = await API('assignments', 'GET')
+}
+
 ////////////////////////////////////////////////////////////////
 // CRUD Methods
 ////////////////////////////////////////////////////////////////
 const createAssignment = async () => {
     if (keyword.value === '' || category.value === '' || checkMode.value === '') {
-        alertStore.showAlert('Input Failure', 'Please check your input fields', 'error', 4000)
+        mainStore.showAlert('Input Failure', 'Please check your input fields', 'error', 4000)
         return
     } else {
         const assignment = {
@@ -213,9 +217,7 @@ const createAssignment = async () => {
         await API('assignments', 'POST', assignment)
         keyword.value = ''
         category.value = ''
-        loadConflicts()
-        loadTable()
-        loadDataUnmatched()
+        mainStore.refreshApp()
     }
 }
 
@@ -224,6 +226,7 @@ const createAssignment = async () => {
 ////////////////////////////////////////////////////////////////
 const load = () => {
     loadCategories()
+    loadAssignments()
 }
 
 onMounted(async () => {

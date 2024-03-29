@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import *
 from rest_framework.views import APIView
-from .assignment import *
+from .bindings import *
 from .datelist import datelist
 from .statistics import createStatisticsObject, createStatisticsTotals
 
@@ -79,55 +79,6 @@ class Schema(APIView):
             serializer.save()
             return Response(status=200, data="Schema has been updated")
         return Response(status=500, data="Schema could not be updated")
-
-
-class Assignments(APIView):
-    def get(self, request):
-        queryID = request.query_params.get('id', None)
-        if queryID:
-            queryID = queryID.replace('/', '')
-            data = Assignment.objects.get(id=queryID)
-            serializer = AssignmentSerializer(data)
-        else:
-            data = Assignment.objects.all()
-            serializer = AssignmentSerializer(data, many=True)
-        return Response(status=200, data=serializer.data)
-
-    def post(self, request):
-        try:
-            data = request.data
-            keyword = data['keyword']
-            data['category'] = Category.objects.get(name=data['category']).id
-
-            if Assignment.objects.filter(keyword=keyword).exists():
-                return Response(status=400, data="Assignment already exists")
-
-            serializer = AssignmentSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                createBinding(serializer.instance)
-                return Response(status=200, data="Assignment has been created")
-
-        except:
-            return Response(status=500, data="Assignment could not be created")
-
-    def put(self, request):
-        data = request.data
-        assignment = Assignment.objects.get(id=data['id'])
-        deleteBinding(assignment)
-        assignment.keyword = data['keyword']
-        assignment.checkMode = data['checkMode']
-        assignment.category = Category.objects.get(name=data['category'])
-        assignment.save()
-        createBinding(assignment)
-        return Response(status=200, data="Assignment has been updated")
-
-    def delete(self, request):
-        data = request.data
-        assignment = Assignment.objects.get(id=data['id'])
-        deleteBinding(assignment)
-        assignment.delete()
-        return Response(status=200, data="Assignment has been deleted")
 
 
 class AssignmentsConflicts(APIView):
