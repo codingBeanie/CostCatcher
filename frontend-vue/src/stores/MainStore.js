@@ -30,6 +30,10 @@ export const useMainStore = defineStore('main', {
         assignmentEdit: {
             trigger: false,
             id: null,
+        },
+        transactionEdit: {
+            trigger: false,
+            id: null,
         }
     }),
     actions: {
@@ -65,6 +69,10 @@ export const useMainStore = defineStore('main', {
         openAssignmentEdit(id) {
             this.assignmentEdit.trigger = !this.assignmentEdit.trigger
             this.assignmentEdit.id = id
+        },
+        openTransactionEdit(id) {
+            this.transactionEdit.trigger = !this.transactionEdit.trigger
+            this.transactionEdit.id = id
         }
     }
 })

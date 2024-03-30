@@ -135,7 +135,7 @@
 
                 <template v-slot:item.action="{ item }">
                     <v-row class="justify-center">
-                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openAssignmentEdit(item.id)"></v-btn>  
+                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openTransactionEdit(item.id)"></v-btn>  
                         <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('transactions', item.id, `${item.recipient} | ${item.description}`)">
                         </v-btn>                   
                     </v-row>

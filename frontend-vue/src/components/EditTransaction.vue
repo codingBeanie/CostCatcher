@@ -1,11 +1,6 @@
 <template>
   <v-dialog v-model="active" max-width="600px">
 
-    <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" icon="mdi-pencil" density="compact">
-      </v-btn>
-    </template>
-
     <v-card>
         <v-card-title>
             <h2>Edit Transaction</h2>
@@ -15,32 +10,36 @@
             <v-container>
                 <v-row>
                     <v-col>
-                        <v-text-field label="Recipient" v-model="newRecipient"></v-text-field>
+                        <v-text-field label="Recipient" v-model="recipient"></v-text-field>
                     </v-col>
                 </v-row>
                 
                 <v-row>
                     <v-col>
-                        <v-text-field label="Description" v-model="newDescription"></v-text-field>
+                        <v-text-field label="Description" v-model="description"></v-text-field>
                     </v-col>
                 </v-row>
 
                 <v-row>
                     <v-col>
-                        <v-text-field type="Date" label="Date" v-model="newDate"></v-text-field>
+                        <v-text-field type="Date" label="Date" v-model="date"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field type="Number" label="Amount" v-model="newAmount"></v-text-field>
+                        <v-text-field type="Number" label="Amount" v-model="amount"></v-text-field>
                     </v-col>
                 </v-row>
 
                 <v-row>
                     <v-col>
                         <v-select
-                            v-model="newCategory"
-                            :items="props.categories"
+                            v-model="category"
+                            :items="categories"
+                            item-title="name"
+                            item-value="id"
                             label="Category"
                         ></v-select>
+                        <h5 class="font-weight-thin">If you change the category, the new category will be locked and will not be changed automatically by the rules of the categorization!</h5>
+                    
                     </v-col>
                 </v-row>
 
@@ -61,41 +60,73 @@
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
 import { useMainStore } from '../stores/MainStore.js'
+import { watch } from 'vue';
 
-const updateStore = useMainStore()
-
+////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////
+// State Management
+const mainStore = useMainStore()
 const active = ref(false)
-const props = defineProps({
-    id: Number,
-    date: String,
-    recipient: String,
-    description: String,
-    amount: Number,
-    category: String,
-    categories: Array
-})
-const newDate = ref(props.date)
-const newRecipient = ref(props.recipient)
-const newDescription = ref(props.description)
-const newAmount = ref(props.amount)
-const newCategory = ref(props.category)
 
+// Inputs
+const id = ref('')
+const date = ref('')
+const recipient = ref('')
+const description = ref('')
+const amount = ref('')
+const category = ref('')
+const categories = ref([])
+
+////////////////////////////////////////////////////////////
+// Load Functions
+////////////////////////////////////////////////////////////
+const loadFields = async () => {
+    const transaction = await API(`transactions/?id=${id.value}`, 'GET')
+    date.value = transaction[0].date
+    recipient.value = transaction[0].recipient
+    description.value = transaction[0].description
+    amount.value = transaction[0].amount
+    category.value = transaction[0].category
+}
+
+const loadCategories = async () => {
+    categories.value = await API('categories', 'GET')
+}
+
+////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////
 const close = () => {
     active.value = false
 }
 
 const save = async () => {
     const data = {
-        id: props.id,
-        date: newDate.value,
-        recipient: newRecipient.value,
-        description: newDescription.value,
-        amount: newAmount.value,
-        category: newCategory.value
+        id: id.value,
+        date: date.value,
+        recipient: recipient.value,
+        description: description.value,
+        amount: amount.value,
+        category: category.value
     }
     await API('transactions', 'PUT', data) 
-    updateStore.closeDialog()
+    mainStore.refreshApp()
     active.value = false
 }
+
+////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////
+const load = () => {
+    id.value = mainStore.transactionEdit.id
+    loadFields()
+    loadCategories()
+}
+
+watch(() => mainStore.transactionEdit.trigger, () => {
+    load()
+    active.value = true
+})
 
 </script>

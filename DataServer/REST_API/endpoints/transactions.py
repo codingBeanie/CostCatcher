@@ -9,12 +9,18 @@ class Transactions(APIView):
 
     def get(self, request):
         try:
+            queryID = request.query_params.get('id', None)
             categories = request.query_params.get('categories', None)
+
             filters = {}
             if categories == "[0]":
                 filters['category__isnull'] = True
             elif categories:
                 filters['category__id__in'] = categories
+
+            if queryID:
+                filters['id'] = queryID
+
             # Get query parameters
             # categories_string = request.query_params.get('categories', None)
             # special_categories = categories_string if categories_string == 'Income' or categories_string == 'Expenses' or categories_string == 'Net' else None
@@ -66,13 +72,9 @@ class Transactions(APIView):
             data = request.data
             transaction = Transaction.objects.get(id=data['id'])
 
-            if 'category' in data:
-                data['category'] = Category.objects.get(
-                    name=data['category']).id
-                if transaction.category == None:
-                    data['overruled'] = True
-                elif transaction.category.id != data['category']:
-                    data['overruled'] = True
+            # if category changed, set overrule attribute
+            if transaction.category != data['category']:
+                transaction.overrule = True
 
             serializer = TransactionSerializer(transaction, data=data)
             if serializer.is_valid():
