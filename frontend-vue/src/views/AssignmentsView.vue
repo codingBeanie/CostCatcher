@@ -132,6 +132,16 @@
                         <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
                     </v-row>
                 </template>
+
+                <template v-slot:item.action="{ item }">
+                    <v-row class="justify-center">
+                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openAssignmentEdit(item.id)"></v-btn>  
+                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('transactions', item.id, `${item.recipient} | ${item.description}`)">
+                        </v-btn>                   
+                    </v-row>
+
+                </template>
+                
             </v-data-table>
         </v-row>
     </div>
@@ -188,7 +198,8 @@ const headersNoCategory = [
     { title: 'Date', value: 'date', sortable: true },
     { title: 'Recipient', value: 'recipient', sortable: true},
     { title: 'Description', value: 'description', sortable: true},
-    { title: 'Amount', value: 'amount', sortable: true, align: 'center'},
+    { title: 'Amount', value: 'amount', sortable: true, align: 'center' },
+    { title: 'Action', value: 'action', sortable: false, align: 'center'}
 
 ]
 

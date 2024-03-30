@@ -87,7 +87,7 @@ class Transactions(APIView):
     def delete(self, request):
         try:
             data = request.data
-            Transaction.objects.filter(id=data['id']).delete()
+            Transaction.objects.filter(id=data).delete()
             return Response(status=200, data="Transaction has been deleted")
         except Exception as e:
             print("Error in Transactions API:", e)

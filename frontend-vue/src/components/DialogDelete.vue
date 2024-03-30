@@ -5,7 +5,7 @@
             <v-card>
 
                 <v-card-title>
-                    <h3>Are you sure you want to delete?</h3>
+                    <h4 class="font-weight-thin">Are you sure you want to delete?</h4>
                 </v-card-title>
 
                 <v-card-text>
