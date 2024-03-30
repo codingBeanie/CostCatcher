@@ -1,11 +1,42 @@
-from .models import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from ..models import Transaction, Category
+from ..datelist import datelist
 from django.db.models import Sum
 from statistics import mean, median
 
 
+class Statistics(APIView):
+    def get(self, request):
+        data = []
+        dateto = request.query_params.get('dateto', None)
+        dateto = dateto.replace('/', '') if dateto else None
+        datefrom = request.query_params.get('datefrom', None)
+
+        dates = datelist(datefrom, dateto)
+
+        if dates == []:
+            return Response(status=400, data="Invalid date range")
+
+        # Period/Category statistics
+        categories = Category.objects.all()
+        for category in categories:
+            data.append(createStatisticsObject(category, dates))
+        data.append(createStatisticsObject(None, dates))
+
+        data = sorted(data, key=lambda x: x['Sum'], reverse=True)
+
+        # Totals
+        totals = createStatisticsTotals(dates)
+        for total in totals:
+            data.append(total)
+
+        return Response(status=200, data=data)
+
+
 def createStatisticsObject(category, dates):
     entry = {}
-    entry['Category'] = category.name if category else 'None'
+    entry['Category'] = category.name if category else 'UNDEFINED'
 
     sumlist = []
     # monthly statistics

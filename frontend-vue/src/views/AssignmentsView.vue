@@ -68,10 +68,10 @@
                 <!--Keyword-->
                 <template v-slot:item.keyword="{ item }">
                     <v-row class="align-center">
-                        <div class="ml-4 mr-1 " v-if="conflicts.includes(item.id)">
+                        <div class="ml-4 mr-1 " v-if="item.conflict">
                             <v-tooltip text="Conflict with another assignment">
                                 <template v-slot:activator="{ props }">
-                                    <v-btn color="red" v-bind="props" density="compact" icon="mdi-alert-circle"></v-btn>
+                                    <v-btn color="error" v-bind="props" density="compact" icon="mdi-alert-circle" variant="tonal"></v-btn>
                                 </template>
                             </v-tooltip>
                         </div> 

@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from REST_API.views import *
 from REST_API.endpoints.files import Files
 from REST_API.endpoints.transactions import Transactions
 from REST_API.endpoints.categories import Categories
 from REST_API.endpoints.assignments import Assignments
+from REST_API.endpoints.schema import Schema
+from REST_API.endpoints.settings import Settings
+from REST_API.endpoints.statistics import Statistics
 
 urlpatterns = [
     path('admin/', admin.site.urls),

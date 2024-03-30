@@ -35,7 +35,7 @@
     <!--File-Table-->
     <v-row>
         <v-container>
-            <v-table v-if="data" class="fill-width">
+            <v-table v-if="dataStats" class="fill-width">
                 <thead>
                     <tr>
                         <th v-for="column in columns" :key="column" class="text-right bg-secondary">{{ column }}</th>
@@ -43,7 +43,7 @@
                 </thead>
 
                 <tbody>
-                    <tr v-for="row in data" :key="row.id">
+                    <tr v-for="row in dataStats" :key="row.id">
                         <td v-for="column in columns" :key="column" class="text-right pa-0">
                             <!--First Column-->
                             <div v-if="column=='Category'" class="pa-2">
@@ -114,55 +114,69 @@
     </v-row>
     <!--Detail Table-->
     <v-row>
-        <v-data-table :items="detail" :headers="headers">
+        <v-data-table :items="dataDetails" :headers="headersDetail">
         </v-data-table>
     </v-row>
     
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue'
+import { useMainStore } from '../stores/MainStore.js'
 import { API } from '../composables/API.js'
 
+////////////////////////////////////////////////////////////////
 // Variables
-const data = ref([])
-const detail = ref([])
+////////////////////////////////////////////////////////////////
+// State Management
+const mainStore = useMainStore()
+const hover = ref(false)
+
+// Data
+const dataStats = ref([])
+const dataDetails = ref([])
+let columns = []
+
+// Inputs
 const dateFrom = ref(`${new Date().getFullYear()}-01-01`)
 const dateTo = ref(`${new Date().getFullYear()}-12-31`)
-let columns = []
-const hover = ref(false)
-const updateStore = useUpdateStore()
 
-const headers = [
+// Tables
+const headersDetail = [
     { title: 'Date', value: 'date', sortable: true},
     { title: 'Recipient', value: 'recipient', sortable: true},
     { title: 'Description', value: 'description', sortable: true},
     { title: 'Amount', value: 'amount', sortable: true, align: 'end'}
 ]
 
-// Methods
+////////////////////////////////////////////////////////////////
+// Load Functions
+////////////////////////////////////////////////////////////////
 const loadTable = async () => {
-    data.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}`, 'GET')
-    if (data.value != undefined && data.value.length > 0) {
-        columns = Object.keys(data.value[0])
+    dataStats.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}`, 'GET')
+    if (dataStats.value != undefined && dataStats.value.length > 0) {
+        columns = Object.keys(dataStats.value[0])
     }
-    
 }
 
 const loadDetail = async (category, period) => { 
     const periodDate = new Date(`${period}-01`)
     const periodDateTo = new Date(periodDate.getFullYear(), periodDate.getMonth() + 1, 0)
     const periodTo = periodDateTo.getFullYear() + '-' + (periodDateTo.getMonth() + 1) + '-' + periodDateTo.getDate()
-    if (category === 'None') {
-        category = ""
-    }
-    detail.value = await API(`transactions/?categories=${category}&datefrom=${period}-01&dateto=${periodTo}`, 'GET')
+    const categoryQuery = await API(`categories/?name=${category}`, 'GET')
+    dataDetails.value = await API(`transactions/?categories=${categoryQuery.id}&datefrom=${period}-01&dateto=${periodTo}`, 'GET')
 }
 
 
-// Lifecycle
-onMounted(async () => {
+////////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////////
+const load = () => {
     loadTable()
+}
+
+onMounted(async () => {
+    load()
 })
 
 </script>

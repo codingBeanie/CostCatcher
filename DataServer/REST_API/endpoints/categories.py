@@ -7,9 +7,12 @@ from ..serializer import CategorySerializer
 class Categories(APIView):
     def get(self, request):
         queryID = request.query_params.get('id', None)
+        queryName = request.query_params.get('name', None)
         if queryID:
-            queryID = queryID.replace('/', '')
             data = Category.objects.get(id=queryID)
+            serializer = CategorySerializer(data)
+        elif queryName:
+            data = Category.objects.get(name=queryName)
             serializer = CategorySerializer(data)
         else:
             data = Category.objects.all().order_by('name')

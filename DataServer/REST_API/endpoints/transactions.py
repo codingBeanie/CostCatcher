@@ -9,9 +9,7 @@ class Transactions(APIView):
 
     def get(self, request):
         try:
-            print(request.data, request.query_params)
             categories = request.query_params.get('categories', None)
-            print(categories)
             filters = {}
             if categories == "[0]":
                 filters['category__isnull'] = True
