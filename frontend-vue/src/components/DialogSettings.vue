@@ -160,8 +160,8 @@
                                             </v-tooltip>
                                         </v-col>
                                         <v-col class="d-flex">
-                                            <v-text-field label="Rounding" v-model="rounding" type="number"></v-text-field>
-                                            <v-tooltip :text="infoRounding">
+                                            <v-select label="Value Formatting" v-model="locale" :items="locales" item-title="title" item-value="value"></v-select>
+                                            <v-tooltip :text="infoLocale">
                                                 <template v-slot:activator="{ props }">
                                                     <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
                                                 </template>
@@ -198,7 +198,7 @@ import { useMainStore } from '../stores/MainStore'
 // State Management
 ////////////////////////////////////////////////////////////////
 const active = ref(false)
-const tab = ref('CSV')
+const tab = ref('')
 const mainStore = useMainStore()
 
 ////////////////////////////////////////////////////////////////
@@ -216,7 +216,7 @@ const infoThousandsSeparator = 'The character that separates the thousands in th
 const infoDecimalSeparator = 'The character that separates the decimal in the amount. Typically this is a comma (US) or a dot.'
 const infoDateFormat = 'The format of the date in the CSV file. This is used to parse the date correctly.'
 const infoCurrency = 'The currency you want to use for the amounts. (Just for display)'
-const infoRounding = 'The number of decimal places to round the amounts to. (Just for display)'
+const infoLocale = 'How currency values are formatted (thousands and decimal seperators).'
 
 // Default values
 const rowFirst = ref(1)
@@ -230,7 +230,8 @@ const thousandsSeparator = ref('.')
 const decimalSeparator = ref(',')
 const dateFormat = ref('DD.MM.YYYY')
 const currency = ref()
-const rounding = ref()
+const locale = ref()
+const locales = [{ 'title': '1.234,56 (EU)', 'value': 'de-DE' }, { 'title': '1,234.56 (US/EN)', 'value': 'en-US' }]
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -256,7 +257,7 @@ const save = (async() => {
 
     const settings = {
         currency: currency.value,
-        rounding: rounding.value
+        locale: locale.value
     }
     const updateSettings = await API('settings', 'PUT', settings)
     mainStore.refreshApp()
@@ -282,7 +283,7 @@ onMounted(async () => {
 
         const settings = await API('settings', 'GET')
         currency.value = settings.currency
-        rounding.value = settings.rounding
+        locale.value = locales.find(item => item.value === settings.locale)
         
     } catch (error) {
         console.log(error)
@@ -290,6 +291,7 @@ onMounted(async () => {
      })
 
 watch(() => mainStore.settings.trigger, () => {
+    tab.value = mainStore.settings.tab
     active.value = true
 })
 

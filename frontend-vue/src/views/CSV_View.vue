@@ -9,7 +9,7 @@
     <!--File-Input-->
     <v-row>
         <v-col>
-            <p v-if="importError==true" class="text-h7 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings()" class="mb-1"></v-btn>.</p>
+            <p v-if="importError==true" class="text-h6 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings('CSV')" class="mb-1"></v-btn>.</p>
         </v-col>
     </v-row>
     <v-row class="">
@@ -29,14 +29,14 @@
             <v-data-table :items="dataPreview" :headers="headersPreview" density="compact">
                 <!--Date-->
                 <template v-slot:item.date="{ item }">
-                    {{ new Date(item.date).toLocaleDateString() }}
+                    {{ new Date(item.date).toLocaleDateString(locale) }}
                 </template>
 
                 <!--Amount-->
                 <template v-slot:item.amount="{ item }">
                     <v-row class="justify-end mr-12">
-                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
-                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
+                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
+                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toLocaleString(locale)}} {{ currency }}</div>
                     </v-row>
                 </template>
             </v-data-table>
@@ -44,7 +44,7 @@
 
         <v-row class="">
             <v-col cols="10" class="mt-2 text-end">
-                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings()" class="mb-1"></v-btn> if needed.</p>     
+                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings('CSV')" class="mb-1"></v-btn> if needed.</p>     
             </v-col>
             <v-col cols="2" class="mt-2 text-end">
                 <v-btn color="accent" @click="uploadData()" prependIcon="mdi-upload">Confirm</v-btn>
@@ -102,7 +102,7 @@ const fileDate = ref('')
 
 // Display Objects
 const currency = ref('€')
-const rounding = ref(0)
+const locale = ref('de-DE')
 
 // Table Details
 const headersFiles = [
@@ -146,9 +146,6 @@ const readFile = () => {
 const parseData = (data) => {
     const fileName = inputFile.value[0].name
     const fileDate = new Date().toISOString()
-    currency.value = settings.value.currency
-    rounding.value = settings.value.rounding
-
     dataPreview.value = []
 
     try { 
@@ -186,6 +183,8 @@ const uploadData = async () => {
 const load = async () => {
     schema.value = await API('schema', 'GET')
     settings.value = await API('settings', 'GET')
+    currency.value = settings.value.currency
+    locale.value = settings.value.locale
     loadTableUploads()
 
     if(fileLoaded.value) {

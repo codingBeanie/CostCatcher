@@ -32,7 +32,7 @@ class ImportSchema(models.Model):
 
 class Setting(models.Model):
     currency = models.CharField(max_length=1, default='€')
-    rounding = models.IntegerField(default=0)
+    locale = models.CharField(max_length=5, default='de-DE')
 
 
 class Category(models.Model):

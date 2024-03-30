@@ -13,6 +13,7 @@ export const useMainStore = defineStore('main', {
         },
         settings: {
             trigger: false,
+            tab: 'general',
         },
         delete: {
             trigger: false,
@@ -47,8 +48,9 @@ export const useMainStore = defineStore('main', {
                 this.alert.show = false
             }, timeout)
         },
-        openSettings() {
+        openSettings(tab) {
             this.settings.trigger = !this.settings.trigger
+            this.settings.tab = tab
         },
         refreshApp() {
             this.app.refresh = !this.app.refresh

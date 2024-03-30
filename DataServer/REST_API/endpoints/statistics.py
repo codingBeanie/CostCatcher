@@ -27,8 +27,6 @@ class Statistics(APIView):
         if Transaction.objects.filter(category=None).exists():
             data.append(createStatisticsObject(None, dates))
 
-        data = sorted(data, key=lambda x: x['Sum'], reverse=True)
-
         # Totals
         totals = createStatisticsTotals(dates)
         for total in totals:
@@ -38,13 +36,13 @@ class Statistics(APIView):
 
 
 def createStatisticsObject(category, dates):
-    entry = {}
+    item = {}
     categoryName = category.name if category else 'UNDEFINED'
     categoryID = category.id if category else 0
     categoryColor = category.color if category else '#444444'
 
-    entry['Category'] = {'name': categoryName,
-                         'id': categoryID, 'color': categoryColor}
+    item['Category'] = {'name': categoryName,
+                        'id': categoryID, 'color': categoryColor}
 
     sumlist = []
     # monthly statistics
@@ -52,20 +50,22 @@ def createStatisticsObject(category, dates):
         filters = {'category': category,
                    'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto']}
-        try:
-            entry[daterange['month-year']] = round(Transaction.objects.filter(**filters).aggregate(
-                Sum('amount'))['amount__sum'], 0)
-            sumlist.append(entry[daterange['month-year']])
-        except:
-            entry[daterange['month-year']] = 0
-            sumlist.append(0)
+        monthlySum = Transaction.objects.filter(
+            **filters).aggregate(Sum('amount'))['amount__sum']
+
+        if monthlySum is not None:
+            sumlist.append(monthlySum)
+            item[daterange['month-year']] = monthlySum
+        else:
+            item[daterange['month-year']] = 0
 
     # Statistics
-    entry['Sum'] = sum(sumlist)
-    entry['Average'] = round(mean(sumlist), 0)
-    entry['Median'] = round(median(sumlist), 0)
-
-    return entry
+    itemSum = sum(sumlist)
+    itemAverage = mean(sumlist) if len(sumlist) > 1 else sum(sumlist)
+    itemMedian = median(sumlist) if len(sumlist) > 1 else 0
+    item['Statistics'] = {'Sum': itemSum,
+                          'Average': itemAverage, 'Median': itemMedian}
+    return item
 
 
 def createStatisticsTotals(dates):
@@ -74,58 +74,68 @@ def createStatisticsTotals(dates):
     # INCOME
     income = {}
     incomeList = []
-    income['Category'] = {'name': 'Income', 'id': -1, 'color': '#444444'}
+    income['Category'] = {'name': 'Income', 'id': -1, 'color': '#005403'}
     for daterange in dates:
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto'],
                    'amount__gte': 0}
-        try:
-            income[daterange['month-year']] = round(Transaction.objects.filter(**filters).aggregate(
-                Sum('amount'))['amount__sum'], 0)
-            incomeList.append(income[daterange['month-year']])
-        except:
+        monthlySum = Transaction.objects.filter(
+            **filters).aggregate(Sum('amount'))['amount__sum']
+        if monthlySum is not None:
+            income[daterange['month-year']] = monthlySum
+            incomeList.append(monthlySum)
+        else:
             income[daterange['month-year']] = 0
-            incomeList.append(0)
-    income['Sum'] = sum(incomeList)
-    income['Average'] = round(mean(incomeList), 0)
-    income['Median'] = round(median(incomeList), 0)
+    incomeSum = sum(incomeList)
+    incomeAverage = mean(incomeList) if len(
+        incomeList) > 1 else sum(incomeList)
+    incomeMedian = median(incomeList) if len(incomeList) > 1 else 0
+    income['Statistics'] = {'Sum': incomeSum,
+                            'Average': incomeAverage, 'Median': incomeMedian}
 
     # Expenses
     expenses = {}
     expensesList = []
-    expenses['Category'] = {'name': 'Expenses', 'id': -2, 'color': '#444444'}
+    expenses['Category'] = {'name': 'Expenses', 'id': -2, 'color': '#540000'}
     for daterange in dates:
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto'],
                    'amount__lt': 0}
-        try:
-            expenses[daterange['month-year']] = round(Transaction.objects.filter(**filters).aggregate(
-                Sum('amount'))['amount__sum'], 0)
-            expensesList.append(expenses[daterange['month-year']])
-        except:
+        monthlySum = Transaction.objects.filter(
+            **filters).aggregate(Sum('amount'))['amount__sum']
+        if monthlySum is not None:
+            expenses[daterange['month-year']] = monthlySum
+            expensesList.append(monthlySum)
+        else:
             expenses[daterange['month-year']] = 0
-            expensesList.append(0)
-    expenses['Sum'] = sum(expensesList)
-    expenses['Average'] = round(mean(expensesList), 0)
-    expenses['Median'] = round(median(expensesList), 0)
+
+    expensesSum = sum(expensesList)
+    expensesAverage = mean(expensesList) if len(
+        expensesList) > 1 else sum(expensesList)
+    expensesMedian = median(expensesList) if len(expensesList) > 1 else 0
+    expenses['Statistics'] = {'Sum': expensesSum,
+                              'Average': expensesAverage, 'Median': expensesMedian}
 
     # NET
     net = {}
     netList = []
-    net['Category'] = {'name': 'Net', 'id': -3, 'color': '#444444'}
+    net['Category'] = {'name': 'Net', 'id': -3, 'color': '#111111'}
     for daterange in dates:
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto']}
-        try:
-            net[daterange['month-year']] = round(Transaction.objects.filter(**filters).aggregate(
-                Sum('amount'))['amount__sum'], 0)
-            netList.append(net[daterange['month-year']])
-        except:
+        monthlySum = Transaction.objects.filter(
+            **filters).aggregate(Sum('amount'))['amount__sum']
+        if monthlySum is not None:
+            net[daterange['month-year']] = monthlySum
+            netList.append(monthlySum)
+        else:
             net[daterange['month-year']] = 0
-            netList.append(0)
-    net['Sum'] = sum(netList)
-    net['Average'] = round(mean(netList), 0)
-    net['Median'] = round(median(netList), 0)
+
+    netSum = sum(netList)
+    netAverage = mean(netList) if len(netList) > 1 else sum(netList)
+    netMedian = median(netList) if len(netList) > 1 else 0
+    net['Statistics'] = {'Sum': netSum,
+                         'Average': netAverage, 'Median': netMedian}
 
     totals.append(income)
     totals.append(expenses)

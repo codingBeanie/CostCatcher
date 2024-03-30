@@ -118,7 +118,7 @@ const save = async () => {
 ////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////
-const load = () => {
+const load = async () => {
     id.value = mainStore.transactionEdit.id
     loadFields()
     loadCategories()

@@ -122,14 +122,14 @@
             <v-data-table :items="dataNoCategory" :headers="headersNoCategory">
                 <!--Date-->
                 <template v-slot:item.date="{ item }">
-                    {{ new Date(item.date).toLocaleDateString() }}
+                    {{ new Date(item.date).toLocaleDateString(locale) }}
                 </template>
 
                 <!--Amount-->
                 <template v-slot:item.amount="{ item }">
                     <v-row class="justify-end mr-12">
-                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
-                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toFixed(rounding) }} {{ currency }}</div>
+                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
+                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
                     </v-row>
                 </template>
 
@@ -164,7 +164,7 @@ const mainStore = useMainStore()
 
 // Settings
 const currency = ref('€')
-const rounding = ref(0)
+const locale = ref('de-DE')
 
 // Input
 const keyword = ref('')
@@ -184,7 +184,6 @@ const infoCategory = 'The category that will be assigned to the transaction if t
 // Data
 const data = ref([])
 const dataNoCategory = ref([])
-var conflicts = []
 
 // Table Variables
 const headersAssignments = [
@@ -212,7 +211,7 @@ const display = useDisplay()
 const loadSettings = async () => {
     const settingsData = await API('settings', 'GET')
     currency.value = settingsData.currency
-    rounding.value = settingsData.rounding
+    locale.value = settingsData.locale
 }
 
 const loadCategories = async () => {

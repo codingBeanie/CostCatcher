@@ -6,7 +6,7 @@
         </v-app-bar-title>
 
         <template v-slot:append>
-          <v-btn icon @click="mainStore.openSettings">
+          <v-btn icon @click="mainStore.openSettings('general')">
             <v-icon>mdi-cog</v-icon>
           </v-btn>
         </template>

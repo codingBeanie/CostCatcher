@@ -22,12 +22,3 @@ class TransactionUnlock(APIView):
             transaction.category = None
         transaction.save()
         return Response(status=200, data="Transaction has been updated")
-
-
-class AssignmentsConflicts(APIView):
-    def get(self, request):
-        transactionConflicts = Transaction.objects.annotate(
-            num_assignments=Count('assignments')).filter(num_assignments__gt=1)
-        assignments = Assignment.objects.filter(
-            transaction__in=transactionConflicts).values_list('id', flat=True).distinct()
-        return Response(status=200, data=assignments)
