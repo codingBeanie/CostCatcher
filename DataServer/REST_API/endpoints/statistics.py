@@ -10,9 +10,9 @@ class Statistics(APIView):
     def get(self, request):
         data = []
         dateto = request.query_params.get('dateto', None)
-        dateto = dateto.replace('/', '') if dateto else None
         datefrom = request.query_params.get('datefrom', None)
 
+        # produces [{'month-year': '01-2021', 'datefrom': '2021-01-01', 'dateto': '2021-01-31'}, ...]
         dates = datelist(datefrom, dateto)
 
         if dates == []:
@@ -22,7 +22,10 @@ class Statistics(APIView):
         categories = Category.objects.all()
         for category in categories:
             data.append(createStatisticsObject(category, dates))
-        data.append(createStatisticsObject(None, dates))
+
+        # if transactions have no category, create a category 'UNDEFINED'/NONE
+        if Transaction.objects.filter(category=None).exists():
+            data.append(createStatisticsObject(None, dates))
 
         data = sorted(data, key=lambda x: x['Sum'], reverse=True)
 
@@ -36,7 +39,12 @@ class Statistics(APIView):
 
 def createStatisticsObject(category, dates):
     entry = {}
-    entry['Category'] = category.name if category else 'UNDEFINED'
+    categoryName = category.name if category else 'UNDEFINED'
+    categoryID = category.id if category else 0
+    categoryColor = category.color if category else '#444444'
+
+    entry['Category'] = {'name': categoryName,
+                         'id': categoryID, 'color': categoryColor}
 
     sumlist = []
     # monthly statistics
@@ -66,7 +74,7 @@ def createStatisticsTotals(dates):
     # INCOME
     income = {}
     incomeList = []
-    income['Category'] = 'Income'
+    income['Category'] = {'name': 'Income', 'id': -1, 'color': '#444444'}
     for daterange in dates:
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto'],
@@ -85,7 +93,7 @@ def createStatisticsTotals(dates):
     # Expenses
     expenses = {}
     expensesList = []
-    expenses['Category'] = 'Expenses'
+    expenses['Category'] = {'name': 'Expenses', 'id': -2, 'color': '#444444'}
     for daterange in dates:
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto'],
@@ -104,7 +112,7 @@ def createStatisticsTotals(dates):
     # NET
     net = {}
     netList = []
-    net['Category'] = 'Net'
+    net['Category'] = {'name': 'Net', 'id': -3, 'color': '#444444'}
     for daterange in dates:
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto']}

@@ -31,6 +31,8 @@
         </v-col>
     </v-row>
 
+    COL: {{ selectCell.column }}
+    ROW: {{ selectCell.row }}
 
     <!--File-Table-->
     <v-row>
@@ -64,38 +66,40 @@
 
                                 <!--Categories-->
                                 <div v-else>
-                                    <v-chip>{{ row[column] }}</v-chip>
+                                    <v-chip v-if="row[column].id != 0" :color="row[column].color" link @click="mainStore.openCategoryEdit(row[column].id)">{{ row[column].name }}</v-chip>
+                                    <v-chip v-if="row[column].id == 0" :color="row[column].color" class="cursor-not-allowed">{{ row[column].name }}</v-chip>
                                 </div>
                             </div>
                             
                             <!--Month Columns-->
-                            <div v-else-if="column!='Sum' && column!='Average' && column!='Median'" class="cursor-pointer pa-2" @click="loadDetail(row['Category'], column)">
+                            <div v-else-if="column!='Sum' && column!='Average' && column!='Median'" class="cursor-pointer">
 
                                 <!--Income--> 
-                                <div v-if="row['Category'] === 'Income'" class="">
-                                 <v-chip color="info">{{ row[column].toLocaleString() }}</v-chip>
+                                <div v-if="row['Category'] === 'Income'" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-info': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                 {{ parseFloat(row[column]).toFixed(rounding) }} {{ currency }}
+                                 {{ row }}
                                 </div>
 
                                 <!--Expenses-->
-                                <div v-else-if="row['Category'] === 'Expenses'">
-                                    <v-chip color="info">{{ row[column].toLocaleString() }}</v-chip>
+                                <div v-else-if="row['Category'] === 'Expenses'" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-info': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                    {{ parseFloat(row[column]).toFixed(rounding) }} {{ currency }}
                                 </div>
 
                                 <!--Net-->
-                                <div v-else-if="row['Category'] === 'Net'">
-                                    <v-chip v-if="row[column] < 0" color="error">{{ row[column].toLocaleString() }}</v-chip>
-                                    <v-chip v-if="row[column] >= 0" color="success">{{ row[column].toLocaleString() }}</v-chip>
+                                <div v-else-if="row['Category'] === 'Net'" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-info': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                    <div v-if="row[column] < 0" color="error">{{ parseFloat(row[column]).toFixed(rounding) }} {{ currency }}</div>
+                                    <div v-if="row[column] >= 0" color="success">{{ parseFloat(row[column]).toFixed(rounding) }} {{ currency }}</div>
                                 </div>
 
                                 <!--Categories-->
-                                <div v-else>
-                                    {{ row[column].toLocaleString() }}
+                                <div v-else @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-info': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                  {{ parseFloat(row[column]).toFixed(rounding) }} {{ currency }}
                                 </div>
                             </div>
 
                             <!--Statistics Column-->
-                            <div v-else class="justify-end pa-2 align-center bg-primaryLight d-flex fill-height fill-width grow">
-                                {{ row[column].toLocaleString() }}
+                            <div v-else class="justify-end cursor-not-allowed align-center bg-primaryLight d-flex fill-height fill-width grow">
+                                {{ parseFloat(row[column]).toFixed(rounding) }} {{ currency }}
                             </div>
                         </td>
                     </tr>
@@ -141,6 +145,13 @@ let columns = []
 const dateFrom = ref(`${new Date().getFullYear()}-01-01`)
 const dateTo = ref(`${new Date().getFullYear()}-12-31`)
 
+// Selection
+const selectCell = ref({'column': '', 'row': ''})
+
+// Settings
+const currency = ref('€')
+const rounding = ref(2)  
+
 // Tables
 const headersDetail = [
     { title: 'Date', value: 'date', sortable: true},
@@ -157,6 +168,7 @@ const loadTable = async () => {
     if (dataStats.value != undefined && dataStats.value.length > 0) {
         columns = Object.keys(dataStats.value[0])
     }
+    console.log(dataStats.value)
 }
 
 const loadDetail = async (category, period) => { 
@@ -167,15 +179,30 @@ const loadDetail = async (category, period) => {
     dataDetails.value = await API(`transactions/?categories=${categoryQuery.id}&datefrom=${period}-01&dateto=${periodTo}`, 'GET')
 }
 
+const loadSettings = async () => {
+    const settings = await API('settings', 'GET')
+    currency.value = settings.currency
+    rounding.value = settings.rounding
+}
+
+const updateSelection = (category, period) => {
+    selectCell.value.column = period
+    selectCell.value.row = category
+}
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
 const load = () => {
+    loadSettings()
     loadTable()
 }
 
 onMounted(async () => {
+    load()
+})
+
+watch(() => mainStore.app.refresh, () => {
     load()
 })
 
