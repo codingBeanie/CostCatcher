@@ -31,16 +31,22 @@
         </v-col>
     </v-row>
 
-    COL: {{ selectCell.column }}
-    ROW: {{ selectCell.row }}
-
     <!--File-Table-->
     <v-row>
         <v-container>
             <v-table v-if="dataStats" hover class="fill-width">
                 <thead>
                     <tr>
-                        <th v-for="column in columns" :key="column" class="text-right bg-secondary">{{ column }}</th>
+                        <th v-for="column in columns" :key="column" class="text-right cursor-pointer bg-secondary" @mouseover="updateSelection('header', column)">
+                            <!--Active Ascending-->
+                            <v-btn v-if="sortColumn == column && sortAsc == true" variant="text" color="primary" append-icon="mdi-arrow-up" block @click="sortTable(column)">{{ column }}</v-btn>
+                            <!--Active Descending-->
+                            <v-btn v-else-if="sortColumn == column && sortAsc == false" variant="text" color="primary" append-icon="mdi-arrow-down" block @click="sortTable(column)">{{ column }}</v-btn>
+                            <!--Select-->
+                            <v-btn v-else-if="selectCell.column == column && selectCell.row === 'header'" variant="text" color="primary" append-icon="mdi-swap-vertical" block @click="sortTable(column)">{{ column }}</v-btn>
+                            <!--Default-->
+                            <v-btn v-else variant="text" append-icon="mdi" block>{{ column }}</v-btn>
+                        </th>
                     </tr>
                 </thead>
 
@@ -67,6 +73,7 @@
                                 <!--Categories-->
                                 <div v-else>
                                     <v-chip v-if="row[column].id != 0" :color="row[column].color" link @click="mainStore.openCategoryEdit(row[column].id)">{{ row[column].name }}</v-chip>
+                                    <!--undefined-->
                                     <v-chip v-if="row[column].id == 0" :color="row[column].color" class="cursor-not-allowed">{{ row[column].name }}</v-chip>
                                 </div>
                             </td>
@@ -139,7 +146,9 @@ const dateFrom = ref(``)
 const dateTo = ref(``)
 
 // Selection
-const selectCell = ref({'column': '', 'row': ''})
+const selectCell = ref({ 'column': '', 'row': '' })
+const sortColumn = ref('Category')
+const sortAsc = ref(false)
 
 // Settings
 const currency = ref('€')
@@ -161,7 +170,8 @@ const loadTable = async () => {
     dateFrom.value = data.defaultFirst
     dateTo.value = data.defaultLast
 
-    dataStats.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}`, 'GET')
+    dataStats.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}&sortcolumn=${sortColumn.value}&sortasc=${sortAsc.value}`, 'GET')
+    // Set Columns
     if (dataStats.value != undefined && dataStats.value.length > 0) {
         columns = Object.keys(dataStats.value[0])
     }
@@ -176,6 +186,12 @@ const loadSettings = async () => {
 const updateSelection = (category, period) => {
     selectCell.value.column = period
     selectCell.value.row = category
+}
+
+const sortTable = (column) => { 
+    sortColumn.value = column
+    sortAsc.value = !sortAsc.value
+    load()
 }
 
 ////////////////////////////////////////////////////////////////
@@ -197,7 +213,7 @@ watch(() => mainStore.app.refresh, () => {
 </script>
 
 <style scoped>
-    .hover {
-        background-color: #f0f0f0;
+    td {
+        min-width: 135px;
     }
 </style>

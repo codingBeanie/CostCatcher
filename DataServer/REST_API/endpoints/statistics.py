@@ -27,6 +27,15 @@ class Statistics(APIView):
         if Transaction.objects.filter(category=None).exists():
             data.append(createStatisticsObject(None, dates))
 
+        # Sorting
+        sortColumn = request.query_params.get('sortcolumn', None)
+        sortAsc = request.query_params.get('sortasc', None)
+        sortAsc = True if sortAsc == 'true' else False
+        if sortColumn == 'Category':
+            data.sort(key=lambda x: x['Category']['name'], reverse=sortAsc)
+        else:
+            data.sort(key=lambda x: x[sortColumn], reverse=sortAsc)
+
         # Totals
         totals = createStatisticsTotals(dates)
         for total in totals:
