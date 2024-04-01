@@ -31,6 +31,9 @@
         </v-col>
     </v-row>
 
+    <!--Status-->
+    <div v-if="!statusTransactions"><p class="text-h4 text-error" >No transactions were found. Please upload a file first: <v-btn class="mb-1" prepend-icon="mdi-file-multiple" color="info" to="/import">CSV-Management</v-btn></p></div>
+    <div v-if="!statusCategories" class="mt-2 mb-4"><p class="text-h6 text-error" >No categories were created. Add categories and categorize your transactions: <v-btn class="mb-1" prepend-icon="mdi-tag-multiple" color="info" to="/assignments">Categorization</v-btn></p></div>
     <!--File-Table-->
     <v-row>
         <v-container>
@@ -74,8 +77,15 @@
                                 <div v-else>
                                     <v-chip v-if="row[column].id != 0" :color="row[column].color" link @click="mainStore.openCategoryEdit(row[column].id)">{{ row[column].name }}</v-chip>
                                     <!--undefined-->
-                                    <v-chip v-if="row[column].id == 0" :color="row[column].color" class="cursor-not-allowed">{{ row[column].name }}</v-chip>
-                                </div>
+                                    <template v-else>
+                                        <v-chip color="grey" class="cursor-not-allowed">Undefined</v-chip>
+                                            <v-tooltip :text="infoUndefined">
+                                            <template v-slot:activator="{ props }">
+                                            <v-icon color="info" v-bind="props" density="compact" class="ml-2 ">mdi-information</v-icon>
+                                            </template>
+                                        </v-tooltip>
+                                    </template>
+                                 </div>
                             </td>
                             
                             <!--Month Columns-->
@@ -134,16 +144,19 @@ import { API } from '../composables/API.js'
 ////////////////////////////////////////////////////////////////
 // State Management
 const mainStore = useMainStore()
-const hover = ref(false)
+const statusTransactions = ref(false)
+const statusCategories = ref(false)
 
 // Data
 const dataStats = ref([])
-const dataDetails = ref([])
 let columns = []
 
 // Inputs
 const dateFrom = ref(``)
 const dateTo = ref(``)
+
+// Info
+const infoUndefined = 'These transactions are not assigned to any category.'
 
 // Selection
 const selectCell = ref({ 'column': '', 'row': '' })
@@ -154,19 +167,14 @@ const sortAsc = ref(false)
 const currency = ref('€')
 const locale = ref('de-DE') 
 
-// Tables
-const headersDetail = [
-    { title: 'Date', value: 'date', sortable: true},
-    { title: 'Recipient', value: 'recipient', sortable: true},
-    { title: 'Description', value: 'description', sortable: true},
-    { title: 'Amount', value: 'amount', sortable: true, align: 'end'}
-]
-
 ////////////////////////////////////////////////////////////////
 // Load Functions
 ////////////////////////////////////////////////////////////////
 const loadTable = async () => {
     const data = await API('datespan', 'GET')
+    if (data == undefined) {
+        return
+    }
     dateFrom.value = data.defaultFirst
     dateTo.value = data.defaultLast
 
@@ -174,6 +182,14 @@ const loadTable = async () => {
     // Set Columns
     if (dataStats.value != undefined && dataStats.value.length > 0) {
         columns = Object.keys(dataStats.value[0])
+        statusTransactions.value = true
+    } else {
+        statusTransactions.value = false
+    }
+    if (dataStats.value.map((x) => x.Category.name).length > 4) {
+        statusCategories.value = true
+    } else {
+        statusCategories.value = false
     }
 }
 
