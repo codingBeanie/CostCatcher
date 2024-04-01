@@ -92,23 +92,23 @@
                             <td v-else-if="column!='Statistics'" class="cursor-pointer">
 
                                 <!--Income--> 
-                                <div v-if="row['Category'].name === 'Income'" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-if="row['Category'].name === 'Income'" @click="mainStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
                                 </div>
 
                                 <!--Expenses-->
-                                <div v-else-if="row['Category'].name === 'Expenses'" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-else-if="row['Category'].name === 'Expenses'" @click="mainStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
                                 </div>
 
                                 <!--Net-->
-                                <div v-else-if="row['Category'].name === 'Net'" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-else-if="row['Category'].name === 'Net'" @click="mainStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     <div v-if="row[column] < 0" class="text-error text-button"> {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}</div>
                                     <div v-if="row[column] >= 0" class="text-success text-button">{{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}</div>
                                 </div>
 
                                 <!--Categories-->
-                                <div v-else @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-else @mouseover="updateSelection(row['Category'].id, column)" @click="mainStore.openReview(selectCell.row, selectCell.column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     {{  parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
                                 </div>
                             </td>
@@ -168,7 +168,7 @@ const currency = ref('€')
 const locale = ref('de-DE') 
 
 ////////////////////////////////////////////////////////////////
-// Load Functions
+// Methods
 ////////////////////////////////////////////////////////////////
 const loadTable = async () => {
     const data = await API('datespan', 'GET')

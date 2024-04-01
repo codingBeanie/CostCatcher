@@ -139,7 +139,6 @@
                         <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('transactions', item.id, `${item.recipient} | ${item.description}`)">
                         </v-btn>                   
                     </v-row>
-
                 </template>
                 
             </v-data-table>
@@ -223,7 +222,7 @@ const loadAssignments = async () => {
 }
 
 const loadNoCategory = async () => {
-    dataNoCategory.value = await API("transactions/?categories=[0]", 'GET')
+    dataNoCategory.value = await API("transactions/?category=0", 'GET')
 }
 
 ////////////////////////////////////////////////////////////////

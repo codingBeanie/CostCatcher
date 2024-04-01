@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from ..models import Transaction
 from ..serializer import TransactionSerializer
 from ..bindings import createBindingByTransactions
+import calendar
+import datetime
 
 
 class Transactions(APIView):
@@ -10,38 +12,42 @@ class Transactions(APIView):
     def get(self, request):
         try:
             queryID = request.query_params.get('id', None)
-            categories = request.query_params.get('categories', None)
+            category = request.query_params.get('category', None)
+            period = request.query_params.get('period', None)
 
             filters = {}
-            if categories == "[0]":
-                filters['category__isnull'] = True
-            elif categories:
-                filters['category__id__in'] = categories
-
+            # ID
             if queryID:
                 filters['id'] = queryID
 
-            # Get query parameters
-            # categories_string = request.query_params.get('categories', None)
-            # special_categories = categories_string if categories_string == 'Income' or categories_string == 'Expenses' or categories_string == 'Net' else None
-            # categories_string = "" if special_categories else categories_string
-            # categories = categories_string.split(
-            #     '%') if categories_string else []
-            # datefrom = request.query_params.get('datefrom', None)
-            # dateto = request.query_params.get('dateto', None).replace('/', '')
+            # CATEGORY
+            # NONE = no filter, show all
+            if category:
+                # 0 = no category, show all without category
+                if int(category) == 0:
+                    filters['category__isnull'] = True
 
-            # # Filtering
-            # filters = {}
-            # if categories:
-            #     filters['category__name__in'] = categories
-            # if special_categories == 'Income':
-            #     filters['amount__gte'] = 0
-            # if special_categories == 'Expenses':
-            #     filters['amount__lt'] = 0
-            # if datefrom and datefrom != 'null':
-            #     filters['date__gte'] = datefrom
-            # if dateto and dateto != 'null':
-            #     filters['date__lte'] = dateto
+                # -1 = INCOME
+                if int(category) == -1:
+                    filters['amount__gte'] = 0
+
+                # -2 = EXPENSE
+                if int(category) == -2:
+                    filters['amount__lt'] = 0
+
+                # filter to valid category
+                if int(category) > 0:
+                    filters['category__id'] = category
+
+            # PERIOD
+            if period:
+                fromDate = datetime.datetime(
+                    int(period[0:4]), int(period[5:7]), 1)
+                lastDay = calendar.monthrange(fromDate.year, fromDate.month)[1]
+                toDate = datetime.datetime(
+                    fromDate.year, fromDate.month, lastDay)
+                filters['date__gte'] = fromDate
+                filters['date__lte'] = toDate
 
             data = Transaction.objects.filter(**filters).order_by('-date')
             serializer = TransactionSerializer(data, many=True)
@@ -74,7 +80,16 @@ class Transactions(APIView):
 
             # if category changed, set overrule attribute
             if transaction.category != data['category']:
-                transaction.overrule = True
+                transaction.overruled = True
+
+            # if overruled set to false
+            if 'overruled' in data.keys():
+                if transaction.overruled == True and data['overruled'] == False:
+                    data['overruled'] = False
+                    if transaction.assignments.first():
+                        data['category'] = transaction.assignments.first().category.id
+                    else:
+                        data['category'] = None
 
             serializer = TransactionSerializer(transaction, data=data)
             if serializer.is_valid():

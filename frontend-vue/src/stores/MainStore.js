@@ -35,6 +35,11 @@ export const useMainStore = defineStore('main', {
         transactionEdit: {
             trigger: false,
             id: null,
+        },
+        review: {
+            trigger: false,
+            period: null,
+            category: null
         }
     }),
     actions: {
@@ -75,6 +80,11 @@ export const useMainStore = defineStore('main', {
         openTransactionEdit(id) {
             this.transactionEdit.trigger = !this.transactionEdit.trigger
             this.transactionEdit.id = id
+        },
+        openReview(category, period) {
+            this.review.trigger = !this.review.trigger
+            this.review.period = period
+            this.review.category = category
         }
     }
 })

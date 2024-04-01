@@ -42,9 +42,11 @@
 <DialogSettings></DialogSettings>
 <DialogDelete></DialogDelete>
 <DialogCategories></DialogCategories>
+<DialogReview></DialogReview>
 <EditCategory></EditCategory>
 <EditAssignment></EditAssignment>
 <EditTransaction></EditTransaction>
+
 </template>
 
 <script setup>
@@ -56,7 +58,7 @@ import DialogCategories from './components/DialogCategories.vue'
 import EditCategory from './components/EditCategory.vue'
 import EditAssignment from './components/EditAssignment.vue'
 import EditTransaction from './components/EditTransaction.vue'
-
+import DialogReview from './components/DialogReview.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
