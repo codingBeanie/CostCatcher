@@ -1,40 +1,47 @@
 <template>
   <v-app class="bg-primary">
-    <v-app-bar flat color="primary">
+    <!--App Bar-->
+    <v-app-bar flat color="secondary">
         <v-app-bar-title>
-          COSTCATCHER
+          <div class="d-flex align-center">
+            <!--LOGO-->
+            <div class="w-25">
+              <div>COSTCATHER</div>
+            </div>
+
+            <!--MENU-->
+            <div class="justify-center w-50 d-flex">
+              <div class="">
+                <v-btn to="import" width="200px" prepend-icon="mdi-upload" variant="text" size="large" stacked>Import</v-btn>
+              </div>
+              
+              <div>
+                <v-btn to="assignments" width="200px" text prepend-icon="mdi-tag-multiple" variant="text" size="large" stacked>Categorization</v-btn>
+              </div>
+              
+              <div>
+                <v-btn to="statistics" width="200px" text prepend-icon="mdi-sigma" variant="text" size="large" stacked>Statistics</v-btn>
+              </div>
+            </div>
+
+            <!--SETTINGS-->
+            <div class="w-25 text-end">
+              <v-btn class="mr-4" icon @click="mainStore.openSettings('general')">
+                <v-icon>mdi-cog</v-icon>
+              </v-btn>
+            </div>
+            
+          </div>
         </v-app-bar-title>
-
-        <template v-slot:append>
-          <v-btn icon @click="mainStore.openSettings('general')">
-            <v-icon>mdi-cog</v-icon>
-          </v-btn>
-        </template>
     </v-app-bar>
-    
-    <v-card>
-      <v-navigation-drawer permanent rail expand-on-hover class="bg-secondary">
-          <v-divider></v-divider>
-          <v-list density="compact" nav>
-            <v-list-item prepend-icon="mdi-file-multiple" title="CSV Management" to="/import">
-            </v-list-item>
-            <v-list-item prepend-icon="mdi-bookmark-check" title="Categories" to="/categories">
-            </v-list-item>
-            <v-list-item prepend-icon="mdi-marker" title="Assignments" to="/assignments">
-            </v-list-item>
-            <v-list-item prepend-icon="mdi-book-search" title="Review" to="/review">
-            </v-list-item>
-            <v-list-item prepend-icon="mdi-chart-bar" title="Statistics" to="/statistics">
-            </v-list-item>  
-          </v-list>
-      </v-navigation-drawer>
-    </v-card>
 
+    <!--Main Content-->
     <v-main>
       <v-container class="">
          <router-view/>
       </v-container>
     </v-main>
+
   </v-app>
 
 <!--Dialogs and Alerts-->

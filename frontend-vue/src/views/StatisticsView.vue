@@ -177,14 +177,17 @@ const loadTable = async () => {
     }
     dateFrom.value = data.defaultFirst
     dateTo.value = data.defaultLast
-
-    dataStats.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}&sortcolumn=${sortColumn.value}&sortasc=${sortAsc.value}`, 'GET')
+    if (dateFrom.value != undefined && dateTo.value != undefined)
+    {
+        dataStats.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}&sortcolumn=${sortColumn.value}&sortasc=${sortAsc.value}`, 'GET')
+    }
     // Set Columns
     if (dataStats.value != undefined && dataStats.value.length > 0) {
         columns = Object.keys(dataStats.value[0])
         statusTransactions.value = true
     } else {
         statusTransactions.value = false
+        return
     }
     if (dataStats.value.map((x) => x.Category.name).length > 4) {
         statusCategories.value = true

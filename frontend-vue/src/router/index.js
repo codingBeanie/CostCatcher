@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import CSV_View from '../views/CSV_View.vue'
-import CategoriesView from '../views/CategoriesView.vue'
 import AssignmentsView from '../views/AssignmentsView.vue'
-import ReviewView from '../views/ReviewView.vue'
 import StatisticsView from '../views/StatisticsView.vue'
 
 const routes = [
@@ -21,7 +19,7 @@ const routes = [
   {
     path: '/categories',
     name: 'categories',
-    component: CategoriesView
+    component: AssignmentsView
   },
   {
     path: '/assignments',
@@ -31,7 +29,7 @@ const routes = [
   {
     path: '/review',
     name: 'review',
-    component: ReviewView
+    component: StatisticsView
   },
   {
     path: '/statistics',
