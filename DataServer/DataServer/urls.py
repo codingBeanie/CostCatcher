@@ -24,9 +24,12 @@ from REST_API.endpoints.schema import Schema
 from REST_API.endpoints.settings import Settings
 from REST_API.endpoints.statistics import Statistics
 from REST_API.endpoints.datespan import Datespan
+from REST_API.endpoints.users import Register, Login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('auth/register/', Register.as_view()),
+    path('auth/login/', Login.as_view()),
     path('api/transactions/', Transactions.as_view()),
     path('api/files/', Files.as_view()),
     path('api/schema/', Schema.as_view()),

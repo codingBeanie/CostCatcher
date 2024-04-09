@@ -5,6 +5,12 @@ export const useMainStore = defineStore('main', {
         app: {
             refresh: false,
         },
+        register: {
+            trigger: false,
+        },
+        login: {
+            trigger: false,
+        },
         alert: {
             show: false,
             title: 'Error',
@@ -52,6 +58,9 @@ export const useMainStore = defineStore('main', {
             setTimeout(() => {
                 this.alert.show = false
             }, timeout)
+        },
+        openRegister() {
+            this.register.trigger = !this.register.trigger
         },
         openSettings(tab) {
             this.settings.trigger = !this.settings.trigger

@@ -31,8 +31,19 @@ class ImportSchema(models.Model):
 
 
 class Setting(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=False)
     currency = models.CharField(max_length=1, default='€')
     locale = models.CharField(max_length=5, default='de-DE')
+    rowFirst = models.IntegerField(default=1)
+    rowLast = models.IntegerField(default=0)
+    colDate = models.IntegerField(default=1)
+    colRecipient = models.IntegerField(default=2)
+    colDescription = models.IntegerField(default=3)
+    colAmount = models.IntegerField(default=4)
+    delimiter = models.CharField(max_length=1, default=';')
+    thousandsSeparator = models.CharField(max_length=1, default='.')
+    decimalSeparator = models.CharField(max_length=1, default=',')
+    dateFormat = models.CharField(max_length=100, default='DD.MM.YYYY')
 
 
 class Category(models.Model):
@@ -45,9 +56,3 @@ class Assignment(models.Model):
     checkMode = models.CharField(max_length=100)
     category = models.ForeignKey(
         'Category', on_delete=models.CASCADE, null=False)
-
-
-@receiver(post_migrate)
-def create_default_entry(sender, **kwargs):
-    ImportSchema.objects.get_or_create()
-    Setting.objects.get_or_create()

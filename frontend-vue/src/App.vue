@@ -50,6 +50,8 @@
 <DialogDelete></DialogDelete>
 <DialogCategories></DialogCategories>
 <DialogReview></DialogReview>
+<DialogRegister></DialogRegister>
+
 <EditCategory></EditCategory>
 <EditAssignment></EditAssignment>
 <EditTransaction></EditTransaction>
@@ -66,6 +68,7 @@ import EditCategory from './components/EditCategory.vue'
 import EditAssignment from './components/EditAssignment.vue'
 import EditTransaction from './components/EditTransaction.vue'
 import DialogReview from './components/DialogReview.vue'
+import DialogRegister from './components/DialogRegister.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
