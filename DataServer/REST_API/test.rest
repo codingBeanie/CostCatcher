@@ -2,16 +2,27 @@ POST http://localhost:8000/auth/register/
 content-type: application/json
 
 {
-    "username": "Test8",
+    "username": "Test",
     "password": "1234",
     "email": "test@test.com"
 }
 
 ###
-GET http://localhost:8000/auth/login/
+POST http://localhost:8000/auth/login/
 content-type: application/json
 
 {
     "username": "Test8",
     "password": "1234"
 }
+
+###
+GET http://localhost:8000/api/settings/
+content-type: application/json
+Authorization: Token df7e368e0e0ad985fc65cb0f8d0ef1b065e60ae5
+###
+GET http://localhost:8000/api/settings/
+content-type: application/json
+Authorization: Token 4ec7ac9946d4a74729de9cf104272855094b22a0
+#df7e368e0e0ad985fc65cb0f8d0ef1b065e60ae5
+#4ec7ac9946d4a74729de9cf104272855094b22a0

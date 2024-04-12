@@ -11,7 +11,7 @@ class Register(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = User(
-                username=serializer.validated_data['username'], email=serializer.validated_data['email'])
+                username=serializer.validated_data['username'])
             user.set_password(serializer.validated_data['password'])
             user.save()
             token = Token.objects.create(user=user)
@@ -24,7 +24,7 @@ class Register(APIView):
 
 # Get Token for User
 class Login(APIView):
-    def get(self, request):
+    def post(self, request):
         username = request.data['username']
         password = request.data['password']
         try:

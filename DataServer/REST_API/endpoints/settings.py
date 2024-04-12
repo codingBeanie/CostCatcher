@@ -6,13 +6,13 @@ from ..serializer import SettingsSerializer
 
 class Settings(APIView):
     def get(self, request):
-        data = Setting.objects.first()
-        serializer = SettingsSerializer(data)
+        settings = Setting.objects.get(user=request.user)
+        serializer = SettingsSerializer(settings)
         return Response(status=200, data=serializer.data)
 
     def put(self, request):
         data = request.data
-        settings = Setting.objects.first()
+        settings = Setting.objects.get(user=request.user)
         serializer = SettingsSerializer(settings, data=data)
         if serializer.is_valid():
             serializer.save()

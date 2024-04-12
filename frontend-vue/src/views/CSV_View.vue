@@ -181,10 +181,10 @@ const uploadData = async () => {
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
 const load = async () => {
-    schema.value = await API('schema', 'GET')
-    settings.value = await API('settings', 'GET')
-    currency.value = settings.value.currency
-    locale.value = settings.value.locale
+   // schema.value = await API('schema', 'GET')
+   // settings.value = await API('settings', 'GET')
+   // currency.value = settings.value.currency
+   // locale.value = settings.value.locale
     loadTableUploads()
 
     if(fileLoaded.value) {

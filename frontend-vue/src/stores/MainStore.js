@@ -62,6 +62,9 @@ export const useMainStore = defineStore('main', {
         openRegister() {
             this.register.trigger = !this.register.trigger
         },
+        openLogin() {
+            this.login.trigger = !this.login.trigger
+        },
         openSettings(tab) {
             this.settings.trigger = !this.settings.trigger
             this.settings.tab = tab

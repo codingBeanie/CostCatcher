@@ -3,23 +3,21 @@
 
     <v-card>
         <v-card-title>
-            <h2>Register</h2>
+            <h2>Heyho, welcome back!</h2>
         </v-card-title>
 
         <v-card-text>
             <v-container>
-               <v-text-field v-model="username" @keydown.enter="register" label="Name"></v-text-field>
-                <v-text-field v-model="password" @keydown.enter="register" label="Password"></v-text-field>
-                <v-checkbox v-model="checkDevMode" label="I understand that this is just a hobby project and i may encounter bugs and problem."></v-checkbox>
-                <p v-if="failedCredentials" class="text-error">Name or password is wrong!</p>
-                <p v-if="failedCheckmarks" class="text-error">You need to agree to the terms and conditions!</p>
+               <v-text-field v-model="username" @keydown.enter="login" label="Name"></v-text-field>
+                <v-text-field v-model="password" @keydown.enter="login" label="Password"></v-text-field>
+                <p v-if="failedLogin" class="text-error">Name or password is wrong!</p>
             </v-container>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Register" color="accent" @click="register"></v-btn>
+            <v-btn text="Login" color="accent" @click="login"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -37,13 +35,11 @@ import { Authentication } from '../composables/Authentication.js'
 // State Management
 const active = ref(false)
 const mainStore = useMainStore()
-const failedCredentials = ref(false)
-const failedCheckmarks = ref(false)
+const failedLogin = ref(false)
 
 // Input
 const username = ref('')
 const password = ref('')
-const checkDevMode = ref(false)
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -52,30 +48,26 @@ const close = () => {
     active.value = false
 }
 
-const register = async () => {
-    if (checkDevMode.value == false) {
-        failedCheckmarks.value = true
-        return
-    }
+const login = async () => {
     const payload = {
         username: username.value,
         password: password.value
     }
-    const response = await Authentication('register', payload)
+    const response = await Authentication('login', payload)
 
     if (response == true) {
         active.value = false
-        failedCredentials.value = false
+        failedLogin.value = false
     }   
     else {
-        failedCredentials.value = true
+        failedLogin.value = true
     }
 }
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle
 ////////////////////////////////////////////////////////////////
-watch(() => mainStore.register.trigger, () => {
+watch(() => mainStore.login.trigger, () => {
     active.value = true  
 })
 
