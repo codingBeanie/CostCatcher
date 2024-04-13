@@ -11,6 +11,6 @@ export const useUserStore = defineStore('user', {
             this.token = null
             localStorage.removeItem('username')
             localStorage.removeItem('token')
-        }
+        },
     }
 })

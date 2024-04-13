@@ -3,21 +3,22 @@
 
     <v-card>
         <v-card-title>
-            <h2>Heyho, welcome back!</h2>
+            <h2>Change Password</h2>
         </v-card-title>
 
         <v-card-text>
             <v-container>
-               <v-text-field v-model="username" @keydown.enter="login" label="Name"></v-text-field>
-                <v-text-field v-model="password" @keydown.enter="login" type="password" label="Password"></v-text-field>
-                <p v-if="failedLogin" class="text-error">Name or password is wrong!</p>
+                <v-text-field v-model="oldPassword" type="password" @keydown.enter="changePassword" label="Old Password"></v-text-field>
+                <v-text-field v-model="password" type="password" @keydown.enter="changePassword" label="New Password"></v-text-field>
+                <v-text-field v-model="repeatPassword" type="password" @keydown.enter="changePassword" label="Repeat Password"></v-text-field>
+                <p v-if="errorMessage" class="text-error">{{ errorMessage }}</p>
             </v-container>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Login" color="accent" @click="login"></v-btn>
+            <v-btn text="Change" color="accent" @click="changePassword"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -27,7 +28,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
-import { LoginUser } from '../composables/UserAuth.js'
+import { updatePassword } from '../composables/UserAuth.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -35,11 +36,14 @@ import { LoginUser } from '../composables/UserAuth.js'
 // State Management
 const active = ref(false)
 const componentStore = useComponentStore()
-const failedLogin = ref(false)
+
+// Error Message
+const errorMessage = ref('')
 
 // Input
-const username = ref('')
+const oldPassword = ref('')
 const password = ref('')
+const repeatPassword = ref('')
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -48,24 +52,26 @@ const close = () => {
     active.value = false
 }
 
-const login = async () => {
-    const response = await LoginUser(username.value, password.value)
+const changePassword = async () => {
+    if (password.value != repeatPassword.value) {
+        errorMessage.value = 'Password does not match.'
+        return
+    }
 
-    if (response == true) {
+    const response = await updatePassword(oldPassword.value, password.value)
+    if (response) {
         active.value = false
-        failedLogin.value = false
-    }   
+    }
     else {
-        failedLogin.value = true
+        active.value = true
     }
 }
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle
 ////////////////////////////////////////////////////////////////
-watch(() => componentStore.login.trigger, () => {
+watch(() => componentStore.updatePassword.trigger, () => {
     active.value = true  
 })
 
 </script>
-../composables/UserAuth.js

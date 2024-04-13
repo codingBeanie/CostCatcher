@@ -8,7 +8,7 @@
                         <p class="text-h5">COSTCATCHER</p>
                     </v-col>
                     <v-col cols="1">
-                        <v-btn color="info" @click="mainStore.openLogin">Login</v-btn>
+                        <v-btn color="info" prepend-icon="mdi-login" @click="componentStore.openLogin">Login</v-btn>
                     </v-col>
                 </v-row>
 
@@ -23,7 +23,7 @@
                         </v-row>
 
                         <v-row class="mt-10">
-                            <v-btn size="large" min-width="200px" max-width="200px" color="accent" @click="mainStore.openRegister">Register</v-btn>
+                            <v-btn size="large" min-width="200px" max-width="200px" color="accent" @click="componentStore.openRegister">Register</v-btn>
                         </v-row> 
                     </v-col>
 
@@ -41,13 +41,13 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useMainStore } from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 ////////////////////////////////////////
 // Variables //
 // State Management
 const active = ref(true)
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
 const userStore = useUserStore()
 
 ////////////////////////////////////////

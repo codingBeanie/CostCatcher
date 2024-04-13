@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useMainStore = defineStore('main', {
+export const useComponentStore = defineStore('component', {
     state: () => ({
         app: {
             refresh: false,
@@ -14,11 +14,8 @@ export const useMainStore = defineStore('main', {
         deleteAccount: {
             trigger: false,
         },
-        alert: {
-            show: false,
-            title: 'Error',
-            message: 'Test Message',
-            type: 'error'
+        updatePassword: {
+            trigger: false,
         },
         settings: {
             trigger: false,
@@ -52,16 +49,6 @@ export const useMainStore = defineStore('main', {
         }
     }),
     actions: {
-        showAlert(title, message, type, timeout) {
-            this.alert.show = true
-            this.alert.title = title
-            this.alert.message = message
-            this.alert.type = type
-
-            setTimeout(() => {
-                this.alert.show = false
-            }, timeout)
-        },
         openRegister() {
             this.register.trigger = !this.register.trigger
         },
@@ -70,6 +57,9 @@ export const useMainStore = defineStore('main', {
         },
         openDeleteAccount() {
             this.deleteAccount.trigger = !this.deleteAccount.trigger
+        },
+        openUpdatePassword() {
+            this.updatePassword.trigger = !this.updatePassword.trigger
         },
         openSettings(tab) {
             this.settings.trigger = !this.settings.trigger

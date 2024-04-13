@@ -1,8 +1,8 @@
-import { useMainStore } from "../stores/MainStore"
+import { useAlertStore } from "../stores/AlertStore"
 
 
 export async function API(resource, method, payload=null) {
-    const mainStore = useMainStore()
+    const alertStore = useAlertStore()
     let url = null
     try {
         // If there is a query string in the resource, do not add a trailing slash
@@ -35,7 +35,7 @@ export async function API(resource, method, payload=null) {
         // SUCESS
         if (request.status == 200) {
             if (method != 'GET') {
-                mainStore.showAlert('Success', response, 'success', 5000)
+                alertStore.showAlert('Success', response, 'success', 5000)
             }
             else {
                 return response
@@ -43,13 +43,13 @@ export async function API(resource, method, payload=null) {
         }
         // ERROR
         else {
-            mainStore.showAlert('Error', response, 'error', 5000)
+            alertStore.showAlert('Error', response, 'error', 5000)
             return []
         }
 
     }
     catch (error) {
         console.log(error)
-        mainStore.showAlert('Error', error, 'error', 5000)
+        alertStore.showAlert('Error', error, 'error', 5000)
     }
 }

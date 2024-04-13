@@ -38,3 +38,38 @@ class Login(APIView):
             return Response(status=200, data=token.key)
 
         return Response(status=400, data="Wrong username or password")
+
+# Update Password
+
+
+class UpdatePassword(APIView):
+    def post(self, request):
+        username = request.data['username']
+        token = request.headers.get(
+            'Authorization').strip()
+        user = User.objects.get(username=username)
+        verifyToken = Token.objects.get(user=user).key.strip()
+        currentPassword = request.data['currentPassword']
+        newPassword = request.data['newPassword']
+
+        print(username, currentPassword, newPassword, token, verifyToken)
+
+        if (user.check_password(currentPassword) == True and token == verifyToken):
+            user.set_password(newPassword)
+            user.save()
+            return Response(status=200, data="Password updated successfully")
+        return Response(status=400, data="Wrong current password")
+
+
+class DeleteUser(APIView):
+    def post(self, request):
+        username = request.data['username']
+        token = request.headers.get(
+            'Authorization').strip()
+        user = User.objects.get(username=username)
+        verifyToken = Token.objects.get(user=user).key.strip()
+
+        if (token == verifyToken):
+            user.delete()
+            return Response(status=200, data="User deleted successfully")
+        return Response(status=400, data="Wrong token")

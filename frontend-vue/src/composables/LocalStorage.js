@@ -1,4 +1,3 @@
-import { Authentication } from './Authentication'
 import { useUserStore } from '../stores/UserStore'
 
 export function storeUserdata(username, token) {

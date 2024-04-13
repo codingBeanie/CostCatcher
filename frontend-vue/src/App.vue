@@ -29,7 +29,7 @@
             <div class="w-25 text-end">
 
               <!--Settings-->
-              <v-btn class="mr-4" icon @click="mainStore.openSettings('general')">
+              <v-btn class="mr-4" icon @click="componentStore.openSettings('general')">
                 <v-icon>mdi-cog</v-icon>
               </v-btn>
 
@@ -43,9 +43,18 @@
                   <v-list-item>
                     <p class="font-weight-bold">Welcome {{ username }}</p>
                   </v-list-item>
+
+                  <!--Change Password-->
                   <v-list-item value="changePassword" @click="changePassword">
                     <v-list-item-title><v-icon class="mr-2">mdi-lock-reset</v-icon>Change Password</v-list-item-title>
                   </v-list-item>
+
+                  <!--Delete-->
+                  <v-list-item value="delete" @click="componentStore.openDeleteAccount">
+                    <v-list-item-title><v-icon class="mr-2">mdi-fire</v-icon>Delete Account</v-list-item-title>
+                  </v-list-item>
+                  
+                  <!--Logout-->
                   <v-list-item value="logout" @click="logout">
                     <v-list-item-title><v-icon class="mr-2">mdi-logout</v-icon>Logout</v-list-item-title>
                   </v-list-item>
@@ -70,36 +79,36 @@
 <Alert></Alert>
 <DialogRegister></DialogRegister>
 <DialogLogin></DialogLogin>
+<DialogDeleteAccount></DialogDeleteAccount>
+<DialogUpdatePassword></DialogUpdatePassword>
+
 
 </template>
 
 <script setup>
-import { useMainStore } from './stores/MainStore.js'
-import DialogLogin from './components/DialogLogin.vue'
-import DialogSettings from './components/DialogSettings.vue'
-import Alert from './components/Alert.vue'
-import DialogDelete from './components/DialogDelete.vue'
-import DialogCategories from './components/DialogCategories.vue'
-import EditCategory from './components/EditCategory.vue'
-import EditAssignment from './components/EditAssignment.vue'
-import EditTransaction from './components/EditTransaction.vue'
-import DialogReview from './components/DialogReview.vue'
-import DialogRegister from './components/DialogRegister.vue'
-import LandingPage from './views/LandingPage.vue'
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { getUserdata } from './composables/LocalStorage'
 import { useUserStore } from './stores/UserStore'
-import { ref } from 'vue'
+import { useComponentStore } from './stores/ComponentStore.js'
+
+import Alert from './components/Alert.vue'
+import LandingPage from './views/LandingPage.vue'
+
+import DialogRegister from './components/DialogRegister.vue'
+import DialogLogin from './components/DialogLogin.vue'
+import DialogDeleteAccount from './components/DialogDeleteAccount.vue'
+import DialogUpdatePassword from './components/DialogUpdatePassword.vue'
+
 ////////////////////////////////////////////////////////////////
 // Variables //
 // State Management
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
 const userStore = useUserStore()
 const username = ref(userStore.username)
 ////////////////////////////////////////////////////////////////
 // Methods //
 const changePassword = () => {
-  console.log('Change Password')
+  componentStore.openUpdatePassword()
 }
 
 const logout = () => {
@@ -109,6 +118,10 @@ const logout = () => {
 // Lifecycle Hooks //
 onMounted(() => {
   getUserdata()
+  username.value = userStore.username
+})
+
+watch(() => userStore.username, () => {
   username.value = userStore.username
 })
 </script>
