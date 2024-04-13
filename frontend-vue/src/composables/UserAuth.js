@@ -70,9 +70,8 @@ export async function deleteUser() {
     const token = userStore.token
     try {
         const request = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` },
-            body: JSON.stringify({ username: username })
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
         })
         const response = await request.json()
         if (request.status !== 200) {
@@ -80,7 +79,7 @@ export async function deleteUser() {
             return false
         }
         else {
-            alertStore.showAlert('Success', 'Password updated succesfully', 'success', 5000)
+            alertStore.showAlert('Success', response , 'success', 5000)
             return true
         }
     }
@@ -98,9 +97,9 @@ export async function updatePassword(currentPassword, newPassword) {
     const token = userStore.token
     try {
         const request = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` },
-            body: JSON.stringify({ 'username': username, 'currentPassword': currentPassword, 'newPassword': newPassword })
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
+            body: JSON.stringify({ 'currentPassword': currentPassword, 'newPassword': newPassword })
         })
         const response = await request.json()
         if (request.status !== 200) {
@@ -108,7 +107,7 @@ export async function updatePassword(currentPassword, newPassword) {
             return false
         }
         else {
-            alertStore.showAlert('Success', 'Password updated succesfully', 'success', 5000)
+            alertStore.showAlert('Success', response, 'success', 5000)
             return true
         }
     }

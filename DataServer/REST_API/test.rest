@@ -38,7 +38,7 @@ Authorization: cb3c344e6aee9ab4066fa4c67895ee4398621e9c
 ###
 GET http://localhost:8000/api/settings/
 content-type: application/json
-Authorization: Token df7e368e0e0ad985fc65cb0f8d0ef1b065e60ae5
+Authorization: Token cb3c344e6aee9ab4066fa4c67895ee4398621e9c
 ###
 GET http://localhost:8000/api/settings/
 content-type: application/json

@@ -43,33 +43,20 @@ class Login(APIView):
 
 
 class UpdatePassword(APIView):
-    def post(self, request):
-        username = request.data['username']
-        token = request.headers.get(
-            'Authorization').strip()
-        user = User.objects.get(username=username)
-        verifyToken = Token.objects.get(user=user).key.strip()
+    def put(self, request):
+        user = request.user
         currentPassword = request.data['currentPassword']
         newPassword = request.data['newPassword']
 
-        print(username, currentPassword, newPassword, token, verifyToken)
-
-        if (user.check_password(currentPassword) == True and token == verifyToken):
+        if user.check_password(currentPassword):
             user.set_password(newPassword)
             user.save()
-            return Response(status=200, data="Password updated successfully")
-        return Response(status=400, data="Wrong current password")
+            return Response(status=200, data="Password Updated")
+        return Response(status=400, data="Wrong password")
 
 
 class DeleteUser(APIView):
-    def post(self, request):
-        username = request.data['username']
-        token = request.headers.get(
-            'Authorization').strip()
-        user = User.objects.get(username=username)
-        verifyToken = Token.objects.get(user=user).key.strip()
-
-        if (token == verifyToken):
-            user.delete()
-            return Response(status=200, data="User deleted successfully")
-        return Response(status=400, data="Wrong token")
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response(status=200, data="User Deleted")
