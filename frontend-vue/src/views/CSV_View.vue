@@ -1,11 +1,6 @@
 <template>
     <!--Titles-->
-    <div>
-        <h1 class="">CSV Management</h1>
-        <p class="mb-4 text-h6 font-weight-light">Upload a new csv-file with your transaction data or delete previous uploaded ones if neccesary.</p>
-    </div>
-    <v-divider class="mb-2"></v-divider>
-
+    <Title title="Import Data" subtitle="Upload your csv-files."></Title>
     <!--File-Input-->
     <v-row>
         <v-col>
@@ -80,7 +75,7 @@ import moment from 'moment'
 import { API } from '../composables/API.js'
 import { watch } from 'vue'
 import { useMainStore } from '../stores/MainStore.js'
-
+import Title from '../components/Title.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
