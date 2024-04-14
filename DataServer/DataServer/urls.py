@@ -20,7 +20,6 @@ from REST_API.endpoints.files import Files
 from REST_API.endpoints.transactions import Transactions
 from REST_API.endpoints.categories import Categories
 from REST_API.endpoints.assignments import Assignments
-from REST_API.endpoints.schema import Schema
 from REST_API.endpoints.settings import Settings
 from REST_API.endpoints.statistics import Statistics
 from REST_API.endpoints.datespan import Datespan
@@ -34,7 +33,6 @@ urlpatterns = [
     path('auth/deleteUser/', DeleteUser.as_view()),
     path('api/transactions/', Transactions.as_view()),
     path('api/files/', Files.as_view()),
-    path('api/schema/', Schema.as_view()),
     path('api/settings/', Settings.as_view()),
     path('api/categories/', Categories.as_view()),
     path('api/assignments/', Assignments.as_view()),

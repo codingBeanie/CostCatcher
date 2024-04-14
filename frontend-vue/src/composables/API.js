@@ -1,8 +1,12 @@
 import { useAlertStore } from "../stores/AlertStore"
+import { useUserStore } from "../stores/UserStore"
 
 
 export async function API(resource, method, payload=null) {
     const alertStore = useAlertStore()
+    const userStore = useUserStore()
+    const token = userStore.token
+    console.log('API', resource, method, payload, token)
     let url = null
     try {
         // If there is a query string in the resource, do not add a trailing slash
@@ -17,14 +21,14 @@ export async function API(resource, method, payload=null) {
         if (method === 'GET') {
             request = await fetch(url, {
                 method: method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
             })
         }
         else {
             request = await fetch(url, {
                 method: method,
                 headers: {
-                    'Content-Type': 'application/json'
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
                 },
                 body: JSON.stringify(payload)
             })  

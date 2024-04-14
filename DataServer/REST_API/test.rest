@@ -1,3 +1,5 @@
+
+### REGISTER
 POST http://localhost:8000/auth/register/
 content-type: application/json
 
@@ -6,16 +8,16 @@ content-type: application/json
     "password": "1234"
 }
 
-###
+### LOGIN
 POST http://localhost:8000/auth/login/
 content-type: application/json
 
 {
-    "username": "Preis",
+    "username": "Edda",
     "password": "edda"
 }
 
-###
+### DELETE USER
 POST http://localhost:8000/auth/deleteUser/
 content-type: application/json
 Authorization: ff05b402165a5ab6322bb7ab72dd58d0058c85ca
@@ -23,8 +25,8 @@ Authorization: ff05b402165a5ab6322bb7ab72dd58d0058c85ca
     {
         "username": "Preis2"
     }
-###
 
+### UPDATE PASSWORD
 POST http://localhost:8000/auth/updatePassword/
 content-type: application/json
 Authorization: cb3c344e6aee9ab4066fa4c67895ee4398621e9c
@@ -35,11 +37,7 @@ Authorization: cb3c344e6aee9ab4066fa4c67895ee4398621e9c
     "newPassword": "edda"
 }
 
-###
+### GET SETTINGS
 GET http://localhost:8000/api/settings/
 content-type: application/json
-Authorization: Token cb3c344e6aee9ab4066fa4c67895ee4398621e9c
-###
-GET http://localhost:8000/api/settings/
-content-type: application/json
-Authorization: Token 4ec7ac9946d4a74729de9cf104272855094b22a0
+Authorization: Token 87c69d57a68cc6aa98e2c5122432454bf252021b

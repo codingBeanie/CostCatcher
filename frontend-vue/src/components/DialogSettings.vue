@@ -189,17 +189,17 @@
 </template>
 
 <script setup>
-import { onMounted, defineProps, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
-import { useMainStore } from '../stores/MainStore'
+import { useComponentStore } from '../stores/ComponentStore.js'
 
 ////////////////////////////////////////////////////////////////
 // State Management
 ////////////////////////////////////////////////////////////////
 const active = ref(false)
 const tab = ref('')
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -236,12 +236,36 @@ const locales = [{ 'title': '1.234,56 (EU)', 'value': 'de-DE' }, { 'title': '1,2
 ////////////////////////////////////////////////////////////////
 // Actions
 ////////////////////////////////////////////////////////////////
+const load = (async () => {
+    try {
+        const settings = await API('settings', 'GET')
+
+        currency.value = settings.currency
+        locale.value = locales.find(item => item.value === settings.locale)
+        rowFirst.value = settings.rowFirst
+        rowLast.value = settings.rowLast
+        colDate.value = settings.colDate
+        colRecipient.value = settings.colRecipient
+        colDescription.value = settings.colDescription
+        colAmount.value = settings.colAmount
+        delimiter.value = settings.delimiter
+        thousandsSeparator.value = settings.thousandsSeparator
+        decimalSeparator.value = settings.decimalSeparator
+        dateFormat.value = settings.dateFormat
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
 const close = () => {
     active.value = false
 }
 
 const save = (async() => {
     const data = {
+        currency: currency.value,
+        locale: locale.value,
         rowFirst: rowFirst.value,
         rowLast: rowLast.value,
         colDate: colDate.value,
@@ -253,45 +277,18 @@ const save = (async() => {
         decimalSeparator: decimalSeparator.value,
         dateFormat: dateFormat.value,
     }
-    const update = await API('schema', 'PUT', data)
+    const update = await API('settings', 'PUT', data)
 
-    const settings = {
-        currency: currency.value,
-        locale: locale.value
-    }
-    const updateSettings = await API('settings', 'PUT', settings)
-    mainStore.refreshApp()
+    componentStore.refreshApp()
     active.value = false
 })
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
-onMounted(async () => {
-    try {
-        const schema = await API('schema', 'GET')
-        rowFirst.value = schema.rowFirst
-        rowLast.value = schema.rowLast
-        colDate.value = schema.colDate
-        colRecipient.value = schema.colRecipient
-        colDescription.value = schema.colDescription
-        colAmount.value = schema.colAmount
-        delimiter.value = schema.delimiter
-        thousandsSeparator.value = schema.thousandsSeparator
-        decimalSeparator.value = schema.decimalSeparator
-        dateFormat.value = schema.dateFormat
-
-        const settings = await API('settings', 'GET')
-        currency.value = settings.currency
-        locale.value = locales.find(item => item.value === settings.locale)
-        
-    } catch (error) {
-        console.log(error)
-    }
-     })
-
-watch(() => mainStore.settings.trigger, () => {
-    tab.value = mainStore.settings.tab
+watch(() => componentStore.settings.trigger, () => {
+    load()
+    tab.value = componentStore.settings.tab
     active.value = true
 })
 

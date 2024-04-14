@@ -94,10 +94,13 @@
 
 <!--Dialogs and Alerts-->
 <Alert></Alert>
+
 <DialogRegister></DialogRegister>
 <DialogLogin></DialogLogin>
 <DialogDeleteAccount></DialogDeleteAccount>
 <DialogUpdatePassword></DialogUpdatePassword>
+
+<DialogSettings></DialogSettings>
 
 
 </template>
@@ -115,6 +118,8 @@ import DialogRegister from './components/DialogRegister.vue'
 import DialogLogin from './components/DialogLogin.vue'
 import DialogDeleteAccount from './components/DialogDeleteAccount.vue'
 import DialogUpdatePassword from './components/DialogUpdatePassword.vue'
+
+import DialogSettings from './components/DialogSettings.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables //
