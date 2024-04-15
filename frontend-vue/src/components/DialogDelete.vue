@@ -25,13 +25,13 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useMainStore} from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
 import { API } from '../composables/API.js'
 
 ////////////////////////////////////////////////////////////////
 // State Management
 ////////////////////////////////////////////////////////////////
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
 const active = ref(false)
 
 ////////////////////////////////////////////////////////////////
@@ -51,16 +51,16 @@ const close = () => {
 const confirm = async () => {
     await API(resource.value, 'DELETE', itemID.value)
     active.value = false
-    mainStore.refreshApp()
+    componentStore.refreshApp()
 }
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
-watch(() => mainStore.delete.trigger, () => {
-    title.value = mainStore.delete.title
-    itemID.value = mainStore.delete.itemID
-    resource.value = mainStore.delete.resource
+watch(() => componentStore.delete.trigger, () => {
+    title.value = componentStore.delete.title
+    itemID.value = componentStore.delete.itemID
+    resource.value = componentStore.delete.resource
     active.value = true
 })
 

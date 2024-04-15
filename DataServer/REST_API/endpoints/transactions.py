@@ -5,6 +5,7 @@ from ..serializer import TransactionSerializer
 from ..bindings import createBindingByTransactions
 import calendar
 import datetime
+import uuid
 
 
 class Transactions(APIView):
@@ -16,6 +17,8 @@ class Transactions(APIView):
             period = request.query_params.get('period', None)
 
             filters = {}
+            filters['user'] = request.user.id
+
             # ID
             if queryID:
                 filters['id'] = queryID
@@ -61,13 +64,18 @@ class Transactions(APIView):
     def post(self, request):
         try:
             data = request.data
+            for item in data:
+                item['user'] = request.user.id
+                item['uploadID'] = uuid.uuid5(
+                    uuid.NAMESPACE_DNS, item['fileName'] + item['fileDate'])
+
             serializer = TransactionSerializer(data=data, many=True)
             if serializer.is_valid():
                 serializer.save()
                 createBindingByTransactions(serializer.instance)
                 return Response(status=200, data="Transactions have been uploaded")
             else:
-                return Response(status=400, data="Error in data format")
+                return Response(status=400, data=serializer.errors)
 
         except Exception as e:
             print("Error in Transactions API:", e)
@@ -76,7 +84,8 @@ class Transactions(APIView):
     def put(self, request):
         try:
             data = request.data
-            transaction = Transaction.objects.get(id=data['id'])
+            user = request.user
+            transaction = Transaction.objects.get(id=data['id'], user=user)
 
             # if category changed, set overrule attribute
             if transaction.category != data['category']:
@@ -104,7 +113,8 @@ class Transactions(APIView):
     def delete(self, request):
         try:
             data = request.data
-            Transaction.objects.filter(id=data).delete()
+            user = request.user
+            Transaction.objects.filter(id=data, user=user).delete()
             return Response(status=200, data="Transaction has been deleted")
         except Exception as e:
             print("Error in Transactions API:", e)

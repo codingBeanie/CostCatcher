@@ -29,7 +29,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
-import { RegisterUser } from '../composables/UserAuth.js'
+import { registerUser } from '../composables/UserAuth.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -66,7 +66,7 @@ const register = async () => {
         return
     }
 
-    const response = await RegisterUser(username.value, password.value)
+    const response = await registerUser(username.value, password.value)
 
     if (response == true) {
         active.value = false

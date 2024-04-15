@@ -1,10 +1,10 @@
 <template>
     <!--Titles-->
-    <Title title="Import Data" subtitle="Upload your csv-files."></Title>
+    <Title title="Import Data" subtitle="Upload your csv-files here."></Title>
     <!--File-Input-->
     <v-row>
         <v-col>
-            <p v-if="importError==true" class="text-h6 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings('CSV')" class="mb-1"></v-btn>.</p>
+            <p v-if="importError==true" class="text-h6 text-error">The import scheme is not valid. Please check the import scheme in the settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="componentStore.openSettings('CSV')" class="mb-1"></v-btn>.</p>
         </v-col>
     </v-row>
     <v-row class="">
@@ -30,8 +30,8 @@
                 <!--Amount-->
                 <template v-slot:item.amount="{ item }">
                     <v-row class="justify-end mr-12">
-                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
-                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toLocaleString(locale)}} {{ currency }}</div>
+                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount / 100).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
+                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount / 100).toLocaleString(locale, {minimumFractionDigits: 2}) }}{{ currency }}</div>
                     </v-row>
                 </template>
             </v-data-table>
@@ -39,7 +39,7 @@
 
         <v-row class="">
             <v-col cols="10" class="mt-2 text-end">
-                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="mainStore.openSettings('CSV')" class="mb-1"></v-btn> if needed.</p>     
+                <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="componentStore.openSettings('CSV')" class="mb-1"></v-btn> if needed.</p>     
             </v-col>
             <v-col cols="2" class="mt-2 text-end">
                 <v-btn color="accent" @click="uploadData()" prependIcon="mdi-upload">Confirm</v-btn>
@@ -60,7 +60,7 @@
                 </template>
 
                 <template v-slot:item.action="{ item }">
-                    <v-btn density="compact" icon="mdi-delete" color="" @click="mainStore.openDelete('files', { fileName: `${item.fileName}`, fileDate: `${item.fileDate}` }, `${item.fileName}`)">
+                    <v-btn density="compact" icon="mdi-delete" color="" @click="componentStore.openDelete('files', item.uploadID, `${item.fileName}`)">
                     </v-btn>
                 </template>
             </v-data-table>
@@ -74,26 +74,27 @@ import { ref, onMounted } from 'vue'
 import moment from 'moment'
 import { API } from '../composables/API.js'
 import { watch } from 'vue'
-import { useMainStore } from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
+import { useAlertStore } from '../stores/AlertStore.js'
+import { useUserStore } from '../stores/UserStore.js'
 import Title from '../components/Title.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
 // State Management
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
+const userStore = useUserStore()
+const alertStore = useAlertStore()
 const fileLoaded = ref(false)
 const importError = ref(false)
 
 // Data Objects
 const dataPreview = ref([])
 const dataUploads = ref([])
-const schema = ref([])
 const settings = ref([])
 
 // Input Objects
 const inputFile = ref()
-const fileName = ref('')
-const fileDate = ref('')
 
 // Display Objects
 const currency = ref('€')
@@ -129,7 +130,7 @@ const readFile = () => {
         const content = input.target.result.replace(/"/g, '')
         const lines = content.split('\n')
         lines.forEach(line => { 
-            const values = line.split(schema.value.delimiter)
+            const values = line.split(settings.value.delimiter)
             data.push(values)
         })
         fileLoaded.value = true
@@ -145,13 +146,13 @@ const parseData = (data) => {
 
     try { 
         data.forEach((entry, index) => {
-            if (index >= schema.value.rowFirst && index < data.length - schema.value.rowLast) {
-                const originalDate = entry[schema.value.colDate - 1]
-                const parsedDate = moment(originalDate, schema.value.dateFormat)
+            if (index >= settings.value.rowFirst && index < data.length - settings.value.rowLast) {
+                const originalDate = entry[settings.value.colDate - 1]
+                const parsedDate = moment(originalDate, settings.value.dateFormat)
                 const date = parsedDate.format('YYYY-MM-DD')
-                const recipient = entry[schema.value.colRecipient - 1]
-                const description = entry[schema.value.colDescription - 1]
-                const amount = entry[schema.value.colAmount - 1].replace(schema.value.thousandsSeparator, '').replace(schema.value.decimalSeparator, '.')
+                const recipient = entry[settings.value.colRecipient - 1]
+                const description = entry[settings.value.colDescription - 1]
+                const amount = Math.floor(entry[settings.value.colAmount - 1].replace(settings.value.thousandsSeparator, '').replace(settings.value.decimalSeparator, '.') * 100)
                 dataPreview.value.push({ date, recipient, description, amount, fileName, fileDate })
             }
         })
@@ -160,7 +161,7 @@ const parseData = (data) => {
     } catch (error) {
         console.log("Error converting data: ", error)
         importError.value = true
-        mainStore.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
+        alertStore.showAlert('Error', `The import scheme is not valid. Please check the import scheme in the settings.`, 'error', 5000)
     }
 }
 
@@ -176,10 +177,9 @@ const uploadData = async () => {
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
 const load = async () => {
-   // schema.value = await API('schema', 'GET')
-   // settings.value = await API('settings', 'GET')
-   // currency.value = settings.value.currency
-   // locale.value = settings.value.locale
+    settings.value = await API('settings', 'GET')
+    locale.value = settings.value.locale
+    currency.value = settings.value.currency
     loadTableUploads()
 
     if(fileLoaded.value) {
@@ -187,12 +187,20 @@ const load = async () => {
     }
 }
 
-onMounted(async () => {
+onMounted(() => {
     load()
 })
 
-watch(() => mainStore.app.refresh, () => {
+watch(() => userStore.username, () => {
+    fileLoaded.value = false
+    inputFile.value = null
+    importError.value = false
     load()
 })
+
+watch(() => componentStore.app.refresh, () => {
+    load()
+})
+
 
 </script>

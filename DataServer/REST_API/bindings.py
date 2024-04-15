@@ -55,7 +55,9 @@ def deleteBinding(assignment):
 
 def createBindingByTransactions(transactions):
     for transaction in transactions:
-        for assignment in Assignment.objects.all():
+        user = transaction.user
+        assignments = Assignment.objects.filter(user=user)
+        for assignment in assignments:
             # Check-Mode: recipient_only
             if assignment.checkMode == "recipient_only":
                 if assignment.keyword.lower() in transaction.recipient.lower():

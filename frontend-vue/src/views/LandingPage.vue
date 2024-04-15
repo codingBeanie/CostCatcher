@@ -4,10 +4,10 @@
         <v-card color="secondary">
             <v-container>
                 <v-row class="padding">
-                    <v-col cols="11">
+                    <v-col cols="10">
                         <p class="text-h5">COSTCATCHER</p>
                     </v-col>
-                    <v-col cols="1">
+                    <v-col cols="2">
                         <v-btn color="info" prepend-icon="mdi-login" @click="componentStore.openLogin">Login</v-btn>
                     </v-col>
                 </v-row>

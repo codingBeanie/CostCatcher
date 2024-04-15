@@ -101,7 +101,7 @@
 <DialogUpdatePassword></DialogUpdatePassword>
 
 <DialogSettings></DialogSettings>
-
+<DialogDelete></DialogDelete>
 
 </template>
 
@@ -120,6 +120,7 @@ import DialogDeleteAccount from './components/DialogDeleteAccount.vue'
 import DialogUpdatePassword from './components/DialogUpdatePassword.vue'
 
 import DialogSettings from './components/DialogSettings.vue'
+import DialogDelete from './components/DialogDelete.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables //

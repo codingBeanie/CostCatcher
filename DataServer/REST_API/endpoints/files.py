@@ -1,26 +1,32 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..models import Transaction
+from ..serializer import FileSerializer
+import datetime
 
 
 class Files(APIView):
     def get(self, request):
         try:
-            data = Transaction.objects.values(
-                'fileName', 'fileDate').distinct()
-            return Response(status=200, data=data)
+            user = request.user.id
+            transactions = Transaction.objects.filter(
+                user=user).values('fileName', 'fileDate', 'uploadID')
+            uniqueEntries = []
+            # because i can not query a .distinct() on encrypted fields
+            # i have to iterate through the decrypted values and append them to a list
+            for transaction in transactions:
+                if transaction not in uniqueEntries:
+                    uniqueEntries.append(transaction)
+            return Response(status=200, data=uniqueEntries)
         except Exception as e:
             print("Error in Files API:", e)
             return Response(status=500, data="Files could not be queried")
 
     def delete(self, request):
-        print("DELETE", request.data)
         try:
-            data = request.data
-            fileName = data['fileName']
-            fileDate = data['fileDate']
-            Transaction.objects.filter(
-                fileName=fileName, fileDate=fileDate).delete()
+            transactions = Transaction.objects.filter(
+                user=request.user.id)
+            transactions.delete()
             return Response(status=200, data="File has been deleted")
         except:
             return Response(status=500, data="File could not be deleted")

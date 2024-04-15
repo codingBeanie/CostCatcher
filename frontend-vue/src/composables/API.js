@@ -6,8 +6,11 @@ export async function API(resource, method, payload=null) {
     const alertStore = useAlertStore()
     const userStore = useUserStore()
     const token = userStore.token
-    console.log('API', resource, method, payload, token)
     let url = null
+    if (token == null) {
+        return []
+    }
+   // console.log('API', resource, method, payload, token)
     try {
         // If there is a query string in the resource, do not add a trailing slash
         if (resource.includes('?')) {
@@ -27,9 +30,7 @@ export async function API(resource, method, payload=null) {
         else {
             request = await fetch(url, {
                 method: method,
-                headers: {
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
                 body: JSON.stringify(payload)
             })  
         }

@@ -27,7 +27,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
-import { LoginUser } from '../composables/UserAuth.js'
+import { loginUser } from '../composables/UserAuth.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -49,7 +49,7 @@ const close = () => {
 }
 
 const login = async () => {
-    const response = await LoginUser(username.value, password.value)
+    const response = await loginUser(username.value, password.value)
 
     if (response == true) {
         active.value = false

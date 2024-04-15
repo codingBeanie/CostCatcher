@@ -22,12 +22,6 @@ class FileSerializer(serializers.Serializer):
         fields = ['fileName', 'fileDate']
 
 
-class ImportSchemaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ImportSchema
-        fields = '__all__'
-
-
 class SettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Setting

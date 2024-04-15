@@ -41,8 +41,8 @@
 
             <!--Category Button-->
             <v-col cols="2" class="mt-2 text-start">
-                <v-btn v-if="display.mdAndDown.value" color="info" @click="mainStore.openCategories()" icon="mdi-bookshelf"></v-btn>
-                <v-btn v-else class="" color="info" @click="mainStore.openCategories()">Edit Categories</v-btn>
+                <v-btn v-if="display.mdAndDown.value" color="info" @click="componentStore.openCategories()" icon="mdi-bookshelf"></v-btn>
+                <v-btn v-else class="" color="info" @click="componentStore.openCategories()">Edit Categories</v-btn>
             </v-col>
             
             <!--Button-->
@@ -76,31 +76,31 @@
                             </v-tooltip>
                         </div> 
                         <div class="ml-4">
-                            <v-btn variant="text" @click="mainStore.openAssignmentEdit(item.id)">{{ item.keyword }}</v-btn>
+                            <v-btn variant="text" @click="componentStore.openAssignmentEdit(item.id)">{{ item.keyword }}</v-btn>
                         </div>
                     </v-row>
                 </template>
 
                 <!--Category-->
                 <template v-slot:item.category="{ item }">
-                    <v-chip :color="item.color" link @click="mainStore.openCategoryEdit(item.category)">{{ item.categoryName }}</v-chip>
+                    <v-chip :color="item.color" link @click="componentStore.openCategoryEdit(item.category)">{{ item.categoryName }}</v-chip>
                 </template>
 
                 <!--Recipient-->
                 <template v-slot:item.checkMode="{ item }">
                     <v-row class="justify-start">
-                        <v-btn v-if="item.checkMode==='recipient_or_description'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Recipient OR Description</v-btn>
-                        <v-btn v-if="item.checkMode==='recipient_only'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Recipient</v-btn>
-                        <v-btn v-if="item.checkMode==='description_only'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Description</v-btn>
-                        <v-btn v-if="item.checkMode==='recipient_and_description'" variant="plain" @click="mainStore.openAssignmentEdit(item.id)">Recipient AND Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_or_description'" variant="plain" @click="componentStore.openAssignmentEdit(item.id)">Recipient OR Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_only'" variant="plain" @click="componentStore.openAssignmentEdit(item.id)">Recipient</v-btn>
+                        <v-btn v-if="item.checkMode==='description_only'" variant="plain" @click="componentStore.openAssignmentEdit(item.id)">Description</v-btn>
+                        <v-btn v-if="item.checkMode==='recipient_and_description'" variant="plain" @click="componentStore.openAssignmentEdit(item.id)">Recipient AND Description</v-btn>
                     </v-row>
                </template>
 
                 <!--Action-->
                 <template v-slot:item.action="{ item }">
                     <v-row class="justify-center">
-                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openAssignmentEdit(item.id)"></v-btn>  
-                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('assignments', item.id, item.keyword)">
+                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="componentStore.openAssignmentEdit(item.id)"></v-btn>  
+                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="componentStore.openDelete('assignments', item.id, item.keyword)">
                         </v-btn>                   
                     </v-row>
 
@@ -128,15 +128,15 @@
                 <!--Amount-->
                 <template v-slot:item.amount="{ item }">
                     <v-row class="justify-end mr-12">
-                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
-                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
+                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount / 100).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</div>
+                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount / 100).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</div>
                     </v-row>
                 </template>
 
                 <template v-slot:item.action="{ item }">
                     <v-row class="justify-center">
-                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openTransactionEdit(item.id)"></v-btn>  
-                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('transactions', item.id, `${item.recipient} | ${item.description}`)">
+                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="componentStore.openTransactionEdit(item.id)"></v-btn>  
+                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="componentStore.openDelete('transactions', item.id, `${item.recipient} | ${item.description}`)">
                         </v-btn>                   
                     </v-row>
                 </template>
@@ -152,14 +152,16 @@
 import { onMounted, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { API } from '../composables/API.js'
-import { useMainStore } from '../stores/MainStore'
+import { useComponentStore } from '../stores/ComponentStore'
+import { useUserStore } from '../stores/UserStore'
 import { watch } from 'vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
 // State Management
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
+const userStore = useUserStore()
 
 // Settings
 const currency = ref('€')
@@ -230,7 +232,7 @@ const loadNoCategory = async () => {
 ////////////////////////////////////////////////////////////////
 const createAssignment = async () => {
     if (keyword.value === '' || category.value === '' || checkMode.value === '') {
-        mainStore.showAlert('Input Failure', 'Please check your input fields', 'error', 4000)
+        componentStore.showAlert('Input Failure', 'Please check your input fields', 'error', 4000)
         return
     } else {
         const assignment = {
@@ -241,7 +243,7 @@ const createAssignment = async () => {
         await API('assignments', 'POST', assignment)
         keyword.value = ''
         category.value = ''
-        mainStore.refreshApp()
+        componentStore.refreshApp()
     }
 }
 
@@ -259,7 +261,13 @@ onMounted(async () => {
     load()
 })
 
-watch([() => mainStore.app.refresh, () => mainStore.categories.trigger], () => {
+watch([() => componentStore.app.refresh, () => componentStore.categories.trigger], () => {
     load()
+})
+
+watch(() => userStore.username, () => {
+    if (userStore.username != null) {
+        load()
+    }
 })
 </script>

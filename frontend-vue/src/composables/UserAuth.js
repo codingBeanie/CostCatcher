@@ -2,7 +2,7 @@ import { useUserStore } from "../stores/UserStore"
 import { useAlertStore } from "../stores/AlertStore"
 import { storeUserdata } from "./LocalStorage"
 
-export async function RegisterUser(username, password) {
+export async function registerUser(username, password) {
     const url = `http://localhost:8000/auth/register/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
@@ -32,7 +32,7 @@ export async function RegisterUser(username, password) {
     }
 }
 
-export async function LoginUser(username, password) {
+export async function loginUser(username, password) {
     const url = `http://localhost:8000/auth/login/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()

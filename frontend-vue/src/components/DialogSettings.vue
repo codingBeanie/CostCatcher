@@ -241,7 +241,7 @@ const load = (async () => {
         const settings = await API('settings', 'GET')
 
         currency.value = settings.currency
-        locale.value = locales.find(item => item.value === settings.locale)
+        locale.value = locales.find(item => item.value === settings.locale).value
         rowFirst.value = settings.rowFirst
         rowLast.value = settings.rowLast
         colDate.value = settings.colDate
@@ -277,7 +277,7 @@ const save = (async() => {
         decimalSeparator: decimalSeparator.value,
         dateFormat: dateFormat.value,
     }
-    const update = await API('settings', 'PUT', data)
+    await API('settings', 'PUT', data)
 
     componentStore.refreshApp()
     active.value = false

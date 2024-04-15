@@ -12,9 +12,11 @@ class Settings(APIView):
 
     def put(self, request):
         data = request.data
+        data['user'] = request.user.id
         settings = Setting.objects.get(user=request.user)
         serializer = SettingsSerializer(settings, data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=200, data="Settings have been updated")
-        return Response(status=500, data="Settings could not be updated")
+        print(serializer.errors)
+        return Response(status=500, data=serializer.errors)
