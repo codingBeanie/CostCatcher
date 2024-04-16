@@ -3,31 +3,38 @@ from django.db.models import Q
 
 
 def createBinding(assignment):
-
+    userTransactions = Transaction.objects.filter(user=assignment.user)
+    transactions = []
     # Check-Mode: recipient_only
     if assignment.checkMode == "recipient_only":
-        transactions = Transaction.objects.filter(
-            recipient__icontains=assignment.keyword)
+        for transaction in userTransactions:
+            if assignment.keyword.lower() in transaction.recipient.lower():
+                transactions.append(transaction)
 
     # Check-Mode: description_only
     elif assignment.checkMode == "description_only":
-        transactions = Transaction.objects.filter(
-            description__icontains=assignment.keyword)
+        for transaction in userTransactions:
+            if assignment.keyword.lower() in transaction.description.lower():
+                transactions.append(transaction)
 
     # Check-Mode: recipient_and_description
     elif assignment.checkMode == "recipient_and_description":
-        transactions = Transaction.objects.filter(
-            Q(recipient__icontains=assignment.keyword) & Q(description__icontains=assignment.keyword))
+        for transaction in userTransactions:
+            if assignment.keyword.lower() in transaction.recipient.lower() and assignment.keyword.lower() in transaction.description.lower():
+                transactions.append(transaction)
 
     # Check-Mode: recipient_or_description
     elif assignment.checkMode == "recipient_or_description":
-        transactions = Transaction.objects.filter(
-            Q(recipient__icontains=assignment.keyword) | Q(description__icontains=assignment.keyword))
+        for transaction in userTransactions:
+            if assignment.keyword.lower() in transaction.recipient.lower() or assignment.keyword.lower() in transaction.description.lower():
+                transactions.append(transaction)
 
+    # add category to transactions if not overruled
     for transaction in transactions:
         if transaction.overruled == False and transaction.category == None:
             transaction.category = assignment.category
 
+    # add assignment to transactions
     for transaction in transactions:
         transaction.assignments.add(assignment.id)
         transaction.save()
@@ -35,21 +42,20 @@ def createBinding(assignment):
 
 
 def deleteBinding(assignment):
-    transactions = Transaction.objects.filter(
-        assignments__keyword=assignment.keyword)
+    userTransactions = Transaction.objects.filter(user=assignment.user)
+    userTransactions = userTransactions.filter(
+        Q(assignments__id=assignment.id))
 
-    for transaction in transactions:
+    for transaction in userTransactions:
         transaction.assignments.remove(assignment.id)
         transaction.save()
-
-        if transaction.overruled == False and transaction.assignments.all().count() > 0:
-            lastAssignment = transaction.assignments.last()
-            transaction.category = Category.objects.get(
-                id=lastAssignment.category.id)
-        else:
+        if transaction.assignments.count() > 0 and transaction.overruled == False:
+            transaction.category = transaction.assignments.first().category
+            transaction.save()
+        elif transaction.assignments.count() == 0 and transaction.overruled == False:
             transaction.category = None
-
-        transaction.save()
+            transaction.save()
+    assignment.delete()
     return
 
 

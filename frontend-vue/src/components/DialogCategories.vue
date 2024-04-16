@@ -62,12 +62,12 @@
                             <v-data-table :items="data" :headers="headers">
                                 <!--Category-->
                                 <template v-slot:item.name="{ item }">
-                                <v-chip :color="item.color" link @click="mainStore.openCategoryEdit(item.id)"> {{ item.name }}</v-chip> 
+                                <v-chip :color="item.color" link @click="componentStore.openCategoryEdit(item.id)"> {{ item.name }}</v-chip> 
                                 </template>
                                 <template v-slot:item.action="{ item }">
-                                    <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openCategoryEdit(item.id)">
+                                    <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="componentStore.openCategoryEdit(item.id)">
                                     </v-btn>
-                                    <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('categories', item.id, item.name)">
+                                    <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="componentStore.openDelete('categories', item.id, item.name)">
                                     </v-btn>
                                 </template>
                             </v-data-table>
@@ -90,14 +90,16 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { useMainStore } from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
+import { useUserStore } from '../stores/UserStore.js'
 import { API } from '../composables/API.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
 // State Management
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
+const userStore = useUserStore()
 const active = ref(false)
 
 // Data
@@ -138,7 +140,7 @@ const createCategory = async () => {
 // Actions
 ////////////////////////////////////////////////////////////////
 const close = () => {
-    mainStore.refreshApp()
+    componentStore.refreshApp()
     active.value = false
 }
 ////////////////////////////////////////////////////////////////
@@ -152,12 +154,16 @@ onMounted(async () => {
     load()
 })
 
-watch(() => mainStore.categories.trigger, () => {
+watch(() => componentStore.categories.trigger, () => {
     load()
     active.value = true
 })
 
-watch(() => mainStore.app.refresh, () => {
+watch(() => componentStore.app.refresh, () => {
+    load()
+})
+
+watch(() => userStore.username, () => {
     load()
 })
 </script>

@@ -1,6 +1,7 @@
 <template>
     <!--Titles-->
     <Title title="Import Data" subtitle="Upload your csv-files here."></Title>
+    <Divider title="Upload File"></Divider>
     <!--File-Input-->
     <v-row>
         <v-col>
@@ -11,16 +12,10 @@
         <v-col><v-file-input label="Upload a new csv-file" accept=".csv" @change="readFile" v-model="inputFile"></v-file-input></v-col>
     </v-row>
 
-
-    <v-divider class="mb-8"></v-divider>
-
     <!--Preview-Table-->
     <div v-if="fileLoaded && !importError"> 
-        <v-row>
-            <h2 class="mb-4">Preview</h2>
-        </v-row>
-
-        <v-row>
+        <Divider title="PREVIEW" spacing="16"></Divider> 
+        <v-row class="mt-4">
             <v-data-table :items="dataPreview" :headers="headersPreview" density="compact">
                 <!--Date-->
                 <template v-slot:item.date="{ item }">
@@ -49,10 +44,8 @@
 
     <!--Uploaded Files Table-->       
     <div v-else>
-        <v-row>
-            <h2 class="mt-10 mb-4">Uploaded Files</h2>
-        </v-row>
-        <v-row>
+        <Divider title="uploaded Files" spacing="16"></Divider> 
+        <v-row class="mt-4">
             <v-data-table :items="dataUploads" :headers="headersFiles">
                 <!--Date-->
                 <template v-slot:item.fileDate="{ item }">
@@ -78,6 +71,7 @@ import { useComponentStore } from '../stores/ComponentStore.js'
 import { useAlertStore } from '../stores/AlertStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 import Title from '../components/Title.vue'
+import Divider from '../components/Divider.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////

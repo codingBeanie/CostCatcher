@@ -47,14 +47,14 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { API } from '../composables/API.js'
-import { useMainStore } from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
 // State Management
 const active = ref(false)
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
 
 // Input
 const newCategory = ref('')
@@ -65,7 +65,7 @@ const id = ref('')
 // Loads
 ////////////////////////////////////////////////////////////////
 const loadData = async () => {
-    id.value = mainStore.categoryEdit.id
+    id.value = componentStore.categoryEdit.id
     const data = await API(`categories/?id=${id.value}`, 'GET')
     newCategory.value = data.name
     newColor.value = data.color
@@ -87,7 +87,7 @@ const save = async () => {
         color: newColor.value
     }
     await API('categories', 'PUT', data) 
-    mainStore.refreshApp()
+    componentStore.refreshApp()
     active.value = false
 }
 
@@ -98,7 +98,7 @@ const load = () => {
     loadData()
 }
 
-watch(() => mainStore.categoryEdit.trigger, () => {
+watch(() => componentStore.categoryEdit.trigger, () => {
     load()
     active.value = true  
 })

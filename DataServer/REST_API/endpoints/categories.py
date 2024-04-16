@@ -8,44 +8,50 @@ class Categories(APIView):
     def get(self, request):
         queryID = request.query_params.get('id', None)
         queryName = request.query_params.get('name', None)
+        categories = Category.objects.filter(user=request.user.id)
         if queryID:
-            data = Category.objects.get(id=queryID)
+            data = categories.get(id=queryID)
             serializer = CategorySerializer(data)
         elif queryName:
-            data = Category.objects.get(name=queryName)
+            data = categories.get(name=queryName)
             serializer = CategorySerializer(data)
         else:
-            data = Category.objects.all().order_by('name')
+            data = categories.order_by('name')
             serializer = CategorySerializer(data, many=True)
         return Response(status=200, data=serializer.data)
 
     def post(self, request):
         data = request.data
-        if Category.objects.filter(name=data['name']).exists():
+        user = request.user.id
+        data['user'] = user
+
+        categories = Category.objects.filter(user=user)
+        if categories.filter(name=data['name']).exists():
             return Response(status=400, data="Category already exists")
 
         serializer = CategorySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=200, data="Category has been created")
-        return Response(status=500, data="Category could not be created")
+        return Response(status=500, data=serializer.errors)
 
     def put(self, request):
         data = request.data
-        category = Category.objects.get(id=data['id'])
+        user = request.user.id
+        data['user'] = user
+        categories = Category.objects.filter(user=user)
+        category = categories.get(id=data['id'])
 
         serializer = CategorySerializer(category, data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=200, data="Category has been updated")
-        return Response(status=500, data="Category could not be updated")
+        return Response(status=500, data=serializer.errors)
 
     def delete(self, request):
-        try:
-            if request.data:
-                category = Category.objects.get(id=request.data)
-                category.delete()
-                return Response(status=200, data="Category has been deleted")
-            return Response(status=400, data="Invalid Category ID")
-        except:
-            return Response(status=500, data="Category could not be deleted")
+        if request.data:
+            categories = Category.objects.filter(user=request.user.id)
+            category = categories.get(id=request.data)
+            category.delete()
+            return Response(status=200, data="Category has been deleted")
+        return Response(status=400, data="Invalid Category ID")

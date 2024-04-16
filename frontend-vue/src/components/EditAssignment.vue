@@ -36,7 +36,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useMainStore } from '@/stores/MainStore';
+import { useComponentStore } from '@/stores/ComponentStore.js';
 import { API } from '../composables/API.js'
 
 ////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ import { API } from '../composables/API.js'
 ////////////////////////////////////////////////////////////////
 // State Management
 const active = ref(false)
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
 
 // Input
 const id = ref('')
@@ -73,14 +73,14 @@ const save = async () => {
     }
     await API('assignments', 'PUT', data) 
     active.value = false
-    mainStore.refreshApp()
+    componentStore.refreshApp()
 }
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle
 ////////////////////////////////////////////////////////////////
 const load = async () => {
-    id.value = mainStore.assignmentEdit.id
+    id.value = componentStore.assignmentEdit.id
     const data = await API(`assignments/?id=${id.value}`, 'GET')
     keyword.value = data.keyword
     category.value = data.category
@@ -89,11 +89,8 @@ const load = async () => {
     categories.value = await API('categories', 'GET')
 }
 
-watch(() => mainStore.assignmentEdit.trigger, () => {
+watch(() => componentStore.assignmentEdit.trigger, () => {
     load()
     active.value = true  
 })
-
-
 </script>
-../stores/MainStore

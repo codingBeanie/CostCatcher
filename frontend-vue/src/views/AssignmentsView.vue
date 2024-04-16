@@ -1,14 +1,11 @@
 <template>
     <!--Titles-->
-    <div>
-        <h1 class="mb-3 text-h3 font-weight-bold">Categorization</h1>
-        <p class="mb-4 text-h7">You can create custom categories that are assigned automatically based on a ruleset to your transactions.</p>
-    </div>
-    <v-divider class="mb-8"></v-divider>
+    <Title title="Categorization" subtitle="Create rulesets for an automatic assignment of your transactions to custom categories."></Title>
 
     <!--Create Form-->
     <div>
-        <v-row class="">
+        <Divider title="Create Ruleset" spacing=""></Divider>
+        <v-row class="mt-2">
             <!--Keyword-->
             <v-col class="d-flex" cols="3">
                 <v-text-field v-model="keyword" label="Keyword"></v-text-field>
@@ -53,16 +50,11 @@
         </v-row>
 
     </div>
-    <v-divider class="mb-8"></v-divider>
 
     <!--Assignment-Table-->
     <div>
-        <v-row>
-            <v-col>
-                <h2 class="">Created Categorizations</h2>
-            </v-col>
-        </v-row>
-        <v-row>
+        <Divider title="Created rulesets" spacing="16"></Divider>    
+        <v-row class="mt-4">
             <v-data-table :items="data" :headers="headersAssignments">
 
                 <!--Keyword-->
@@ -108,17 +100,11 @@
             </v-data-table>
         </v-row>
     </div>
-    <v-divider class="mt-8"></v-divider>
     
     <!--Not assigned-Table-->
     <div>
-        <v-row>
-            <v-col>
-                <h2 class="mt-4">Transactions without a category</h2>
-                <p class=" text-h7">See which transactions do not have a category, so you can create a categorization accordingly.</p>
-            </v-col>
-        </v-row>
-        <v-row>
+        <Divider title="transactions without categorization" spacing="16"></Divider>    
+        <v-row class="mt-4">
             <v-data-table :items="dataNoCategory" :headers="headersNoCategory">
                 <!--Date-->
                 <template v-slot:item.date="{ item }">
@@ -144,8 +130,6 @@
             </v-data-table>
         </v-row>
     </div>
-    <v-divider class="mt-8"></v-divider>    
-
 </template>
 
 <script setup>
@@ -155,6 +139,9 @@ import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore'
 import { useUserStore } from '../stores/UserStore'
 import { watch } from 'vue'
+
+import Title from '../components/Title.vue'
+import Divider from '../components/Divider.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -266,8 +253,6 @@ watch([() => componentStore.app.refresh, () => componentStore.categories.trigger
 })
 
 watch(() => userStore.username, () => {
-    if (userStore.username != null) {
-        load()
-    }
+    load()
 })
 </script>

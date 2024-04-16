@@ -12,23 +12,20 @@ class Transactions(APIView):
 
     def get(self, request):
         try:
+            # Query parameters
             queryID = request.query_params.get('id', None)
             category = request.query_params.get('category', None)
             period = request.query_params.get('period', None)
 
+            # Filters
             filters = {}
-            filters['user'] = request.user.id
-
-            # ID
-            if queryID:
-                filters['id'] = queryID
 
             # CATEGORY
             # NONE = no filter, show all
             if category:
                 # 0 = no category, show all without category
                 if int(category) == 0:
-                    filters['category__isnull'] = True
+                    filters['category'] = None
 
                 # -1 = INCOME
                 if int(category) == -1:
@@ -52,10 +49,12 @@ class Transactions(APIView):
                 filters['date__gte'] = fromDate
                 filters['date__lte'] = toDate
 
-            data = Transaction.objects.filter(**filters).order_by('-date')
-            serializer = TransactionSerializer(data, many=True)
+            # because the fields are encrypted, i need to apply the filters manually
+            transactions = Transaction.objects.filter(user=request.user.id)
+            transactions = transactions.filter(**filters)
+            result = TransactionSerializer(transactions, many=True).data
 
-            return Response(status=200, data=serializer.data)
+            return Response(status=200, data=result)
 
         except Exception as e:
             print("Error in Transactions API:", e)

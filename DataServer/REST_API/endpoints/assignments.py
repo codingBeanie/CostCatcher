@@ -7,36 +7,45 @@ from ..bindings import createBinding, deleteBinding
 
 class Assignments(APIView):
     def get(self, request):
+        user = request.user.id
+        assignments = Assignment.objects.filter(user=user)
         queryID = request.query_params.get('id', None)
         if queryID:
-            queryID = queryID.replace('/', '')
-            data = Assignment.objects.get(id=queryID)
+            data = assignments.get(id=queryID)
             serializer = AssignmentSerializer(data)
         else:
-            data = Assignment.objects.all()
+            data = assignments.all()
             serializer = AssignmentSerializer(data, many=True)
         return Response(status=200, data=serializer.data)
 
     def post(self, request):
         try:
             data = request.data
+            user = request.user.id
+            data['user'] = user
             keyword = data['keyword']
+            assignments = Assignment.objects.filter(user=user)
 
-            if Assignment.objects.filter(keyword=keyword).exists():
-                return Response(status=400, data="Assignment already exists")
+            # Check if assignment already exists
+            for assignment in assignments:
+                if assignment.keyword == keyword:
+                    return Response(status=400, data="Assignment already exists")
 
+            # create assignment
             serializer = AssignmentSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 createBinding(serializer.instance)
                 return Response(status=200, data="Assignment has been created")
+            else:
+                return Response(status=400, data=serializer.errors)
 
-        except:
+        except Exception as e:
+            print("Error in Assignments API:", e)
             return Response(status=500, data="Assignment could not be created")
 
     def put(self, request):
         data = request.data
-        print(data)
         assignment = Assignment.objects.get(id=data['id'])
         deleteBinding(assignment)
 
@@ -51,5 +60,4 @@ class Assignments(APIView):
     def delete(self, request):
         assignment = Assignment.objects.get(id=request.data)
         deleteBinding(assignment)
-        assignment.delete()
         return Response(status=200, data="Assignment has been deleted")
