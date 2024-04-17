@@ -9,7 +9,7 @@ class Transaction(models.Model):
     fileName = EncryptedCharField(max_length=100, null=True)
     fileDate = EncryptedDateTimeField(null=True)
     uploadID = models.UUIDField(null=True)
-    date = EncryptedDateField()
+    date = models.DateField()
     amount = EncryptedIntegerField()
     recipient = EncryptedCharField(max_length=100)
     description = EncryptedCharField(max_length=100)

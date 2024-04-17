@@ -13,8 +13,8 @@ POST http://localhost:8000/auth/login/
 content-type: application/json
 
 {
-    "username": "Edda",
-    "password": "edda"
+    "username": "adm",
+    "password": "adm"
 }
 
 ### DELETE USER
@@ -41,3 +41,8 @@ Authorization: cb3c344e6aee9ab4066fa4c67895ee4398621e9c
 GET http://localhost:8000/api/settings/
 content-type: application/json
 Authorization: Token 87c69d57a68cc6aa98e2c5122432454bf252021b
+
+### GET ASSIGNMENTS
+GET http://localhost:8000/api/assignments/
+content-type: application/json
+Authorization: Token 5bc8b8014854208d39cf90b5d366e44aad083e73

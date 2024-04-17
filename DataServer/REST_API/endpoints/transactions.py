@@ -50,6 +50,7 @@ class Transactions(APIView):
                 filters['date__lte'] = toDate
 
             # because the fields are encrypted, i need to apply the filters manually
+            # i really dont know why this works here, but nowhere else
             transactions = Transaction.objects.filter(user=request.user.id)
             transactions = transactions.filter(**filters)
             result = TransactionSerializer(transactions, many=True).data

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from ..models import Assignment, Category
 from ..serializer import AssignmentSerializer
 from ..bindings import createBinding, deleteBinding
+import time
 
 
 class Assignments(APIView):
@@ -16,6 +17,8 @@ class Assignments(APIView):
         else:
             data = assignments.all()
             serializer = AssignmentSerializer(data, many=True)
+
+        endTime = time.time()
         return Response(status=200, data=serializer.data)
 
     def post(self, request):

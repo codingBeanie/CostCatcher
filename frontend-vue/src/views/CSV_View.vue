@@ -37,7 +37,17 @@
                 <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="componentStore.openSettings('CSV')" class="mb-1"></v-btn> if needed.</p>     
             </v-col>
             <v-col cols="2" class="mt-2 text-end">
-                <v-btn color="accent" @click="uploadData()" prependIcon="mdi-upload">Confirm</v-btn>
+                <v-btn color="accent" @click="uploadData()" prependIcon="mdi-upload">
+                
+                    Confirm
+                    <v-progress-circular
+                    v-if="waiting"
+                    class="ml-2"
+                    color="primary"
+                    indeterminate
+                    ></v-progress-circular>    
+                </v-btn>
+
             </v-col> 
         </v-row>
     </div>
@@ -81,6 +91,7 @@ const userStore = useUserStore()
 const alertStore = useAlertStore()
 const fileLoaded = ref(false)
 const importError = ref(false)
+const waiting = ref(false)  
 
 // Data Objects
 const dataPreview = ref([])
@@ -160,7 +171,9 @@ const parseData = (data) => {
 }
 
 const uploadData = async () => {
+    waiting.value = true
     await API('transactions', 'POST', dataPreview.value)
+    waiting.value = false
     inputFile.value = null
     fileLoaded.value = false
     importError.value = false

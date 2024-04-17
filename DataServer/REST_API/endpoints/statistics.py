@@ -4,6 +4,7 @@ from ..models import Transaction, Category
 from ..datelist import datelist
 from django.db.models import Sum
 from statistics import mean, median
+from datetime import datetime
 
 
 class Statistics(APIView):
@@ -11,6 +12,8 @@ class Statistics(APIView):
         data = []
         dateto = request.query_params.get('dateto', None)
         datefrom = request.query_params.get('datefrom', None)
+        user = request.user.id
+        transactions = Transaction.objects.filter(user=user)
 
         # produces [{'month-year': '01-2021', 'datefrom': '2021-01-01', 'dateto': '2021-01-31'}, ...]
         dates = datelist(datefrom, dateto)
@@ -19,13 +22,13 @@ class Statistics(APIView):
             return Response(status=400, data="Invalid date range")
 
         # Period/Category statistics
-        categories = Category.objects.all()
+        categories = Category.objects.filter(user=request.user.id)
         for category in categories:
-            data.append(createStatisticsObject(category, dates))
+            data.append(createStatisticsObject(category, dates, user))
 
         # if transactions have no category, create a category 'UNDEFINED'/NONE
-        if Transaction.objects.filter(category=None).exists():
-            data.append(createStatisticsObject(None, dates))
+        if transactions.filter(category=None).exists():
+            data.append(createStatisticsObject(None, dates, user))
 
         # Sorting
         sortColumn = request.query_params.get('sortcolumn', None)
@@ -44,8 +47,9 @@ class Statistics(APIView):
         return Response(status=200, data=data)
 
 
-def createStatisticsObject(category, dates):
+def createStatisticsObject(category, dates, user):
     item = {}
+    transactions = Transaction.objects.filter(user=user)
     categoryName = category.name if category else 'UNDEFINED'
     categoryID = category.id if category else 0
     categoryColor = category.color if category else '#444444'
@@ -54,13 +58,16 @@ def createStatisticsObject(category, dates):
                         'id': categoryID, 'color': categoryColor}
 
     sumlist = []
+
     # monthly statistics
     for daterange in dates:
-        filters = {'category': category,
-                   'date__gte': daterange['datefrom'],
-                   'date__lte': daterange['dateto']}
-        monthlySum = Transaction.objects.filter(
-            **filters).aggregate(Sum('amount'))['amount__sum']
+        dateFrom = datetime.strptime(daterange['datefrom'], '%Y-%m-%d').date()
+        dateTo = datetime.strptime(daterange['dateto'], '%Y-%m-%d').date()
+        monthlySum = 0
+        for transaction in transactions:
+            if transaction.category == category:
+                if transaction.date >= dateFrom and transaction.date <= dateTo:
+                    monthlySum += transaction.amount / 100
 
         if monthlySum is not None:
             sumlist.append(monthlySum)

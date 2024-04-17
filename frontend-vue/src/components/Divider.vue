@@ -7,6 +7,6 @@
 <script setup>
 const props = defineProps({
     title: String,
-    spacing: Number
+    spacing: String
 })
 </script>

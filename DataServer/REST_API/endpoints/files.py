@@ -24,8 +24,10 @@ class Files(APIView):
 
     def delete(self, request):
         try:
-            transactions = Transaction.objects.filter(
-                user=request.user.id)
+            print(request.data)
+            filters = {'user': request.user.id,
+                       'uploadID': request.data}
+            transactions = Transaction.objects.filter(**filters)
             transactions.delete()
             return Response(status=200, data="File has been deleted")
         except:

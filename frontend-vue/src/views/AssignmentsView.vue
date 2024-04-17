@@ -4,7 +4,7 @@
 
     <!--Create Form-->
     <div>
-        <Divider title="Create Ruleset" spacing=""></Divider>
+        <Divider title="Create Ruleset" spacing=0></Divider>
         <v-row class="mt-2">
             <!--Keyword-->
             <v-col class="d-flex" cols="3">
@@ -53,7 +53,7 @@
 
     <!--Assignment-Table-->
     <div>
-        <Divider title="Created rulesets" spacing="16"></Divider>    
+        <Divider title="Created rulesets" spacing=16></Divider>    
         <v-row class="mt-4">
             <v-data-table :items="data" :headers="headersAssignments">
 
@@ -99,11 +99,17 @@
                 </template>
             </v-data-table>
         </v-row>
+        <v-row v-if="waitingAssignments">
+            <v-progress-linear
+                color="accent"
+                indeterminate
+            ></v-progress-linear>
+        </v-row>
     </div>
     
     <!--Not assigned-Table-->
     <div>
-        <Divider title="transactions without categorization" spacing="16"></Divider>    
+        <Divider title="transactions without categorization" spacing=16></Divider>    
         <v-row class="mt-4">
             <v-data-table :items="dataNoCategory" :headers="headersNoCategory">
                 <!--Date-->
@@ -129,6 +135,12 @@
                 
             </v-data-table>
         </v-row>
+        <v-row v-if="waitingNoCategories">
+            <v-progress-linear
+                color="accent"
+                indeterminate
+            ></v-progress-linear>
+        </v-row>
     </div>
 </template>
 
@@ -149,6 +161,8 @@ import Divider from '../components/Divider.vue'
 // State Management
 const componentStore = useComponentStore()
 const userStore = useUserStore()
+const waitingAssignments = ref(false)
+const waitingNoCategories = ref(false)
 
 // Settings
 const currency = ref('€')
@@ -207,11 +221,15 @@ const loadCategories = async () => {
 }
 
 const loadAssignments = async () => {
+    waitingAssignments.value = true
     data.value = await API('assignments', 'GET')
+    waitingAssignments.value = false
 }
 
 const loadNoCategory = async () => {
+    waitingNoCategories.value = true
     dataNoCategory.value = await API("transactions/?category=0", 'GET')
+    waitingNoCategories.value = false
 }
 
 ////////////////////////////////////////////////////////////////

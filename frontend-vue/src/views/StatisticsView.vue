@@ -75,7 +75,7 @@
 
                                 <!--Categories-->
                                 <div v-else>
-                                    <v-chip v-if="row[column].id != 0" :color="row[column].color" link @click="mainStore.openCategoryEdit(row[column].id)">{{ row[column].name }}</v-chip>
+                                    <v-chip v-if="row[column].id != 0" :color="row[column].color" link @click="componentStore.openCategoryEdit(row[column].id)">{{ row[column].name }}</v-chip>
                                     <!--undefined-->
                                     <template v-else>
                                         <v-chip color="grey" class="cursor-not-allowed">Undefined</v-chip>
@@ -92,23 +92,23 @@
                             <td v-else-if="column!='Statistics'" class="cursor-pointer">
 
                                 <!--Income--> 
-                                <div v-if="row['Category'].name === 'Income'" @click="mainStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-if="row['Category'].name === 'Income'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
                                 </div>
 
                                 <!--Expenses-->
-                                <div v-else-if="row['Category'].name === 'Expenses'" @click="mainStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-else-if="row['Category'].name === 'Expenses'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
                                 </div>
 
                                 <!--Net-->
-                                <div v-else-if="row['Category'].name === 'Net'" @click="mainStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-else-if="row['Category'].name === 'Net'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     <div v-if="row[column] < 0" class="text-error text-button"> {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}</div>
                                     <div v-if="row[column] >= 0" class="text-success text-button">{{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}</div>
                                 </div>
 
                                 <!--Categories-->
-                                <div v-else @mouseover="updateSelection(row['Category'].id, column)" @click="mainStore.openReview(selectCell.row, selectCell.column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
+                                <div v-else @mouseover="updateSelection(row['Category'].id, column)" @click="componentStore.openReview(selectCell.row, selectCell.column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
                                     {{  parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
                                 </div>
                             </td>
@@ -136,14 +136,16 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import { useMainStore } from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
+import { useUserStore } from '../stores/UserStore.js'
 import { API } from '../composables/API.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
 // State Management
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
+const userStore = useUserStore()
 const statusTransactions = ref(false)
 const statusCategories = ref(false)
 
@@ -225,7 +227,11 @@ onMounted(async () => {
     load()
 })
 
-watch(() => mainStore.app.refresh, () => {
+watch(() => componentStore.app.refresh, () => {
+    load()
+})
+
+watch(() => userStore.username, () => {
     load()
 })
 
