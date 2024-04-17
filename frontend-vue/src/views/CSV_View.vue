@@ -41,7 +41,7 @@
                 
                     Confirm
                     <v-progress-circular
-                    v-if="waiting"
+                    v-if="waitingUpload"
                     class="ml-2"
                     color="primary"
                     indeterminate
@@ -68,6 +68,12 @@
                 </template>
             </v-data-table>
         </v-row>
+        <v-row v-if="waitingFileTable">
+            <v-progress-linear
+                color="accent"
+                indeterminate
+            ></v-progress-linear>
+        </v-row>
     </div>
 
 </template>
@@ -91,7 +97,8 @@ const userStore = useUserStore()
 const alertStore = useAlertStore()
 const fileLoaded = ref(false)
 const importError = ref(false)
-const waiting = ref(false)  
+const waitingUpload = ref(false)  
+const waitingFileTable = ref(false)
 
 // Data Objects
 const dataPreview = ref([])
@@ -123,7 +130,9 @@ const headersPreview = [
 ////////////////////////////////////////////////////////////////
 // Load the table
 const loadTableUploads = async () => {
+    waitingFileTable.value = true
     const data = await API('files', 'GET')
+    waitingFileTable.value = false
     dataUploads.value = data.map(item => ({ ...item, action: null }))
 }
 
@@ -171,9 +180,9 @@ const parseData = (data) => {
 }
 
 const uploadData = async () => {
-    waiting.value = true
+    waitingUpload.value = true
     await API('transactions', 'POST', dataPreview.value)
-    waiting.value = false
+    waitingUpload.value = false
     inputFile.value = null
     fileLoaded.value = false
     importError.value = false
