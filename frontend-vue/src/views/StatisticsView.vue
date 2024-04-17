@@ -32,8 +32,8 @@
     </v-row>
 
     <!--Status-->
-    <div v-if="!statusTransactions"><p class="text-h4 text-error" >No transactions were found. Please upload a file first: <v-btn class="mb-1" prepend-icon="mdi-file-multiple" color="info" to="/import">CSV-Management</v-btn></p></div>
-    <div v-if="!statusCategories" class="mt-2 mb-4"><p class="text-h6 text-error" >No categories were created. Add categories and categorize your transactions: <v-btn class="mb-1" prepend-icon="mdi-tag-multiple" color="info" to="/assignments">Categorization</v-btn></p></div>
+    <div v-if="!statusTransactions && !waiting"><p class="text-h4 text-error" >No transactions were found. Please upload a file first: <v-btn class="mb-1" prepend-icon="mdi-file-multiple" color="info" to="/import">CSV-Management</v-btn></p></div>
+    <div v-if="!statusCategories && !waiting" class="mt-2 mb-4"><p class="text-h6 text-error" >No categories were created. Add categories and categorize your transactions: <v-btn class="mb-1" prepend-icon="mdi-tag-multiple" color="info" to="/assignments">Categorization</v-btn></p></div>
     <!--File-Table-->
     <v-row>
         <v-container>
@@ -131,6 +131,12 @@
             </v-table>
         </v-container>    
     </v-row>
+    <v-row v-if="waiting">
+        <v-progress-linear
+            color="accent"
+            indeterminate
+        ></v-progress-linear>
+    </v-row>
     
 </template>
 
@@ -148,6 +154,7 @@ const componentStore = useComponentStore()
 const userStore = useUserStore()
 const statusTransactions = ref(false)
 const statusCategories = ref(false)
+const waiting = ref(true)
 
 // Data
 const dataStats = ref([])
@@ -172,16 +179,27 @@ const locale = ref('de-DE')
 ////////////////////////////////////////////////////////////////
 // Methods
 ////////////////////////////////////////////////////////////////
-const loadTable = async () => {
-    const data = await API('datespan', 'GET')
-    if (data == undefined) {
-        return
+const loadDateRange = async () => {
+    if (dateFrom.value == '' && dateTo.value == '') {
+        // Load the default date range
+        const data = await API('datespan', 'GET')
+        if (data == undefined) {
+            return
+        }
+        dateFrom.value = data.defaultFirst
+        dateTo.value = data.defaultLast
     }
-    dateFrom.value = data.defaultFirst
-    dateTo.value = data.defaultLast
+
+
+}
+
+const loadTable = async () => {
+    await loadDateRange()
     if (dateFrom.value != undefined && dateTo.value != undefined)
-    {
+    {   
+        waiting.value = true
         dataStats.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}&sortcolumn=${sortColumn.value}&sortasc=${sortAsc.value}`, 'GET')
+        waiting.value = false
     }
     // Set Columns
     if (dataStats.value != undefined && dataStats.value.length > 0) {
