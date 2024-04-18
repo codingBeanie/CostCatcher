@@ -116,6 +116,8 @@ const locale = ref('de-DE')
 const headersFiles = [
     { title: 'File Name', value: 'fileName' },
     { title: 'Upload Date', value: 'fileDate' },
+    { title: 'Date Range', value: 'dateRange' },
+    { title: '# Entries', value: 'count', align:'end' },
     { title: 'Actions', value: 'action', align: 'center'}
 ]
 const headersPreview = [

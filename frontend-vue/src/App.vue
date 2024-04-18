@@ -162,6 +162,8 @@ onMounted(() => {
 
 watch(() => userStore.username, () => {
   username.value = userStore.username
-  router.push('/')
+  if(userStore.username == null) {
+    router.push('/')
+  }
 })
 </script>
