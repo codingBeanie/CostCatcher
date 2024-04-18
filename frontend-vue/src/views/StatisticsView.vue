@@ -93,36 +93,36 @@
 
                                 <!--Income--> 
                                 <div v-if="row['Category'].name === 'Income'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
+                                    {{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
                                 </div>
 
                                 <!--Expenses-->
                                 <div v-else-if="row['Category'].name === 'Expenses'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
+                                    {{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
                                 </div>
 
                                 <!--Net-->
                                 <div v-else-if="row['Category'].name === 'Net'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    <div v-if="row[column] < 0" class="text-error text-button"> {{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}</div>
-                                    <div v-if="row[column] >= 0" class="text-success text-button">{{ parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}</div>
+                                    <div v-if="row[column] < 0" class="text-error text-button"> {{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
+                                    <div v-if="row[column] >= 0" class="text-success text-button">{{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
                                 </div>
 
                                 <!--Categories-->
                                 <div v-else @mouseover="updateSelection(row['Category'].id, column)" @click="componentStore.openReview(selectCell.row, selectCell.column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    {{  parseFloat(row[column]).toLocaleString(locale) }} {{ currency }}
+                                    {{  parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
                                 </div>
                             </td>
 
                             <!--Statistics Column-->
                             <td v-else class="justify-end cursor-not-allowed text-h7 text-end align-center fill-height fill-width grow">
                                 <div class="text-caption">
-                                   {{  parseFloat(row[column].Sum).toFixed(2).toLocaleString(locale) }} {{ currency }} | SUM
+                                   {{  parseFloat(row[column].Sum).toFixed(2).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }} | SUM
                                 </div>
                                 <div class="text-caption">
-                                    {{  parseFloat(row[column].Average).toFixed(2).toLocaleString(locale) }} {{ currency }} | AVG
+                                    {{  parseFloat(row[column].Average).toFixed(2).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }} | AVG
                                 </div>
                                 <div class="text-caption">
-                                    {{  parseFloat(row[column].Median).toFixed(2).toLocaleString(locale) }} {{ currency }} | MED
+                                    {{  parseFloat(row[column].Median).toFixed(2).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }} | MED
                                 </div>
                             </td>
                         </template>

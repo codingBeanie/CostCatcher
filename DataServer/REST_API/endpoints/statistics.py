@@ -40,7 +40,7 @@ class Statistics(APIView):
             data.sort(key=lambda x: x[sortColumn], reverse=sortAsc)
 
         # Totals
-        totals = createStatisticsTotals(dates)
+        totals = createStatisticsTotals(dates, user)
         for total in totals:
             data.append(total)
 
@@ -49,7 +49,6 @@ class Statistics(APIView):
 
 def createStatisticsObject(category, dates, user):
     item = {}
-    transactions = Transaction.objects.filter(user=user)
     categoryName = category.name if category else 'UNDEFINED'
     categoryID = category.id if category else 0
     categoryColor = category.color if category else '#444444'
@@ -63,11 +62,12 @@ def createStatisticsObject(category, dates, user):
     for daterange in dates:
         dateFrom = datetime.strptime(daterange['datefrom'], '%Y-%m-%d').date()
         dateTo = datetime.strptime(daterange['dateto'], '%Y-%m-%d').date()
+        filters = {'user': user, 'date__gte': dateFrom, 'date__lte': dateTo}
+        transactions = Transaction.objects.filter(**filters)
         monthlySum = 0
         for transaction in transactions:
             if transaction.category == category:
-                if transaction.date >= dateFrom and transaction.date <= dateTo:
-                    monthlySum += transaction.amount / 100
+                monthlySum += transaction.amount / 100
 
         if monthlySum is not None:
             sumlist.append(monthlySum)
@@ -84,24 +84,59 @@ def createStatisticsObject(category, dates, user):
     return item
 
 
-def createStatisticsTotals(dates):
+def createStatisticsTotals(dates, user):
     totals = []
 
-    # INCOME
+    # Preparation
     income = {}
+    incomeDateRange = []
     incomeList = []
     income['Category'] = {'name': 'Income', 'id': -1, 'color': '#005403'}
+
+    expenses = {}
+    expensesList = []
+    expenseDateRange = []
+    expenses['Category'] = {'name': 'Expenses', 'id': -2, 'color': '#540000'}
+
+    net = {}
+    netList = []
+    netDateRange = []
+    net['Category'] = {'name': 'Net', 'id': -3, 'color': '#111111'}
+
+    # collect data
     for daterange in dates:
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto'],
-                   'amount__gte': 0}
-        monthlySum = Transaction.objects.filter(
-            **filters).aggregate(Sum('amount'))['amount__sum']
-        if monthlySum is not None:
-            income[daterange['month-year']] = monthlySum
-            incomeList.append(monthlySum)
-        else:
-            income[daterange['month-year']] = 0
+                   'user': user}
+        transactions = Transaction.objects.filter(
+            **filters)
+        for transaction in transactions:
+            value = transaction.amount / 100
+            # INCOME
+            if value >= 0:
+                incomeList.append(value)
+                incomeDateRange.append(value)
+            # EXPENSES
+            else:
+                expensesList.append(value)
+                expenseDateRange.append(value)
+            # NET
+            netList.append(value)
+            netDateRange.append(value)
+
+        income[daterange['month-year']] = sum(incomeDateRange)
+        expenses[daterange['month-year']] = sum(expenseDateRange)
+        net[daterange['month-year']] = sum(netDateRange)
+
+    # in case of no data
+    if len(incomeList) == 0:
+        incomeList.append(0)
+    if len(expensesList) == 0:
+        expensesList.append(0)
+    if len(netList) == 0:
+        netList.append(0)
+
+    # Statistics
     incomeSum = sum(incomeList)
     incomeAverage = mean(incomeList) if len(
         incomeList) > 1 else sum(incomeList)
@@ -109,43 +144,12 @@ def createStatisticsTotals(dates):
     income['Statistics'] = {'Sum': incomeSum,
                             'Average': incomeAverage, 'Median': incomeMedian}
 
-    # Expenses
-    expenses = {}
-    expensesList = []
-    expenses['Category'] = {'name': 'Expenses', 'id': -2, 'color': '#540000'}
-    for daterange in dates:
-        filters = {'date__gte': daterange['datefrom'],
-                   'date__lte': daterange['dateto'],
-                   'amount__lt': 0}
-        monthlySum = Transaction.objects.filter(
-            **filters).aggregate(Sum('amount'))['amount__sum']
-        if monthlySum is not None:
-            expenses[daterange['month-year']] = monthlySum
-            expensesList.append(monthlySum)
-        else:
-            expenses[daterange['month-year']] = 0
-
     expensesSum = sum(expensesList)
     expensesAverage = mean(expensesList) if len(
         expensesList) > 1 else sum(expensesList)
     expensesMedian = median(expensesList) if len(expensesList) > 1 else 0
     expenses['Statistics'] = {'Sum': expensesSum,
                               'Average': expensesAverage, 'Median': expensesMedian}
-
-    # NET
-    net = {}
-    netList = []
-    net['Category'] = {'name': 'Net', 'id': -3, 'color': '#111111'}
-    for daterange in dates:
-        filters = {'date__gte': daterange['datefrom'],
-                   'date__lte': daterange['dateto']}
-        monthlySum = Transaction.objects.filter(
-            **filters).aggregate(Sum('amount'))['amount__sum']
-        if monthlySum is not None:
-            net[daterange['month-year']] = monthlySum
-            netList.append(monthlySum)
-        else:
-            net[daterange['month-year']] = 0
 
     netSum = sum(netList)
     netAverage = mean(netList) if len(netList) > 1 else sum(netList)
@@ -156,4 +160,6 @@ def createStatisticsTotals(dates):
     totals.append(income)
     totals.append(expenses)
     totals.append(net)
+
+    print(totals)
     return totals
