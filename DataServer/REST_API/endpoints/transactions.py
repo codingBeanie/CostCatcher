@@ -13,12 +13,14 @@ class Transactions(APIView):
     def get(self, request):
         try:
             # Query parameters
-            queryID = request.query_params.get('id', None)
             category = request.query_params.get('category', None)
+            category = None if category == 'null' else category
             period = request.query_params.get('period', None)
+            period = None if period == 'null' else period
 
             # Filters
             filters = {}
+            amountFilterMode = None
 
             # CATEGORY
             # NONE = no filter, show all
@@ -29,11 +31,11 @@ class Transactions(APIView):
 
                 # -1 = INCOME
                 if int(category) == -1:
-                    filters['amount__gte'] = 0
+                    amountFilterMode = 'income'
 
                 # -2 = EXPENSE
                 if int(category) == -2:
-                    filters['amount__lt'] = 0
+                    amountFilterMode = 'expense'
 
                 # filter to valid category
                 if int(category) > 0:
@@ -49,10 +51,21 @@ class Transactions(APIView):
                 filters['date__gte'] = fromDate
                 filters['date__lte'] = toDate
 
-            # because the fields are encrypted, i need to apply the filters manually
-            # i really dont know why this works here, but nowhere else
             transactions = Transaction.objects.filter(user=request.user.id)
+            # this just works for non-enctypted fields
             transactions = transactions.filter(**filters)
+            # amount field is encrypted, so we have to filter it manually
+            if amountFilterMode:
+                for transaction in transactions:
+                    if transaction.amount < 0:
+                        if amountFilterMode == 'income':
+                            transactions = transactions.exclude(
+                                id=transaction.id)
+                    else:
+                        if amountFilterMode == 'expense':
+                            transactions = transactions.exclude(
+                                id=transaction.id)
+
             result = TransactionSerializer(transactions, many=True).data
 
             return Response(status=200, data=result)

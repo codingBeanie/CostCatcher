@@ -161,5 +161,4 @@ def createStatisticsTotals(dates, user):
     totals.append(expenses)
     totals.append(net)
 
-    print(totals)
     return totals

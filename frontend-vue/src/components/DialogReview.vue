@@ -30,8 +30,8 @@
                                 <!--Amount-->
                                 <template v-slot:item.amount="{ item }">
                                     <v-row class="justify-end mr-12">
-                                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
-                                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount).toLocaleString(locale) }} {{ currency }}</div>
+                                        <div v-if="item.amount < 0" class="text-error">{{ parseFloat(item.amount / 100).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
+                                        <div v-if="item.amount >= 0" class="text-success">{{ parseFloat(item.amount / 100).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
                                     </v-row>
                                 </template>
 
@@ -43,8 +43,8 @@
                                                 <v-btn v-bind="props" density="compact" icon="mdi-lock" @click="unlock(item)" ></v-btn>
                                             </template>
                                         </v-tooltip>
-                                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="mainStore.openTransactionEdit(item.id)"></v-btn>  
-                                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="mainStore.openDelete('transactions', item.id, `${item.recipient} | ${item.description}`)">
+                                        <v-btn density="compact" icon="mdi-pencil" class="ml-3" @click="componentStore.openTransactionEdit(item.id)"></v-btn>  
+                                        <v-btn density="compact" icon="mdi-delete" class="ml-3" @click="componentStore.openDelete('transactions', item.id, `${item.recipient} | ${item.description}`)">
                                         </v-btn>                   
                                     </v-row>
                                 </template>
@@ -66,14 +66,16 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { useMainStore } from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
+import { useUserStore } from '../stores/UserStore.js'
 import { API } from '../composables/API.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
 // State Management
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
+const userStore = useUserStore()
 const active = ref(false)
 
 // Settings
@@ -151,27 +153,30 @@ const unlock = async (item) => {
 // Actions
 ////////////////////////////////////////////////////////////////
 const close = () => {
-    mainStore.refreshApp()
+    componentStore.refreshApp()
     active.value = false
 }
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
 const load = () => {
-    period.value = mainStore.review.period
-    category.value = mainStore.review.category
-    console.log(period.value)
+    period.value = componentStore.review.period
+    category.value = componentStore.review.category
     loadSettings()
     loadCategory()
     loadTable()
 }
 
-watch(() => mainStore.review.trigger, () => {
+watch(() => componentStore.review.trigger, () => {
     load()
     active.value = true
 })
 
-watch(() => mainStore.app.refresh, () => {
+watch(() => componentStore.app.refresh, () => {
+    load()
+})
+
+watch(() => userStore.username, () => {
     load()
 })
 </script>

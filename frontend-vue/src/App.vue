@@ -107,6 +107,7 @@
 <EditCategory></EditCategory>
 <EditAssignment></EditAssignment>
 
+<DialogReview></DialogReview>
 
 </template>
 
@@ -130,6 +131,8 @@ import DialogDelete from './components/DialogDelete.vue'
 import DialogCategories from './components/DialogCategories.vue'
 import EditCategory from './components/EditCategory.vue'
 import EditAssignment from './components/EditAssignment.vue'
+
+import DialogReview from './components/DialogReview.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables //

@@ -6,19 +6,23 @@ from ..serializer import CategorySerializer
 
 class Categories(APIView):
     def get(self, request):
-        queryID = request.query_params.get('id', None)
-        queryName = request.query_params.get('name', None)
-        categories = Category.objects.filter(user=request.user.id)
-        if queryID:
-            data = categories.get(id=queryID)
-            serializer = CategorySerializer(data)
-        elif queryName:
-            data = categories.get(name=queryName)
-            serializer = CategorySerializer(data)
-        else:
-            data = categories.order_by('name')
-            serializer = CategorySerializer(data, many=True)
-        return Response(status=200, data=serializer.data)
+        try:
+            queryID = request.query_params.get('id', None)
+            queryName = request.query_params.get('name', None)
+            categories = Category.objects.filter(user=request.user.id)
+            if queryID and queryID != 'null':
+                data = categories.get(id=queryID)
+                serializer = CategorySerializer(data)
+            elif queryName:
+                data = categories.get(name=queryName)
+                serializer = CategorySerializer(data)
+            else:
+                data = categories.order_by('name')
+                serializer = CategorySerializer(data, many=True)
+            return Response(status=200, data=serializer.data)
+        except Exception as e:
+            print("Error in Categories GET: ", e)
+            return Response(status=500, data="Error in Categories GET")
 
     def post(self, request):
         data = request.data

@@ -24,7 +24,6 @@ class Files(APIView):
 
     def delete(self, request):
         try:
-            print(request.data)
             filters = {'user': request.user.id,
                        'uploadID': request.data}
             transactions = Transaction.objects.filter(**filters)
