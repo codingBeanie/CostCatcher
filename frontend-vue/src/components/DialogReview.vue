@@ -145,6 +145,7 @@ const loadCategory = async () => {
 ////////////////////////////////////////////////////////////////
 const unlock = async (item) => {
     item.overruled = false
+    item.amount = item.amount / 100
     await API('transactions', 'PUT', item)
     loadTable()
 }

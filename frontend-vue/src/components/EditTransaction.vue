@@ -59,14 +59,14 @@
 <script setup>
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
-import { useMainStore } from '../stores/MainStore.js'
+import { useComponentStore } from '../stores/ComponentStore.js'
 import { watch } from 'vue';
 
 ////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////
 // State Management
-const mainStore = useMainStore()
+const componentStore = useComponentStore()
 const active = ref(false)
 
 // Inputs
@@ -86,7 +86,7 @@ const loadFields = async () => {
     date.value = transaction[0].date
     recipient.value = transaction[0].recipient
     description.value = transaction[0].description
-    amount.value = transaction[0].amount
+    amount.value = transaction[0].amount / 100
     category.value = transaction[0].category
 }
 
@@ -111,7 +111,7 @@ const save = async () => {
         category: category.value
     }
     await API('transactions', 'PUT', data) 
-    mainStore.refreshApp()
+    componentStore.refreshApp()
     active.value = false
 }
 
@@ -119,12 +119,12 @@ const save = async () => {
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////
 const load = async () => {
-    id.value = mainStore.transactionEdit.id
+    id.value = componentStore.transactionEdit.id
     loadFields()
     loadCategories()
 }
 
-watch(() => mainStore.transactionEdit.trigger, () => {
+watch(() => componentStore.transactionEdit.trigger, () => {
     load()
     active.value = true
 })

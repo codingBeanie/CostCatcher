@@ -108,11 +108,14 @@
 <EditAssignment></EditAssignment>
 
 <DialogReview></DialogReview>
+<EditTransaction></EditTransaction>
 
 </template>
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
+import router from './router'
+
 import { getUserdata } from './composables/LocalStorage'
 import { useUserStore } from './stores/UserStore'
 import { useComponentStore } from './stores/ComponentStore.js'
@@ -133,6 +136,7 @@ import EditCategory from './components/EditCategory.vue'
 import EditAssignment from './components/EditAssignment.vue'
 
 import DialogReview from './components/DialogReview.vue'
+import EditTransaction from './components/EditTransaction.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables //
@@ -158,5 +162,6 @@ onMounted(() => {
 
 watch(() => userStore.username, () => {
   username.value = userStore.username
+  router.push('/')
 })
 </script>

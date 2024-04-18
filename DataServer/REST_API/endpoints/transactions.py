@@ -13,6 +13,8 @@ class Transactions(APIView):
     def get(self, request):
         try:
             # Query parameters
+            queryID = request.query_params.get('id', None)
+            queryID = None if queryID == 'null' else queryID
             category = request.query_params.get('category', None)
             category = None if category == 'null' else category
             period = request.query_params.get('period', None)
@@ -21,6 +23,9 @@ class Transactions(APIView):
             # Filters
             filters = {}
             amountFilterMode = None
+
+            if queryID:
+                filters['id'] = queryID
 
             # CATEGORY
             # NONE = no filter, show all
@@ -67,7 +72,6 @@ class Transactions(APIView):
                                 id=transaction.id)
 
             result = TransactionSerializer(transactions, many=True).data
-
             return Response(status=200, data=result)
 
         except Exception as e:
@@ -98,10 +102,12 @@ class Transactions(APIView):
         try:
             data = request.data
             user = request.user
+            data['user'] = user.id
+            data['amount'] = int(float(data['amount']) * 100)
             transaction = Transaction.objects.get(id=data['id'], user=user)
 
             # if category changed, set overrule attribute
-            if transaction.category != data['category']:
+            if transaction.category.id != data['category']:
                 transaction.overruled = True
 
             # if overruled set to false
@@ -117,7 +123,7 @@ class Transactions(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response(status=200, data="Transaction has been updated")
-            return Response(status=400, data="Error with the data format")
+            return Response(status=400, data=serializer.errors)
 
         except Exception as e:
             print("Error in Transactions API:", e)
