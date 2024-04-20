@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-k#k#l##1bqpv5i(o1m77n^2r4h6de3+2doi3gwr&e02=(()z)i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -59,7 +59,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080"
 ]
 
-FIELD_ENCRYPTION_KEY = b'xzjWVQaEHyJb0Cq3HYJm5FxL7nsLLUwT3Va-s7fw7cg='
+FIELD_ENCRYPTION_KEY = b'xzxWVQaEHyJb0Cq3HYJm5FxL7nsLLUwT3Va-s7fw7cg='
 
 ROOT_URLCONF = 'DataServer.urls'
 
@@ -85,10 +85,21 @@ WSGI_APPLICATION = 'DataServer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'dev.sqlite3',
+#    }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'dev.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'costcatcher_mysql',
+        'USER': 'root',
+        'PASSWORD': 'nope',
+        'HOST': 'localhost',  # oder die IP-Adresse oder den Hostnamen deines MySQL-Containers
+        'PORT': '3306',
     }
 }
 
