@@ -94,6 +94,7 @@
 
 <!--Dialogs and Alerts-->
 <Alert></Alert>
+<Ouch></Ouch>
 
 <DialogRegister></DialogRegister>
 <DialogLogin></DialogLogin>
@@ -122,6 +123,7 @@ import { useComponentStore } from './stores/ComponentStore.js'
 
 import Alert from './components/Alert.vue'
 import LandingPage from './views/LandingPage.vue'
+import Ouch from './views/Ouch.vue'
 
 import DialogRegister from './components/DialogRegister.vue'
 import DialogLogin from './components/DialogLogin.vue'
@@ -144,6 +146,8 @@ import EditTransaction from './components/EditTransaction.vue'
 const componentStore = useComponentStore()
 const userStore = useUserStore()
 const username = ref(userStore.username)
+const windowWidth = ref(window.innerWidth)
+const windowHeight = ref(window.innerHeight)
 ////////////////////////////////////////////////////////////////
 // Methods //
 const changePassword = () => {
@@ -153,11 +157,24 @@ const changePassword = () => {
 const logout = () => {
   userStore.logout()
 }
+
+const checkResize = () => {
+  windowWidth.value = window.innerWidth
+  windowHeight.value = window.innerHeight
+  if (windowWidth.value < 1000 || windowHeight.value < 1000) {
+    componentStore.app.screen = 'mobile'
+  }
+  else {
+    componentStore.app.screen = 'desktop'
+  }
+}
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks //
 onMounted(() => {
   getUserdata()
   username.value = userStore.username
+  checkResize()
+  window.addEventListener('resize', checkResize)
 })
 
 watch(() => userStore.username, () => {

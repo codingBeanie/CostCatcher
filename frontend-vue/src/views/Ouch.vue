@@ -1,0 +1,65 @@
+<template>
+    <v-dialog v-model="active" transition="none" fullscreen>
+
+        <v-card color="secondary">
+            <v-container>
+                <v-row class="padding text-center">
+                    <v-col cols="">
+                        <p class="text-h5">COSTCATCHER</p>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col class="mr-10 ml-10">
+                        <v-row class="mb-4">
+                            <p class="text-h2 font-weight-bold">OUCH....!</p>
+                        </v-row>
+
+                        <v-row class="mr-10">
+                            <p class="text-h6 font-weight-light">You are trying to view this website on a small screen. Sorry, but the developer did not optimised it for mobile... yet.</p>
+                        </v-row>
+
+                    </v-col>
+                </v-row>
+
+
+            </v-container>
+        </v-card>
+    </v-dialog>
+</template>
+
+<script setup>
+import { onMounted, ref, watch } from 'vue'
+import { useComponentStore } from '../stores/ComponentStore.js'
+////////////////////////////////////////
+// Variables //
+// State Management
+const active = ref(true)
+const componentStore = useComponentStore()
+
+////////////////////////////////////////
+// Lifecylce //
+onMounted(() => { 
+    if (componentStore.app.screen === 'mobile') {
+        active.value = false
+    }
+})
+
+watch(componentStore.app, () => {
+    if (componentStore.app.screen === 'mobile') {
+        active.value = true
+    }
+    else {
+        active.value = false
+    }
+})
+</script>
+
+<style scoped>
+.padding {
+    padding-bottom: 20vh;
+}
+.wrap-text {
+    width: 680px;
+}
+</style>

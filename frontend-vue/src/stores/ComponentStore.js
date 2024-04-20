@@ -5,7 +5,8 @@ export const useComponentStore = defineStore('component', {
         app: {
             refresh: false,
             version: '0.9.0',
-            date: '2024-04-13'
+            date: '2024-04-13',
+            screen: 'dektop'
         },
         register: {
             trigger: false,
