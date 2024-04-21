@@ -22,6 +22,7 @@ class Files(APIView):
                 entry = {}
                 entry['fileName'] = example.fileName
                 entry['fileDate'] = example.fileDate
+                entry['uploadID'] = example.uploadID
                 entry['count'] = count
                 entry['dateRange'] = str(transactions.first(
                 ).date) + " - " + str(transactions.last().date)

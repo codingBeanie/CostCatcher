@@ -62,6 +62,7 @@ watch(() => componentStore.delete.trigger, () => {
     itemID.value = componentStore.delete.itemID
     resource.value = componentStore.delete.resource
     active.value = true
+    
 })
 
 </script>
