@@ -183,14 +183,14 @@ const loadDateRange = async () => {
     if (dateFrom.value == '' && dateTo.value == '') {
         // Load the default date range
         const data = await API('datespan', 'GET')
-        if (data == undefined) {
+        if (data == undefined || data == 0) {
+            statusTransactions.value = true
             return
         }
+        statusTransactions.value = false
         dateFrom.value = data.defaultFirst
         dateTo.value = data.defaultLast
     }
-
-
 }
 
 const loadTable = async () => {
