@@ -22,9 +22,13 @@ services:
       - "8000:8000"
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
-
-  
-
-
+  frontend:
+    container_name: frontend
+    image: httpd:2.4
+    volumes:
+      - ./frontend-vue/dist:/usr/local/apache2/htdocs/
+    ports:
+      - "8080:80"
+      
 volumes:
   postgres_data:
