@@ -1,13 +1,10 @@
 <template>
     <!--Titles-->
-    <div>
-        <h1 class="mb-3 text-h3 font-weight-bold">Statistics</h1>
-        <p class="mb-4 text-h7">View the statistics of your data.</p>
-    </div>
-    <v-divider class="mb-8"></v-divider>
+    <Title title="Statistics" subtitle="Overview of your transactions"></Title>
+    <Divider title="BASIC TABLE" spacing="8"></Divider>
 
     <!--Selectors-->
-    <v-row>
+    <v-row class="mt-2">
         <!--fromDate-->
         <v-col>
             <v-text-field clearable label="From Date" 
@@ -145,6 +142,8 @@ import { onMounted, ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 import { API } from '../composables/API.js'
+import Title from '../components/Title.vue'
+import Divider from '../components/Divider.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables
