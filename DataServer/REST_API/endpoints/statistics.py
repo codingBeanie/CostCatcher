@@ -9,42 +9,46 @@ from datetime import datetime
 
 class Statistics(APIView):
     def get(self, request):
-        data = []
-        dateto = request.query_params.get('dateto', None)
-        datefrom = request.query_params.get('datefrom', None)
-        user = request.user.id
-        transactions = Transaction.objects.filter(user=user)
+        try:
+            data = []
+            dateto = request.query_params.get('dateto', None)
+            datefrom = request.query_params.get('datefrom', None)
+            user = request.user.id
+            transactions = Transaction.objects.filter(user=user)
 
-        # produces [{'month-year': '01-2021', 'datefrom': '2021-01-01', 'dateto': '2021-01-31'}, ...]
-        dates = datelist(datefrom, dateto)
+            # produces [{'month-year': '01-2021', 'datefrom': '2021-01-01', 'dateto': '2021-01-31'}, ...]
+            dates = datelist(datefrom, dateto)
 
-        if dates == []:
-            return Response(status=400, data="Invalid date range")
+            if dates == []:
+                return Response(status=400, data="Invalid date range")
 
-        # Period/Category statistics
-        categories = Category.objects.filter(user=request.user.id)
-        for category in categories:
-            data.append(createStatisticsObject(category, dates, user))
+            # Period/Category statistics
+            categories = Category.objects.filter(user=request.user.id)
+            for category in categories:
+                data.append(createStatisticsObject(category, dates, user))
 
-        # if transactions have no category, create a category 'UNDEFINED'/NONE
-        if transactions.filter(category=None).exists():
-            data.append(createStatisticsObject(None, dates, user))
+            # if transactions have no category, create a category 'UNDEFINED'/NONE
+            if transactions.filter(category=None).exists():
+                data.append(createStatisticsObject(None, dates, user))
 
-        # Sorting
-        sortColumn = request.query_params.get('sortcolumn', None)
-        sortAsc = request.query_params.get('sortasc', None)
-        sortAsc = True if sortAsc == 'true' else False
-        if sortColumn == 'Category':
-            data.sort(key=lambda x: x['Category']['name'], reverse=sortAsc)
-        else:
-            data.sort(key=lambda x: x[sortColumn], reverse=sortAsc)
+            # Sorting
+            sortColumn = request.query_params.get('sortcolumn', 'Category')
+            sortAsc = request.query_params.get('sortasc', True)
+            sortAsc = True if sortAsc == 'true' else False
+            if sortColumn == 'Category':
+                data.sort(key=lambda x: x['Category']['name'], reverse=sortAsc)
+            else:
+                data.sort(key=lambda x: x[sortColumn], reverse=sortAsc)
 
-        # Totals
-        totals = createStatisticsTotals(dates, user)
-        for total in totals:
-            data.append(total)
+            # Totals
+            totals = createStatisticsTotals(dates, user)
+            for total in totals:
+                data.append(total)
 
-        return Response(status=200, data=data)
+            return Response(status=200, data=data)
+        except Exception as e:
+            print("Error in Statistics GET: ", e)
+            return Response(status=500, data="Can not get the data.")
 
 
 def createStatisticsObject(category, dates, user):
@@ -55,6 +59,7 @@ def createStatisticsObject(category, dates, user):
 
     item['Category'] = {'name': categoryName,
                         'id': categoryID, 'color': categoryColor}
+    item['Data'] = {}
 
     sumlist = []
 
@@ -71,9 +76,9 @@ def createStatisticsObject(category, dates, user):
 
         if monthlySum is not None:
             sumlist.append(monthlySum)
-            item[daterange['month-year']] = monthlySum
+            item['Data'][daterange['month-year']] = monthlySum
         else:
-            item[daterange['month-year']] = 0
+            item['Data'][daterange['month-year']] = 0
 
     # Statistics
     itemSum = sum(sumlist)
@@ -92,16 +97,19 @@ def createStatisticsTotals(dates, user):
     incomeDateRange = []
     incomeList = []
     income['Category'] = {'name': 'Income', 'id': -1, 'color': '#005403'}
+    income['Data'] = {}
 
     expenses = {}
     expensesList = []
     expenseDateRange = []
     expenses['Category'] = {'name': 'Expenses', 'id': -2, 'color': '#540000'}
+    expenses['Data'] = {}
 
     net = {}
     netList = []
     netDateRange = []
     net['Category'] = {'name': 'Net', 'id': -3, 'color': '#111111'}
+    net['Data'] = {}
 
     # collect data
     for daterange in dates:
@@ -124,9 +132,9 @@ def createStatisticsTotals(dates, user):
             netList.append(value)
             netDateRange.append(value)
 
-        income[daterange['month-year']] = sum(incomeDateRange)
-        expenses[daterange['month-year']] = sum(expenseDateRange)
-        net[daterange['month-year']] = sum(netDateRange)
+        income['Data'][daterange['month-year']] = sum(incomeDateRange)
+        expenses['Data'][daterange['month-year']] = sum(expenseDateRange)
+        net['Data'][daterange['month-year']] = sum(netDateRange)
 
     # in case of no data
     if len(incomeList) == 0:

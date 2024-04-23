@@ -90,23 +90,23 @@
 
                                 <!--Income--> 
                                 <div v-if="row['Category'].name === 'Income'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    {{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
+                                    {{ parseFloat(row.Data[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
                                 </div>
 
                                 <!--Expenses-->
                                 <div v-else-if="row['Category'].name === 'Expenses'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    {{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
+                                    {{ parseFloat(row.Data[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
                                 </div>
 
                                 <!--Net-->
                                 <div v-else-if="row['Category'].name === 'Net'" @click="componentStore.openReview(selectCell.row, selectCell.column)" @mouseover="updateSelection(row['Category'].id, column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    <div v-if="row[column] < 0" class="text-error text-button"> {{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
-                                    <div v-if="row[column] >= 0" class="text-success text-button">{{ parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
+                                    <div v-if="row.Data[column] < 0" class="text-error text-button"> {{ parseFloat(row.Data[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
+                                    <div v-if="row.Data[column] >= 0" class="text-success text-button">{{ parseFloat(row.Data[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}</div>
                                 </div>
 
                                 <!--Categories-->
                                 <div v-else @mouseover="updateSelection(row['Category'].id, column)" @click="componentStore.openReview(selectCell.row, selectCell.column)" class="justify-end pa-2 align-center d-flex fill-height fill-width grow" :class="{'bg-selected': selectCell.row === row['Category'].id && selectCell.column === column}">
-                                    {{  parseFloat(row[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
+                                    {{  parseFloat(row.Data[column]).toLocaleString(locale, {minimumFractionDigits: 2}) }} {{ currency }}
                                 </div>
                             </td>
 
@@ -202,7 +202,9 @@ const loadTable = async () => {
     }
     // Set Columns
     if (dataStats.value != undefined && dataStats.value.length > 0) {
-        columns = Object.keys(dataStats.value[0])
+        columns = ['Category']
+        columns = columns.concat(Object.keys(dataStats.value[0].Data))
+        columns = columns.concat('Statistics')
         statusTransactions.value = true
     } else {
         statusTransactions.value = false
