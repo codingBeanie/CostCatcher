@@ -23,6 +23,11 @@
               <div>
                 <v-btn to="statistics" width="200px" text prepend-icon="mdi-sigma" variant="text" size="large" stacked>Statistics</v-btn>
               </div>
+
+                <div>
+                <v-btn to="graphs" width="200px" text prepend-icon="mdi-chart-bar" variant="text" size="large" stacked>Graphs</v-btn>
+              </div>
+
             </div>
 
             <!--End Button-->
