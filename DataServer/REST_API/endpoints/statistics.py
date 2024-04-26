@@ -113,6 +113,9 @@ def createStatisticsTotals(dates, user):
 
     # collect data
     for daterange in dates:
+        expenseDateRange = []
+        incomeDateRange = []
+        netDateRange = []
         filters = {'date__gte': daterange['datefrom'],
                    'date__lte': daterange['dateto'],
                    'user': user}

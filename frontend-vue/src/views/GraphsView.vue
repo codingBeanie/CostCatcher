@@ -36,7 +36,7 @@
                 clearable
                 v-model="selectedCategories"
                 multiple
-                @update:model-value="filterData"
+                @update:model-value="delayedLoad"
                 ></v-select>
         </v-col>
     </v-row>
@@ -49,12 +49,12 @@
     </v-row>
 
     <!--Bar Graph-->
-    <div id="tester"></div>
+    <canvas ref="barGraphPlaceholder"></canvas>
 
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, shallowRef } from 'vue'
 import { API } from '../composables/API.js'
 import { watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
@@ -62,8 +62,7 @@ import { useAlertStore } from '../stores/AlertStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
-import Plotly from 'plotly.js-dist'
-
+import Chart from 'chart.js/auto'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
@@ -76,6 +75,10 @@ const waiting = ref(false)
 // Data Objects
 const categories = ref([])
 const statData = ref([])
+
+// Graph Objects
+const barGraph = shallowRef(null)
+const barGraphPlaceholder = ref(null)
 
 // Input Objects
 const dateFrom = ref(``)
@@ -109,15 +112,44 @@ const filterData = () => {
  }
 
 const loadIncomeExpenseGraph = () => {
-    console.log(statData.value)
-    var data = [
-  {
-    x: ['giraffes', 'orangutans', 'monkeys'],
-    y: [20, 14, 23],
-    type: 'bar'
-  }
-]
-Plotly.newPlot('tester', data)
+    let data = statData.value.map(item => item.Data)
+    let categories = statData.value.map(item => item.Category)
+
+    if (data.length == 0) {
+        return
+    }
+
+    let labels = Object.keys(data[0])
+    let datasets = []
+    for (let i = 0; i < data.length; i++) { 
+        datasets.push({
+            label: categories[i].name,
+            data: Object.values(data[i]),
+            backgroundColor: categories[i].color,
+        })
+    }
+    if (!barGraph.value) {
+        initializeGraph()
+    }
+    barGraph.value.data.labels = labels
+    barGraph.value.data.datasets = datasets
+    barGraph.value.update()
+}
+
+const initializeGraph = () => {
+    barGraph.value = new Chart(
+        barGraphPlaceholder.value,
+        {
+            type: 'bar',
+            data: {
+                labels: [''],
+                datasets: []
+            },
+            options: {
+                locale: new Intl.NumberFormat(locale.value)
+            }
+        }
+    )
 }
 
 ////////////////////////////////////////////////////////////////
@@ -130,6 +162,12 @@ const load = async () => {
     await filterData()
     loadIncomeExpenseGraph()
     waiting.value = false
+}
+
+const delayedLoad = () => {
+    setTimeout(() => {
+        load()
+    }, 500)
 }
 
 onMounted(() => {
