@@ -13,6 +13,9 @@ class Statistics(APIView):
             data = []
             dateto = request.query_params.get('dateto', None)
             datefrom = request.query_params.get('datefrom', None)
+            exportTotals = request.query_params.get('totals', True)
+            filtermode = request.query_params.get('filtermode', 'all')
+            print(filtermode)
             user = request.user.id
             transactions = Transaction.objects.filter(user=user)
 
@@ -25,11 +28,13 @@ class Statistics(APIView):
             # Period/Category statistics
             categories = Category.objects.filter(user=request.user.id)
             for category in categories:
-                data.append(createStatisticsObject(category, dates, user))
+                data.append(createStatisticsObject(
+                    category, dates, user, filtermode))
 
             # if transactions have no category, create a category 'UNDEFINED'/NONE
             if transactions.filter(category=None).exists():
-                data.append(createStatisticsObject(None, dates, user))
+                data.append(createStatisticsObject(
+                    None, dates, user, filtermode))
 
             # Sorting
             sortColumn = request.query_params.get('sortcolumn', 'Category')
@@ -41,9 +46,10 @@ class Statistics(APIView):
                 data.sort(key=lambda x: x[sortColumn], reverse=sortAsc)
 
             # Totals
-            totals = createStatisticsTotals(dates, user)
-            for total in totals:
-                data.append(total)
+            if exportTotals == True:
+                totals = createStatisticsTotals(dates, user)
+                for total in totals:
+                    data.append(total)
 
             return Response(status=200, data=data)
         except Exception as e:
@@ -51,7 +57,7 @@ class Statistics(APIView):
             return Response(status=500, data="Can not get the data.")
 
 
-def createStatisticsObject(category, dates, user):
+def createStatisticsObject(category, dates, user, filtermode):
     item = {}
     categoryName = category.name if category else 'UNDEFINED'
     categoryID = category.id if category else 0
@@ -72,7 +78,14 @@ def createStatisticsObject(category, dates, user):
         monthlySum = 0
         for transaction in transactions:
             if transaction.category == category:
-                monthlySum += transaction.amount / 100
+                if filtermode == 'income':
+                    if transaction.amount >= 0:
+                        monthlySum += transaction.amount / 100
+                elif filtermode == 'expenses':
+                    if transaction.amount < 0:
+                        monthlySum += transaction.amount / 100
+                else:
+                    monthlySum += transaction.amount / 100
 
         if monthlySum is not None:
             sumlist.append(monthlySum)
