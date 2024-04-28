@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = SECRET_KEY
 
 IS_DOCKER = os.environ.get('DOCKER')
-DEBUG = False if IS_DOCKER == "True" or IS_DOCKER == True else True
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
@@ -101,7 +101,7 @@ DATABASES = {
         'NAME': POSTGRES_DB,
         'USER': POSTGRES_USER,
         'PASSWORD': POSTGRES_PASSWORD,
-        'HOST': 'localhost' if DEBUG else 'database',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
