@@ -195,7 +195,6 @@ const loadBarGraph = async () => {
     if (!barGraph.value) {
         initBarGraph()
     }
-    console.log(datasets)
     barGraph.value.data.labels = labels
     barGraph.value.data.datasets = datasets
     barGraph.value.options = barGraphOptions
