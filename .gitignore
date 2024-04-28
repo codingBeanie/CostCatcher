@@ -5,3 +5,4 @@ variables.env
 DataServer/DataServer/config.py
 DataServer/DataServer/env.py
 DataServer/DataServer/__pycache__/env.cpython-312.pyc
+docker-share/
