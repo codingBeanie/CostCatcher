@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECRET_KEY
 
-IS_DOCKER = os.environ.get('DOCKER')
-DEBUG = True
+MODE = os.environ.get('MODE', 'DEV')
+DEBUG = False if MODE == "DOCKER" else True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
@@ -101,7 +101,7 @@ DATABASES = {
         'NAME': POSTGRES_DB,
         'USER': POSTGRES_USER,
         'PASSWORD': POSTGRES_PASSWORD,
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost' if DEBUG else 'database',
         'PORT': '5432',
     }
 }

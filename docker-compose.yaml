@@ -8,6 +8,21 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  django-server:
+    container_name: django-server
+    build:
+      context: ./DataServer
+      dockerfile: Dockerfile
+    image: django-server
+    volumes:
+      - ./DataServer:/app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
       
 volumes:
   postgres_data:
