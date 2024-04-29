@@ -13,7 +13,7 @@ POST https://costcatcher.cbeanie.com/auth/register/
 content-type: application/json
 
 {
-    "username": "adm",
+    "username": "adm2",
     "password": "adm"
 }
 ### LOGIN

@@ -8,6 +8,7 @@ from ..models import Setting
 
 class Register(APIView):
     def post(self, request):
+        print("API REGISTER:", request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = User(
