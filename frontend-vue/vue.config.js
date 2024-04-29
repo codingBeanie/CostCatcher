@@ -6,16 +6,5 @@ module.exports = defineConfig({
     vuetify: {
 			// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
 		}
-  },
-  devServer: {
-    proxy: {
-      '/auth/register': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/auth/register': '/auth/register'
-        }
-      }
-    }
   }
 })
