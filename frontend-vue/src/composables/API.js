@@ -14,10 +14,10 @@ export async function API(resource, method, payload=null) {
     try {
         // If there is a query string in the resource, do not add a trailing slash
         if (resource.includes('?')) {
-            url = `https://127.0.0.1:8000/api/${resource}`
+            url = `https://costcatcher.cbeanie.com/api/${resource}`
         }
         else {
-            url = `https://127.0.0.1:8000/api/${resource}/`
+            url = `https://costcatcher.cbeanie.com/api/${resource}/`
         }
         let request = null
 
