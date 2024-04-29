@@ -3,7 +3,7 @@ import { useAlertStore } from "../stores/AlertStore"
 import { storeUserdata } from "./LocalStorage"
 
 export async function registerUser(username, password) {
-    const url = `https://localhost:8000/auth/register/`
+    const url = `https://costcatcher.cbeanie.com/auth/register/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
     const payload = { username: username, password: password }
@@ -33,7 +33,7 @@ export async function registerUser(username, password) {
 }
 
 export async function loginUser(username, password) {
-    const url = `https://localhost:8000/auth/login/`
+    const url = `https://costcatcher.cbeanie.com/auth/login/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
     const payload = { username: username, password: password }

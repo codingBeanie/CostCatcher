@@ -8,6 +8,14 @@ content-type: application/json
     "password": "1234"
 }
 
+### REGISTER HTTPS PROD
+POST https://costcatcher.cbeanie.com/auth/register/
+content-type: application/json
+
+{
+    "username": "adm",
+    "password": "adm"
+}
 ### LOGIN
 POST http://localhost:8000/auth/login/
 content-type: application/json
