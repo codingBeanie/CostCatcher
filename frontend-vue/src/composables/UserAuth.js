@@ -63,7 +63,7 @@ export async function loginUser(username, password) {
 }
 
 export async function deleteUser() {
-    const url = `http://localhost:8000/auth/deleteUser/`
+    const url = `https://costcatcher.cbeanie.com/auth/deleteUser/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
     const username = userStore.username
