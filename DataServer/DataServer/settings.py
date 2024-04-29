@@ -28,9 +28,7 @@ SECRET_KEY = SECRET_KEY
 MODE = os.environ.get('MODE', 'DEV')
 DEBUG = False if MODE == "DOCKER" else True
 
-ALLOWED_HOSTS = ["http://localhost:8080",
-                 "http://127.0.0.1:8080",
-                 "https://costcatcher.cbeanie.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
