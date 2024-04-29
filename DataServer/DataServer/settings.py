@@ -28,7 +28,7 @@ SECRET_KEY = SECRET_KEY
 MODE = os.environ.get('MODE', 'DEV')
 DEBUG = False if MODE == "DOCKER" else True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
