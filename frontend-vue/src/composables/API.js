@@ -6,6 +6,7 @@ export async function API(resource, method, payload=null) {
     const alertStore = useAlertStore()
     const userStore = useUserStore()
     const token = userStore.token
+    let urlBase = process.env.VUE_APP_API_URL
     let url = null
     if (token == null) {
         return []
@@ -14,10 +15,10 @@ export async function API(resource, method, payload=null) {
     try {
         // If there is a query string in the resource, do not add a trailing slash
         if (resource.includes('?')) {
-            url = `https://costcatcher.cbeanie.com/api/${resource}`
+            url = `${urlBase}/api/${resource}`
         }
         else {
-            url = `https://costcatcher.cbeanie.com/api/${resource}/`
+            url = `${urlBase}/api/${resource}/`
         }
         let request = null
 

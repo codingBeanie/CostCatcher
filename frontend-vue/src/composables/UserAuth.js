@@ -3,7 +3,8 @@ import { useAlertStore } from "../stores/AlertStore"
 import { storeUserdata } from "./LocalStorage"
 
 export async function registerUser(username, password) {
-    const url = `https://costcatcher.cbeanie.com/auth/register/`
+    let urlBase = process.env.VUE_APP_API_URL
+    const url = `${urlBase}/auth/register/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
     const payload = { username: username, password: password }
@@ -33,7 +34,8 @@ export async function registerUser(username, password) {
 }
 
 export async function loginUser(username, password) {
-    const url = `https://costcatcher.cbeanie.com/auth/login/`
+    let urlBase = process.env.VUE_APP_API_URL
+    const url = `${urlBase}/auth/login/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
     const payload = { username: username, password: password }
@@ -63,7 +65,8 @@ export async function loginUser(username, password) {
 }
 
 export async function deleteUser() {
-    const url = `https://costcatcher.cbeanie.com/auth/deleteUser/`
+    let urlBase = process.env.VUE_APP_API_URL
+    const url = `${urlBase}/auth/deleteUser/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
     const username = userStore.username
@@ -90,7 +93,8 @@ export async function deleteUser() {
 }
 
 export async function updatePassword(currentPassword, newPassword) {
-    const url = `http://localhost:8000/auth/updatePassword/`
+    let urlBase = process.env.VUE_APP_API_URL
+    const url = `${urlBase}/auth/updatePassword/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
     const username = userStore.username

@@ -25,7 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECRET_KEY
 
-MODE = os.environ.get('MODE', 'DEV')
+MODE = 'DOCKER' if os.path.exists('/.dockerenv') else 'LOCAL'
+print("MODE: ", MODE)
 DEBUG = False if MODE == "DOCKER" else True
 
 ALLOWED_HOSTS = ["*"]
