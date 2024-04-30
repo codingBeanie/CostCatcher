@@ -88,6 +88,21 @@
                     </v-row>
                </template>
 
+               <!--Number of Transactions-->
+                <template v-slot:item.numberOfAssignments="{ item }">
+                    <div v-if="item.numberOfAssignments === 0" class="text-error">
+                        <v-tooltip text="No transaction is assigend due to this rule!">
+                            <template v-slot:activator="{ props }">
+                                <v-btn color="error" v-bind="props" density="compact" icon="mdi-alert-circle" variant="tonal"></v-btn>
+                            </template>
+                        </v-tooltip>
+                        {{ item.numberOfAssignments }}
+                    </div>
+                    <div v-else>
+                      {{ item.numberOfAssignments }}
+                    </div>
+                </template>
+
                 <!--Action-->
                 <template v-slot:item.action="{ item }">
                     <v-row class="justify-center">
@@ -192,6 +207,7 @@ const headersAssignments = [
     { title: 'Keyword', value: 'keyword', sortable: true},
     { title: 'Category', value: 'category', sortable: true},
     { title: 'Check-Mode', value: 'checkMode', sortable: true, align: 'start' },
+    { title: '# of Transactions', value: 'numberOfAssignments', sortable: true, align: 'end'},
     { title: 'Action', value: 'action', sortable: false, align: 'center'},
 ]
 

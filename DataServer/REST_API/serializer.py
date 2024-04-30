@@ -38,6 +38,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     color = serializers.SerializerMethodField()
     categoryName = serializers.SerializerMethodField()
     conflict = serializers.SerializerMethodField()
+    numberOfAssignments = serializers.SerializerMethodField()
 
     class Meta:
         model = Assignment
@@ -64,3 +65,10 @@ class AssignmentSerializer(serializers.ModelSerializer):
             else:
                 return False
         return False
+
+    def get_numberOfAssignments(self, obj):
+        transactions = Transaction.objects.filter(assignments=obj)
+        if transactions:
+            return len(transactions)
+        else:
+            return 0
