@@ -10,15 +10,26 @@ class Categories(APIView):
             queryID = request.query_params.get('id', None)
             queryName = request.query_params.get('name', None)
             categories = Category.objects.filter(user=request.user.id)
+
+            # if a certain ID is queried
             if queryID and queryID != 'null':
                 data = categories.get(id=queryID)
                 serializer = CategorySerializer(data)
+
+            # if a certain name is queried
             elif queryName:
                 data = categories.get(name=queryName)
                 serializer = CategorySerializer(data)
+
+            # if no filter query is made, return all categories
             else:
-                data = categories.order_by('name')
-                serializer = CategorySerializer(data, many=True)
+                # sort Data by name
+                queryList = []
+                for category in categories:
+                    queryList.append(category)
+                queryList.sort(key=lambda x: x.name)
+
+                serializer = CategorySerializer(queryList, many=True)
             return Response(status=200, data=serializer.data)
         except Exception as e:
             print("Error in Categories GET: ", e)
