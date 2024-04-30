@@ -5,7 +5,7 @@
             <v-card color="primary">
                 <v-toolbar color="secondary">
                     <v-btn icon @click="close">
-                        <v-icon>mdi-close</v-icon>
+                        <v-icon>mdi-arrow-collapse-left</v-icon>
                     </v-btn>
                     <v-toolbar-title>Review Transactions</v-toolbar-title>
                 </v-toolbar>
