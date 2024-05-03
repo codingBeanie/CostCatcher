@@ -13,40 +13,38 @@ class Statistics(APIView):
             data = []
             dateto = request.query_params.get('dateto', None)
             datefrom = request.query_params.get('datefrom', None)
-            exportTotals = request.query_params.get('totals', True)
-            filtermode = request.query_params.get('filtermode', 'all')
-            print(filtermode)
+            showTotals = request.query_params.get(
+                'showTotals', True)  # categories, totals, all
+            filtermode = request.query_params.get(
+                'filtermode', 'all')  # only income, expenses or all
+            showStatistics = request.query_params.get('statistics', False)
             user = request.user.id
             transactions = Transaction.objects.filter(user=user)
 
             # produces [{'month-year': '01-2021', 'datefrom': '2021-01-01', 'dateto': '2021-01-31'}, ...]
             dates = datelist(datefrom, dateto)
-
             if dates == []:
                 return Response(status=400, data="Invalid date range")
 
+            ####################################################################################################
             # Period/Category statistics
             categories = Category.objects.filter(user=request.user.id)
             for category in categories:
-                data.append(createStatisticsObject(
-                    category, dates, user, filtermode))
+                item = createStatisticsObject(
+                    category, dates, user, filtermode, showStatistics)
+                if item:
+                    data.append(item)
 
             # if transactions have no category, create a category 'UNDEFINED'/NONE
             if transactions.filter(category=None).exists():
-                data.append(createStatisticsObject(
-                    None, dates, user, filtermode))
+                item = createStatisticsObject(
+                    None, dates, user, filtermode, showStatistics)
+                if item:
+                    data.append(item)
 
-            # Sorting
-            sortColumn = request.query_params.get('sortcolumn', 'Category')
-            sortAsc = request.query_params.get('sortasc', True)
-            sortAsc = True if sortAsc == 'true' else False
-            if sortColumn == 'Category':
-                data.sort(key=lambda x: x['Category']['name'], reverse=sortAsc)
-            else:
-                data.sort(key=lambda x: x[sortColumn], reverse=sortAsc)
-
+            ####################################################################################################
             # Totals
-            if exportTotals == True:
+            if showTotals == 'true' or showTotals == True:
                 totals = createStatisticsTotals(dates, user)
                 for total in totals:
                     data.append(total)
@@ -57,7 +55,7 @@ class Statistics(APIView):
             return Response(status=500, data="Can not get the data.")
 
 
-def createStatisticsObject(category, dates, user, filtermode):
+def createStatisticsObject(category, dates, user, filtermode, showStatistics):
     item = {}
     categoryName = category.name if category else 'UNDEFINED'
     categoryID = category.id if category else 0
@@ -81,12 +79,13 @@ def createStatisticsObject(category, dates, user, filtermode):
                 if filtermode == 'income':
                     if transaction.amount >= 0:
                         monthlySum += transaction.amount / 100
-                elif filtermode == 'expenses':
+                elif filtermode == 'expense':
                     if transaction.amount < 0:
                         monthlySum += transaction.amount / 100
                 else:
                     monthlySum += transaction.amount / 100
 
+        # if no transactions are found, set monthlySum to 0
         if monthlySum is not None:
             sumlist.append(monthlySum)
             item['Data'][daterange['month-year']] = monthlySum
@@ -94,11 +93,16 @@ def createStatisticsObject(category, dates, user, filtermode):
             item['Data'][daterange['month-year']] = 0
 
     # Statistics
-    itemSum = sum(sumlist)
-    itemAverage = mean(sumlist) if len(sumlist) > 1 else sum(sumlist)
-    itemMedian = median(sumlist) if len(sumlist) > 1 else 0
-    item['Statistics'] = {'Sum': itemSum,
-                          'Average': itemAverage, 'Median': itemMedian}
+    if showStatistics or showStatistics == 'true':
+        itemSum = sum(sumlist)
+        itemAverage = mean(sumlist) if len(sumlist) > 1 else sum(sumlist)
+        itemMedian = median(sumlist) if len(sumlist) > 1 else 0
+        item['Statistics'] = {'Sum': itemSum,
+                              'Average': itemAverage, 'Median': itemMedian}
+
+    # check for each filtermode if item is 0, if so, return None
+    if filtermode == "income" and sum(sumlist) <= 0 or filtermode == "expense" and sum(sumlist) >= 0:
+        return None
     return item
 
 
