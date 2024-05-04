@@ -9,10 +9,10 @@ class Transaction(models.Model):
     fileName = EncryptedCharField(max_length=100, null=True)
     fileDate = EncryptedDateTimeField(null=True)
     uploadID = models.UUIDField(null=True)
-    date = models.DateField()
-    amount = EncryptedIntegerField()
-    recipient = EncryptedCharField(max_length=100)
-    description = EncryptedCharField(max_length=100)
+    date = models.DateField(null=True, blank=True)
+    amount = EncryptedIntegerField(null=True, blank=True)
+    recipient = EncryptedCharField(max_length=100, null=True, blank=True)
+    description = EncryptedCharField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(
         'Category', on_delete=models.SET_NULL, null=True)
     assignments = models.ManyToManyField(
