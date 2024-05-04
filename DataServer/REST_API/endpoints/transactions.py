@@ -106,8 +106,11 @@ class Transactions(APIView):
             data['amount'] = int(float(data['amount']) * 100)
             transaction = Transaction.objects.get(id=data['id'], user=user)
 
-            # if category changed, set overrule attribute
-            if transaction.category.id != data['category']:
+            # check if category has been changed and set overruled to true
+            if transaction.category and data['category']:
+                if transaction.category.id != data['category']:
+                    transaction.overruled = True
+            else:
                 transaction.overruled = True
 
             # if overruled set to false
