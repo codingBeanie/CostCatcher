@@ -73,6 +73,10 @@ export const pieGraphOptions = {
         },
     },
     layout: {
-        padding: 30
+        padding: {
+            left: 150,
+            right: 150,
+            top: 50,
+            bottom: 100,}
     }
 };

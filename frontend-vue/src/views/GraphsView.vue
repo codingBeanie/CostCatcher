@@ -217,7 +217,7 @@ const initBarGraph = () => {
 
 // Pie Graph //////////////////////////////////////////////////////////
 const loadPieData = async () => {
-    pieData.value = await API(`statistics/?datefrom=${dateFromPie.value}&dateto=${dateToPie.value}&totals=False&filtermode=${filterMode.value}`, 'GET')
+    pieData.value = await API(`statistics/?datefrom=${dateFromPie.value}&dateto=${dateToPie.value}&totals=False&filtermode=${filterMode.value}&showTotals=false`, 'GET')
 }
 
 const loadPieGraph = async () => {
