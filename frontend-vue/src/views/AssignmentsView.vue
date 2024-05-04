@@ -53,8 +53,8 @@
 
     <!--Assignment-Table-->
     <div>
-        <Divider title="Created rulesets" spacing=16></Divider>    
-        <v-row class="mt-4">
+        <Divider title="Created rulesets" spacing=16 :showToggle=true :showState=showAssignments @toggle="(state) => showAssignments = state"></Divider>    
+        <v-row class="mt-4" v-show="showAssignments">
             <v-data-table :items="data" :headers="headersAssignments">
 
                 <!--Keyword-->
@@ -178,6 +178,7 @@ const componentStore = useComponentStore()
 const userStore = useUserStore()
 const waitingAssignments = ref(false)
 const waitingNoCategories = ref(false)
+const showAssignments = ref(true)
 
 // Settings
 const currency = ref('€')
