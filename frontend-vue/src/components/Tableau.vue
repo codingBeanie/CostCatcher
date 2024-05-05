@@ -3,7 +3,7 @@
     <v-container class="d-flex-row overflow">
 
         <!--HEADERS-->
-        <v-row class="border-b  d-flex flex-nowrap text-end">
+        <v-row no-gutters class="border-b  d-flex flex-nowrap text-end">
             <v-col class="column">
                 <p class="text-button"></p>
             </v-col>
@@ -16,7 +16,7 @@
 <!--*************************************************************************************************-->
 
         <!--INCOME TITLE-->
-        <v-row class="d-flex flex-nowrap">
+        <v-row no-gutters class="d-flex flex-nowrap">
             <v-col class="colunn">
                 <p class="text-overline text-success">INCOME</p>
             </v-col>
@@ -25,7 +25,7 @@
             </v-col>
         </v-row>
         <!--INCOME DATA-->
-        <v-row v-for="income in incomeData" class="d-flex flex-nowrap text-end">
+        <v-row no-gutters v-for="income in incomeData" class="d-flex flex-nowrap text-end">
             <!--CATEGORY TITLE-->
             <v-col class="column">
                 <div v-if="income.Category.name == 'UNDEFINED'">
@@ -45,7 +45,7 @@
             </v-col>
         </v-row>
         <!--INCOME SUM-->
-        <v-row class="border-t text-end d-flex flex-nowrap ">
+        <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
             <v-col class="column">
                 <v-btn variant="text">SUM INCOME</v-btn>
             </v-col>
@@ -57,7 +57,7 @@
 <!--*************************************************************************************************-->
 
         <!--EXPENSE TITLE-->
-        <v-row class="mt-10 d-flex flex-nowrap">
+        <v-row no-gutters class="mt-10 d-flex flex-nowrap">
             <v-col class="column">
                 <p class="text-overline text-error">EXPENSES</p>
             </v-col>
@@ -66,7 +66,7 @@
             </v-col>
         </v-row>
         <!--EXPENSE DATA-->
-        <v-row v-for="expense in expenseData" class="d-flex flex-nowrap text-end">
+        <v-row no-gutters v-for="expense in expenseData" class="d-flex flex-nowrap text-end">
             <!--CATEGORY TITLE-->
             <v-col class="column">
                 <div v-if="expense.Category.name == 'UNDEFINED'">
@@ -86,7 +86,7 @@
             </v-col>
         </v-row>
         <!--EXPENSE SUM-->
-        <v-row class="border-t text-end d-flex flex-nowrap ">
+        <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
             <v-col class="column">
                 <v-btn variant="text">SUM EXPENSES</v-btn>
             </v-col>
@@ -98,7 +98,7 @@
 
 <!--*************************************************************************************************-->
         <!--NET SUM-->
-        <v-row class="text-end border-t-lg d-flex flex-nowrap mt-10">
+        <v-row no-gutters class="text-end border-t-lg d-flex flex-nowrap mt-10">
             <v-col class="column">
                 <v-btn variant="text">NET</v-btn>
             </v-col>
