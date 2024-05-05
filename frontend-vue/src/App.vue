@@ -7,7 +7,7 @@
           <div class="d-flex align-center">
             <!--LOGO-->
             <div class="w-25">
-              <v-btn to="/">COSTCATCHER</v-btn>
+              <v-img src="./assets/logo.webp" max-height="50px"></v-img>
             </div>
 
             <!--MENU-->
