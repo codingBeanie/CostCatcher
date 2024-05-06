@@ -30,7 +30,7 @@ const props = defineProps({
     },
     spacing: {
         type: String,
-        default: 0
+        default: "0"
     },
     showToggle: {
         type: Boolean,

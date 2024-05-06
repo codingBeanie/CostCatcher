@@ -7,7 +7,9 @@
           <div class="d-flex align-center">
             <!--LOGO-->
             <div class="w-25">
-              <v-img src="./assets/logo.webp" max-height="50px"></v-img>
+              <router-link to="/">
+                <v-img src="./assets/logo2.webp" max-height="50px"></v-img>
+              </router-link>
             </div>
 
             <!--MENU-->
@@ -82,15 +84,15 @@
     <v-footer app color="info" class="text-center">
       <v-row>
         <v-col>
-          <p class="font-weight-light mt-1">V{{ componentStore.app.version }} ({{ componentStore.app.date }})</p>
-        </v-col>
-        <v-col>
-          <p class="font-weight-light mt-1">COSTCATCHER</p>
+          <p class="font-weight-light mt-1">V{{ version }} ({{ date }})</p>
         </v-col>
         <v-col>
           <v-btn href="https://github.com/codingbeanie" color="primaryLight" variant="text" prepend-icon="mdi-github">
             codingbeanie
           </v-btn>
+        </v-col>
+        <v-col>
+          
         </v-col>
       </v-row>
     </v-footer>
@@ -153,6 +155,9 @@ const userStore = useUserStore()
 const username = ref(userStore.username)
 const windowWidth = ref(window.innerWidth)
 const windowHeight = ref(window.innerHeight)
+
+const version = ref(process.env.VUE_APP_VERSION)
+const date = ref(process.env.VUE_APP_DATE)
 ////////////////////////////////////////////////////////////////
 // Methods //
 const changePassword = () => {
