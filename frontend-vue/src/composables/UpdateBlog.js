@@ -30,16 +30,12 @@ export const updateBlog = [
                 title: 'New Features / Changed',
                 icon: 'mdi-party-popper',
                 text: '',
-                bullets: [  'import for csv-files implemented',
-                            'change your import schema in the settings menu',
-                            'create categories and give them nice colors'
-                ]
-            },
-            {
-                title: 'Bugfixes',
-                icon: 'mdi-bug',
-                text: '',
-                bullets: [  'fixed a lot of bugs. Hope there are no new ones',
+                bullets: [  'Import for csv-files implemented',
+                            'Change your import schema in the settings menu',
+                            'Category creation and management',
+                            'Categorization of transactions via keyword matching',
+                            'Basic table',
+                            'Basic charts',
                 ]
             },
         ]
