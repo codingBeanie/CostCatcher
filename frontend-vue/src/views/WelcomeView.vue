@@ -1,11 +1,17 @@
 <template>
-    <v-row>
-        <span class="text-h2 mt-10">Welcome to</span>
-        <v-img src="../assets/logo_trans.webp" max-height="100px"></v-img>
-    </v-row>
+    <UpdateBlog />
 </template>
 
 <script setup>
+import { onMounted, ref} from 'vue'
+import { useUserStore } from '../stores/UserStore.js'
+import UpdateBlog from '../components/UpdateBlog.vue'
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
+// State Management
+const userStore = useUserStore()
 
-
+//
+const username = ref(userStore.username)
 </script>
