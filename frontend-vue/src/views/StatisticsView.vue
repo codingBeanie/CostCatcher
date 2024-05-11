@@ -107,7 +107,6 @@ const loadTable = async () => {
         waiting.value = true
         incomeData.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}&filtermode=income&showTotals=false`, 'GET')
         expenseData.value = await API(`statistics/?datefrom=${dateFrom.value}&dateto=${dateTo.value}&filtermode=expense&showTotals=false`, 'GET')
-        headers.value = (Object.keys(incomeData.value[0].Data))
         waiting.value = false
     }
     // Check if any data is available
@@ -116,6 +115,7 @@ const loadTable = async () => {
     }
     else {
         statusTransactions.value = false
+        headers.value = (Object.keys(incomeData.value[0].Data))
     }
     // Check if any categories are available
     if (incomeData.value.length <= 1 && expenseData.value.length <= 1) {

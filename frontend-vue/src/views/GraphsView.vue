@@ -155,6 +155,10 @@ const loadDateRange = async () => {
     if (dateFromBar.value == '' && dateToBar.value == '') {
         // Load the default date range
         const data = await API('datespan', 'GET')
+        if(data == undefined || data == 0) {
+            alertStore.showAlert('No data available.', 'error')
+            return
+        }
         dateFromBar.value = data.defaultFirst
         dateToBar.value = data.defaultLast
 
