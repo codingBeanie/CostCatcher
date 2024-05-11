@@ -3,7 +3,7 @@
 </p>
 
 Costcatcher is a small application utilizing a Django-Backend and a Vue.js-Frontend for analysing personal financial information. The goal is to get an overview over your spendings, as well as manage the types or categories of your spendings for a deeper analysis.
-Visit the website: [Costcatcher](https:\\costcatcher.cbeanie.com).
+Visit the website: [Costcatcher](https://costcatcher.cbeanie.com/#/).
 
 ## Features
 Because this is just a hobby project, the features a bit limited and tailored to my personal needs.
