@@ -157,6 +157,8 @@
             ></v-progress-linear>
         </v-row>
     </div>
+
+<Hint class="mt-10" v-if="!waiting" text="You can collapse the upper table."></Hint>
 </template>
 
 <script setup>
@@ -169,6 +171,7 @@ import { watch } from 'vue'
 
 import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
+import Hint from '../components/Hint.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

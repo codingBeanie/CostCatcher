@@ -33,13 +33,15 @@
     <div v-if="statusCategories && !waiting" class="mt-2 mb-4"><p class="text-h6 text-error" >No categories were created. Add categories and categorize your transactions: <v-btn class="mb-1" prepend-icon="mdi-tag-multiple" color="info" to="/assignments">Categorization</v-btn></p></div>
     
     <!--File-Table-->
-    <Tableau :incomeData="incomeData" :expenseData="expenseData" :headers="headers"></Tableau>
-    <v-row v-if="waiting">
+    <Tableau class="mb-4" :incomeData="incomeData" :expenseData="expenseData" :headers="headers"></Tableau>
+    <v-row v-if="waiting" class="">
         <v-progress-linear
             color="accent"
             indeterminate
         ></v-progress-linear>
     </v-row>
+
+    <Hint v-if="!waiting" text="Click on the values (except the sums) to see how they have been formed."></Hint>
     
 </template>
 
@@ -51,6 +53,7 @@ import { API } from '../composables/API.js'
 import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
 import Tableau from '../components/Tableau.vue'
+import Hint from '../components/Hint.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

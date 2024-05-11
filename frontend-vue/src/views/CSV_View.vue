@@ -75,7 +75,7 @@
             ></v-progress-linear>
         </v-row>
     </div>
-
+ <Hint v-if="!fileLoaded" class="mt-10" text="You will probably need to adjust the import schema in the settings for your first import."></Hint>
 </template>
 
 <script setup>
@@ -88,6 +88,7 @@ import { useAlertStore } from '../stores/AlertStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
+import Hint from '../components/Hint.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////

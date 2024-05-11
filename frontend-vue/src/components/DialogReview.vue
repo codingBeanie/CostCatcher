@@ -50,6 +50,8 @@
                                 </template>
                             </v-data-table>
                         </v-row>
+
+                        <Hint class="mt-10" v-if="!waiting" text="If a transaction is assigned wrongly, you can edit it here."></Hint>
                     </v-container>
                 </v-card-text>
 
@@ -59,6 +61,7 @@
                 </v-card-actions>
 
             </v-card>
+            
         </v-dialog>
     </v-row>
 
@@ -69,7 +72,7 @@ import { ref, watch, onMounted } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 import { API } from '../composables/API.js'
-
+import Hint from '../components/Hint.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
