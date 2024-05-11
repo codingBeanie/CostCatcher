@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 import base64
-from .env import POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, FIELD_ENCRYPTION_KEY, SECRET_KEY
+from .env import POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, FIELD_ENCRYPTION_KEY, SECRET_KEY, MAIL_PASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -155,4 +155,35 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+}
+
+
+EMAIL_HOST = 'smtp.ionos.de'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'mail@costcatcher.cbeanie.com'
+EMAIL_HOST_PASSWORD = MAIL_PASSWORD
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'costcatcher': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    }
 }

@@ -3,22 +3,20 @@
 
     <v-card>
         <v-card-title>
-            <h2>Heyho, welcome back!</h2>
+            <h2>Change Email</h2>
         </v-card-title>
 
         <v-card-text>
             <v-container>
-               <v-text-field v-model="username" @keydown.enter="login" label="Name"></v-text-field>
-                <v-text-field v-model="password" @keydown.enter="login" type="password" label="Password"></v-text-field>
-                <p v-if="failedLogin" class="text-error">Name or password is wrong!</p>
-                <v-btn variant="text" @click="componentStore.openPasswordReset">Forgot Password?</v-btn>
+                <v-text-field v-model="email" @keydown.enter="changeEmail" label="Change Email"></v-text-field>
+                <p v-if="errorMessage" class="text-error">{{ errorMessage }}</p>
             </v-container>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Login" color="accent" @click="login"></v-btn>
+            <v-btn text="Change" color="accent" @click="changeEmail"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -28,8 +26,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
-import { loginUser } from '../composables/UserAuth.js'
-import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/UserStore'
+import { updateEmail } from '../composables/UserAuth.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -37,12 +35,13 @@ import { useRouter } from 'vue-router'
 // State Management
 const active = ref(false)
 const componentStore = useComponentStore()
-const failedLogin = ref(false)
-const router = useRouter()
+const userStore = useUserStore()
+
+// Error Message
+const errorMessage = ref('')
 
 // Input
-const username = ref('')
-const password = ref('')
+const email = ref('')
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -51,26 +50,26 @@ const close = () => {
     active.value = false
 }
 
-const login = async () => {
-    const response = await loginUser(username.value, password.value)
-
-    if (response == true) {
-        active.value = false
-        failedLogin.value = false
-        router.push('/welcome')
-    }   
-    else {
-        failedLogin.value = true
+const changeEmail = async () => {
+    // E-Mail correct format
+    if (email.value != "") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(email.value)) {
+            errorMessage.value = 'E-Mail is not valid.'
+            return
+        }     
     }
+    errorMessage.value = ''
+    updateEmail(email.value)
+    active.value = false
 }
-
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle
 ////////////////////////////////////////////////////////////////
-watch(() => componentStore.login.trigger, () => {
+watch(() => componentStore.updateEmail.trigger, () => {
     active.value = true  
+    email.value = userStore.email
 })
 
 </script>
-../composables/UserAuth.js

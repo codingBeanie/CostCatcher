@@ -2,12 +2,12 @@ import { useUserStore } from "../stores/UserStore"
 import { useAlertStore } from "../stores/AlertStore"
 import { storeUserdata } from "./LocalStorage"
 
-export async function registerUser(username, password) {
+export async function registerUser(username, password, email) {
     let urlBase = process.env.VUE_APP_API_URL
     const url = `${urlBase}/auth/register/`
     const userStore = useUserStore()
     const alertStore = useAlertStore()
-    const payload = { username: username, password: password }
+    const payload = { username: username, password: password, email: email}
     
     try {
         const request = await fetch(url, {
@@ -20,7 +20,8 @@ export async function registerUser(username, password) {
         if (request.status === 200) {
             userStore.username = payload.username
             userStore.token = response
-            storeUserdata(payload.username, response)
+            userStore.email = payload.email
+            storeUserdata(payload.username, response, payload.email)
             return true
         }
         else {
@@ -50,8 +51,9 @@ export async function loginUser(username, password) {
 
         if (request.status === 200) {
             userStore.username = payload.username
-            userStore.token = response
-            storeUserdata(payload.username, response)
+            userStore.token = response.token
+            userStore.email = response.email
+            storeUserdata(payload.username, response.token, response.email)
             return true
         }
         else {
@@ -112,6 +114,88 @@ export async function updatePassword(currentPassword, newPassword) {
         }
         else {
             alertStore.showAlert('Success', response, 'success', 5000)
+            return true
+        }
+    }
+    catch (error) {
+        alertStore.showAlert('Error', error, 'error', 5000)
+        return false
+    }
+}
+
+export async function setNewPassword(password, token) {
+    let urlBase = process.env.VUE_APP_API_URL
+    const url = `${urlBase}/auth/setnewpassword/`
+    const alertStore = useAlertStore()
+    try {
+        const request = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
+            body: JSON.stringify({ 'password': password})
+        })
+        const response = await request.json()
+        if (request.status !== 200) {
+            alertStore.showAlert('Error', response, 'error', 5000)
+            return false
+        }
+        else {
+            alertStore.showAlert('Success', response, 'success', 5000)
+            return true
+        }
+    }
+    catch (error) {
+        alertStore.showAlert('Error', error, 'error', 5000)
+        return false
+    }
+}
+
+export async function passwordReset(username) {
+    let urlBase = process.env.VUE_APP_API_URL
+    const url = `${urlBase}/auth/passwordReset/`
+    const alertStore = useAlertStore()
+    try {
+        const request = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 'username': username })
+        })
+        const response = await request.json()
+        if (request.status !== 200) {
+            alertStore.showAlert('Error', response, 'error', 5000)
+            return false
+        }
+        else {
+            alertStore.showAlert('Success', response, 'success', 5000)
+            return true
+        }
+    }
+    catch (error) {
+        alertStore.showAlert('Error', error, 'error', 5000)
+        return false
+    }
+}
+
+export async function updateEmail(email) {
+    let urlBase = process.env.VUE_APP_API_URL
+    const url = `${urlBase}/auth/updateEmail/`
+    const userStore = useUserStore()
+    const alertStore = useAlertStore()
+    const username = userStore.username
+    const token = userStore.token
+    try {
+        const request = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` },
+            body: JSON.stringify({ 'email': email })
+        })
+        const response = await request.json()
+        if (request.status !== 200) {
+            alertStore.showAlert('Error', response, 'error', 5000)
+            return false
+        }
+        else {
+            alertStore.showAlert('Success', response, 'success', 5000)
+            userStore.email = email
             return true
         }
     }

@@ -40,26 +40,28 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { useComponentStore } from '../stores/ComponentStore.js'
+import { onMounted, ref} from 'vue'
 import { useUserStore } from '../stores/UserStore.js'
-////////////////////////////////////////
-// Variables //
+import { useComponentStore } from '../stores/ComponentStore'
+import { useRoute } from 'vue-router'
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
 // State Management
-const active = ref(true)
-const componentStore = useComponentStore()
 const userStore = useUserStore()
+const componentStore = useComponentStore()
+const active = ref(true)
+const route = useRoute()
 
-////////////////////////////////////////
-// Lifecylce //
-watch(() => userStore.username, () => {
-    if (userStore.username != null) {
-        active.value = false
+////////////////////////////////////////////////////////////////
+// Lifecycle Hooks
+////////////////////////////////////////////////////////////////
+onMounted(() => {
+    if(route.params.token){
+        componentStore.openNewPassword()
     }
-    else {
-        active.value = true
-    }
- })
+}
+)
 </script>
 
 <style scoped>

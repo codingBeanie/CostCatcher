@@ -20,6 +20,15 @@ export const useComponentStore = defineStore('component', {
         updatePassword: {
             trigger: false,
         },
+        updateEmail: {
+            trigger: false,
+        },
+        resetPassword: {
+            trigger: false,
+        },
+        newPassword: {
+            trigger: false,
+        },
         settings: {
             trigger: false,
             tab: 'general',
@@ -63,6 +72,15 @@ export const useComponentStore = defineStore('component', {
         },
         openUpdatePassword() {
             this.updatePassword.trigger = !this.updatePassword.trigger
+        },
+        openUpdateEmail() {
+            this.updateEmail.trigger = !this.updateEmail.trigger
+        },
+        openPasswordReset() {
+            this.resetPassword.trigger = !this.resetPassword.trigger
+        },
+        openNewPassword() {
+            this.newPassword.trigger = !this.newPassword.trigger
         },
         openSettings(tab) {
             this.settings.trigger = !this.settings.trigger

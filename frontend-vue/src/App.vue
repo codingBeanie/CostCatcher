@@ -1,5 +1,4 @@
 <template>
-  <LandingPage></LandingPage>
   <v-app class="bg-primary">
     <!--App Bar-->
     <v-app-bar flat color="secondary">
@@ -7,13 +6,13 @@
           <div class="d-flex align-center">
             <!--LOGO-->
             <div class="w-25">
-              <router-link to="/">
+              <router-link to="/welcome">
                 <v-img src="./assets/logo2.webp" max-height="50px"></v-img>
               </router-link>
             </div>
 
             <!--MENU-->
-            <div class="justify-center w-50 d-flex">
+            <div v-if="username" class="justify-center w-50 d-flex">
               <div class="">
                 <v-btn to="import" width="200px" prepend-icon="mdi-upload" variant="text" size="large" stacked>Import</v-btn>
               </div>
@@ -33,7 +32,7 @@
             </div>
 
             <!--End Button-->
-            <div class="w-25 text-end">
+            <div v-if="username" class="w-25 text-end">
 
               <!--Settings-->
               <v-btn class="mr-4" icon @click="componentStore.openSettings('general')">
@@ -52,8 +51,13 @@
                   </v-list-item>
 
                   <!--Change Password-->
-                  <v-list-item value="changePassword" @click="changePassword">
+                  <v-list-item value="changePassword" @click="componentStore.openUpdatePassword">
                     <v-list-item-title><v-icon class="mr-2">mdi-lock-reset</v-icon>Change Password</v-list-item-title>
+                  </v-list-item>
+
+                  <!--Change Email-->
+                  <v-list-item value="changePassword" @click="componentStore.openUpdateEmail">
+                    <v-list-item-title><v-icon class="mr-2">mdi-email-edit-outline</v-icon>Change Email</v-list-item-title>
                   </v-list-item>
 
                   <!--Delete-->
@@ -107,6 +111,9 @@
 <DialogLogin></DialogLogin>
 <DialogDeleteAccount></DialogDeleteAccount>
 <DialogUpdatePassword></DialogUpdatePassword>
+<DialogPasswordReset></DialogPasswordReset>
+<DialogNewPassword></DialogNewPassword>
+<DialogUpdateEmail></DialogUpdateEmail>
 
 <DialogSettings></DialogSettings>
 <DialogDelete></DialogDelete>
@@ -122,20 +129,21 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import router from './router'
 
 import { getUserdata } from './composables/LocalStorage'
 import { useUserStore } from './stores/UserStore'
 import { useComponentStore } from './stores/ComponentStore.js'
 
 import Alert from './components/Alert.vue'
-import LandingPage from './views/LandingPage.vue'
 import Ouch from './views/Ouch.vue'
 
 import DialogRegister from './components/DialogRegister.vue'
 import DialogLogin from './components/DialogLogin.vue'
 import DialogDeleteAccount from './components/DialogDeleteAccount.vue'
 import DialogUpdatePassword from './components/DialogUpdatePassword.vue'
+import DialogPasswordReset from './components/DialogPasswordReset.vue'
+import DialogNewPassword from './components/DialogNewPassword.vue'
+import DialogUpdateEmail from './components/DialogUpdateEmail.vue'
 
 import DialogSettings from './components/DialogSettings.vue'
 import DialogDelete from './components/DialogDelete.vue'
@@ -146,26 +154,26 @@ import EditAssignment from './components/EditAssignment.vue'
 
 import DialogReview from './components/DialogReview.vue'
 import EditTransaction from './components/EditTransaction.vue'
+import { useRouter, useRoute } from 'vue-router'
 
 ////////////////////////////////////////////////////////////////
 // Variables //
 // State Management
 const componentStore = useComponentStore()
 const userStore = useUserStore()
-const username = ref(userStore.username)
+const username = ref(null)
 const windowWidth = ref(window.innerWidth)
 const windowHeight = ref(window.innerHeight)
+const router = useRouter()
+const route = useRoute()
 
 const version = ref(process.env.VUE_APP_VERSION)
 const date = ref(process.env.VUE_APP_DATE)
 ////////////////////////////////////////////////////////////////
 // Methods //
-const changePassword = () => {
-  componentStore.openUpdatePassword()
-}
-
 const logout = () => {
   userStore.logout()
+  router.push('/')
 }
 
 const checkResize = () => {
@@ -187,10 +195,14 @@ onMounted(() => {
   window.addEventListener('resize', checkResize)
 })
 
-watch(() => userStore.username, () => {
-  username.value = userStore.username
-  if(userStore.username == null) {
+watch(() => route.path, () => {
+  const passwordReset = route.path.includes('resetpassword')
+  if (!passwordReset) {
+    return
+  }
+  if (username.value == null) {
     router.push('/')
   }
 })
+
 </script>

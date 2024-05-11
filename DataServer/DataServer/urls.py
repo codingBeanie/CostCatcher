@@ -23,13 +23,16 @@ from REST_API.endpoints.assignments import Assignments
 from REST_API.endpoints.settings import Settings
 from REST_API.endpoints.statistics import Statistics
 from REST_API.endpoints.datespan import Datespan
-from REST_API.endpoints.users import Register, Login, UpdatePassword, DeleteUser
+from REST_API.endpoints.users import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/register/', Register.as_view()),
     path('auth/login/', Login.as_view()),
     path('auth/updatePassword/', UpdatePassword.as_view()),
+    path('auth/passwordReset/', RequestPasswordReset.as_view()),
+    path('auth/setnewpassword/', SetNewPassword.as_view()),
+    path('auth/updateEmail/', UpateEmail.as_view()),
     path('auth/deleteUser/', DeleteUser.as_view()),
     path('api/transactions/', Transactions.as_view()),
     path('api/files/', Files.as_view()),
