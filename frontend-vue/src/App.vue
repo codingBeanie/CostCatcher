@@ -196,6 +196,14 @@ onMounted(() => {
   username.value = userStore.username
   checkResize()
   window.addEventListener('resize', checkResize)
+
+  if (username.value == null) {
+    router.push('/')
+  }
+  else {
+    router.push('/welcome')
+    }
+  
 })
 
 watch(() => route.path, () => {
@@ -205,6 +213,9 @@ watch(() => route.path, () => {
   }
   if (username.value == null) {
     router.push('/')
+  }
+  else {
+    router.push('/welcome')
   }
 })
 

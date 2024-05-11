@@ -31,6 +31,7 @@
 import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { registerUser } from '../composables/UserAuth.js'
+import { useRouter } from 'vue-router'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -38,6 +39,7 @@ import { registerUser } from '../composables/UserAuth.js'
 // State Management
 const active = ref(false)
 const componentStore = useComponentStore()
+const router = useRouter()
 
 // Error Message
 const errorMessage = ref('')
@@ -83,6 +85,7 @@ const register = async () => {
 
     if (response == true) {
         active.value = false
+        router.push('/welcome')
     }   
     else {
         errorMessage.value = 'Username already exist.'
