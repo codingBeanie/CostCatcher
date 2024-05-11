@@ -1,39 +1,69 @@
 <template>
     <v-dialog v-model="active" transition="none" fullscreen>
 
+        
         <v-card color="secondary">
             <v-container>
+
+                <!--HEADER-->
                 <v-row class="padding">
-                    <v-col cols="10">
-                        <p class="text-h5">COSTCATCHER</p>
+
+                    <!--LOGO-->
+                    <v-col cols="2">
+                        <v-img src="@/assets/logo_trans_light.webp" max-height="50"></v-img>
                     </v-col>
+
+                    <v-col></v-col>
+
+                    <!--LOGIN BUTTON-->
                     <v-col cols="2">
                         <v-btn color="info" prepend-icon="mdi-login" @click="componentStore.openLogin">Login</v-btn>
                     </v-col>
+
                 </v-row>
 
-                <v-row>
-                    <v-col class="mr-10">
+                <!--STATEMENT-->
+                <v-row class="mb-16">
+
+                    <!--LOGO-->
+                    <v-col cols="3">
+                        <v-img src="@/assets/logo2.webp" max-height="250"></v-img>
+                    </v-col>
+
+                    <!--TEXT-->
+                    <v-col cols="8" class="mt-6">
+
+                        <!--TITLE-->
                         <v-row class="mb-4">
-                            <p class="text-h2 font-weight-bold">Get an overview over your spendings</p>
+                            <p class="text-h2 font-weight-bold">Get rid of your spreadsheet for your personal finances.</p>
                         </v-row>
 
+                        <!--SUBTITLE-->
                         <v-row class="">
-                            <p class="text-h6 font-weight-thin">Upload csv-files with your bank transactions, categorize your expenses and analyse your spendings.</p>
+                            <p class="text-h6">Upload csv-files with your bank transactions, categorize your expenses and analyse your spendings.</p>
                         </v-row>
 
+                        <!--BUTTON-->
                         <v-row class="mt-10">
-                            <v-btn size="large" min-width="200px" max-width="200px" color="accent" @click="componentStore.openRegister">Register</v-btn>
+                            <v-btn size="large" min-width="200px" max-width="300px" color="accent" @click="componentStore.openRegister">Register for free</v-btn>
                         </v-row> 
-                    </v-col>
 
-                    <v-col class="ml-10">
-                        IMAGES
                     </v-col>
 
                 </v-row>
 
+                <!--FEATURES-->
+                <v-row class="mt-16">
 
+                    <v-col>
+                        <v-carousel hide-delimiters show-arrows="hover" cycle>
+                            <v-carousel-item src="@/assets/upload.webp"></v-carousel-item>
+                            <v-carousel-item src="@/assets/categorization.webp"></v-carousel-item>
+                            <v-carousel-item src="@/assets/tableau.webp"></v-carousel-item>
+                            <v-carousel-item src="@/assets/graphs.webp"></v-carousel-item>
+                        </v-carousel>
+                    </v-col>
+                </v-row>
             </v-container>
         </v-card>
     </v-dialog>

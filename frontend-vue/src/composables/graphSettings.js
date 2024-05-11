@@ -52,6 +52,9 @@ export const barGraphOptions = {
 }
 
 export const pieGraphOptions = {
+        responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 1.5,
     plugins: {
         legend: {
             labels: {
