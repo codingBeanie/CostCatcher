@@ -121,6 +121,7 @@
 <DialogPasswordReset></DialogPasswordReset>
 <DialogNewPassword></DialogNewPassword>
 <DialogUpdateEmail></DialogUpdateEmail>
+<DialogDataProtection></DialogDataProtection>
 
 <DialogSettings></DialogSettings>
 <DialogDelete></DialogDelete>
@@ -151,6 +152,7 @@ import DialogUpdatePassword from './components/DialogUpdatePassword.vue'
 import DialogPasswordReset from './components/DialogPasswordReset.vue'
 import DialogNewPassword from './components/DialogNewPassword.vue'
 import DialogUpdateEmail from './components/DialogUpdateEmail.vue'
+import DialogDataProtection from './components/DialogDataProtection.vue'
 
 import DialogSettings from './components/DialogSettings.vue'
 import DialogDelete from './components/DialogDelete.vue'

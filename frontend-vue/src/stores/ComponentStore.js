@@ -29,6 +29,9 @@ export const useComponentStore = defineStore('component', {
         newPassword: {
             trigger: false,
         },
+        dataProtection: {
+            trigger: false,
+        },
         settings: {
             trigger: false,
             tab: 'general',
@@ -81,6 +84,9 @@ export const useComponentStore = defineStore('component', {
         },
         openNewPassword() {
             this.newPassword.trigger = !this.newPassword.trigger
+        },
+        openDataProtection() {
+            this.dataProtection.trigger = !this.dataProtection.trigger
         },
         openSettings(tab) {
             this.settings.trigger = !this.settings.trigger

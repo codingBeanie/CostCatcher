@@ -12,7 +12,15 @@
                <v-text-field v-model="email" @keydown.enter="register" label="E-Mail (optional)"></v-text-field>
                 <v-text-field v-model="password" type="password" @keydown.enter="register" label="Password"></v-text-field>
                 <v-text-field v-model="repeatPassword" type="password" @keydown.enter="register" label="Repeat Password"></v-text-field>
-                <v-checkbox v-model="checkDevMode" label="I understand that this is just a hobby project and i may encounter bugs and problem."></v-checkbox>
+                <v-row class="d-flex align-center">
+                    <v-col>
+                        <v-checkbox v-model="checkPrivacyStatement" label="I acknowledge that I have read and agree to the privacy policy.">
+                        </v-checkbox>
+                    </v-col>
+                    <v-col>
+                        <v-btn @click="componentStore.openDataProtection">privacy policy</v-btn>
+                    </v-col>
+                </v-row>
                 <p v-if="errorMessage" class="text-error">{{ errorMessage }}</p>
             </v-container>
         </v-card-text>
@@ -32,7 +40,6 @@ import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { registerUser } from '../composables/UserAuth.js'
 import { useRouter } from 'vue-router'
-
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
@@ -49,7 +56,7 @@ const username = ref('')
 const password = ref('')
 const email = ref('')
 const repeatPassword = ref('')
-const checkDevMode = ref(false)
+const checkPrivacyStatement = ref(false)
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -61,8 +68,8 @@ const close = () => {
 const register = async () => {
     // Validation
     // Checkmarks are set
-    if (checkDevMode.value == false) {
-        errorMessage.value = 'You need to agree to the terms and conditions.'
+    if (checkPrivacyStatement.value == false) {
+        errorMessage.value = 'You need to agree to the privacy policy.'
         return
     }
 
