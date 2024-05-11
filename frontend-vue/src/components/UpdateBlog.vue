@@ -41,9 +41,7 @@
                     <v-row v-if="chapter.bullets">
                         <v-list>
                             <v-list-item v-for="bullet in chapter.bullets" :key="bullet" prepend-icon="mdi-circle-small">
-                                <v-list-item-content>
                                     <v-list-item-title class="bullet mb-1">{{ bullet }}</v-list-item-title>
-                                </v-list-item-content>
                             </v-list-item>
                         </v-list>
                     </v-row>
