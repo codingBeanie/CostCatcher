@@ -1,4 +1,5 @@
 export const updateBlog = [
+    
     {
         date: '2024-05-07',
         title: 'Hello World!',
@@ -16,6 +17,29 @@ export const updateBlog = [
                 icon: 'mdi-road-variant',
                 text: `I already got some ideas for improvements. I do not know when I will implement them, but I will try to keep you updated.`,
                 bullets: []
+            },
+        ]
+    },
+    {
+        date: '2024-05-11',
+        title: 'V1.1.0 | Never mind forgetting passwords',
+        description:   ``,
+        chapter: [
+            {
+                title: 'New Features / Changed',
+                icon: 'mdi-party-popper',
+                text: '',
+                bullets: ['Password reset via email',
+                    'created a 404-not-found page',
+                            'improved the routing. Refreshes should now work properly',
+                ]
+            },
+            {
+                title: 'Bug Fixes',
+                icon: 'mdi-bug',
+                text: '',
+                bullets: [  'crash when no data is uploaded while entering statistics or graphs',
+                ]
             },
         ]
     },
