@@ -4,7 +4,6 @@
     <v-card>
         <v-card-title>
             <h2>Set your new password</h2>
-            {{ route.params.token }}
         </v-card-title>
 
         <v-card-text>
