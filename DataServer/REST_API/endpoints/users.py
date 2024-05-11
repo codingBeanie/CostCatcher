@@ -102,7 +102,7 @@ class RequestPasswordReset(APIView):
             token = Token.objects.get(user=user)
             message = "Dear " + user.username + ",\n\n" + \
                 "you requested a password reset for Costcatcher. Click the link to reset your password\n\n" + \
-                "https://costcatcher.cbeanie.com/resetpassword/" + str(token) +  \
+                "https://costcatcher.cbeanie.com/#/resetpassword/" + str(token) +  \
                 "\n\n" + "Costcatcher Team" + "\n\n\n\n" + \
                 "This is an automated email. Please do not reply to this email."
 

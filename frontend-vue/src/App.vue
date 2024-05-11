@@ -188,7 +188,6 @@ const logout = () => {
 const checkResize = () => {
   windowWidth.value = window.innerWidth
   windowHeight.value = window.innerHeight
-  console.log(windowWidth.value, windowHeight.value)
   if (windowWidth.value < 1140 || windowHeight.value < 1000) {
     componentStore.app.screen = 'mobile'
   }
@@ -203,26 +202,12 @@ onMounted(() => {
   username.value = userStore.username
   checkResize()
   window.addEventListener('resize', checkResize)
-
-  if (username.value == null) {
-    router.push('/')
-  }
-  else {
-    router.push('/welcome')
-    }
   
 })
 
 watch(() => userStore.username, () => {
   username.value = userStore.username
-})
-
-watch(() => route.path, () => {
-  const passwordReset = route.path.includes('resetpassword')
-  if (!passwordReset) {
-    return
-  }
-  if (username.value == null) {
+  if(username.value == null){
     router.push('/')
   }
   else {
