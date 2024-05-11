@@ -49,7 +49,7 @@
     </v-row>
 
     <!--Bar Graph-->
-    <v-row class="mt-2">
+    <v-row class="mt-2 bg-primaryLight">
         <canvas ref="barGraphPlaceholder"></canvas>
     </v-row>
 
@@ -96,7 +96,7 @@
     </v-row>
 
     <!--Bar Graph-->
-    <v-row class="">
+    <v-row class="bg-primaryLight">
         <canvas ref="pieGraphPlaceholder"></canvas>
     </v-row>
     
@@ -192,7 +192,7 @@ const loadBarGraph = async () => {
     for (let i = 0; i < data.length; i++) { 
         datasets.push({
             label: categories[i].name,
-            data: Object.values(data[i]),
+            data: Object.values(data[i]).map(Math.abs),
             backgroundColor: categories[i].color,
         })
     }

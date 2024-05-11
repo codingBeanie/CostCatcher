@@ -1,6 +1,6 @@
 <template>
     <!--MAINFRAME-->
-    <v-container class="d-flex-row overflow">
+    <v-container class="d-flex-row overflow bg-white">
 
         <!--HEADERS-->
         <v-row no-gutters class="border-b  d-flex flex-nowrap text-end">

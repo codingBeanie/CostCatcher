@@ -1,67 +1,67 @@
-TEST-CSV for Costcatcher
+TEST-CSV for Costcatcher;;;
 Date;Recipient/Sender;Description;Amount
 01.01.24;Business LLC;Wage;3456.12
-01.01.24;Local Real Estate;Rent;1022.00
-01.01.24;Get Gas!;Tank up;122.32
-01.01.24;Electricity Company;payment;133.55
-01.01.24;City of Springfield;Waste and Sewage;27.99
-01.01.24;A big Supermarkt chain;payment;754.11
-01.01.24;Insurance Company;Car insurance;159.00
-01.01.24;Another insurance company;Private liability;59.00
-01.01.24;Internet Service Provider;payment;59.99
-01.01.24;Cellular Company;payment;39.99
-01.01.24;Online Store;Payment;256.34
-01.01.24;Drugstore;Payment;87.33
-01.01.24;A nice restaurant;payment;122.43
+01.01.24;Local Real Estate;Rent;-1022.00
+01.01.24;Get Gas!;Tank up;-122.32
+01.01.24;Electricity Company;payment;-133.55
+01.01.24;City of Springfield;Waste and Sewage;-27.99
+01.01.24;A big Supermarkt chain;payment;-754.11
+01.01.24;Insurance Company;Car insurance;-159.00
+01.01.24;Another insurance company;Private liability;-59.00
+01.01.24;Internet Service Provider;payment;-59.99
+01.01.24;Cellular Company;payment;-39.99
+01.01.24;Online Store;Payment;-256.34
+01.01.24;Drugstore;Payment;-87.33
+01.01.24;A nice restaurant;payment;-122.43
 01.02.24;Business LLC;Wage;3456.12
-01.02.24;Local Real Estate;Rent;1022.00
-01.02.24;Get Gas!;Tank up;199.23
-01.02.24;Electricity Company;payment;133.55
-01.02.24;City of Springfield;Waste and Sewage;27.99
-01.02.24;A big Supermarkt chain;payment;811.12
-01.02.24;Insurance Company;Car insurance;159.00
-01.02.24;Another insurance company;Private liability;59.00
-01.02.24;Internet Service Provider;payment;59.99
-01.02.24;Cellular Company;payment;39.99
-01.02.24;Online Store;Payment;499.21
-01.02.24;Drugstore;Payment;44.21
-01.02.24;A nice restaurant;payment;45.86
+01.02.24;Local Real Estate;Rent;-1022.00
+01.02.24;Get Gas!;Tank up;-199.23
+01.02.24;Electricity Company;payment;-133.55
+01.02.24;City of Springfield;Waste and Sewage;-27.99
+01.02.24;A big Supermarkt chain;payment;-811.12
+01.02.24;Insurance Company;Car insurance;-159.00
+01.02.24;Another insurance company;Private liability;-59.00
+01.02.24;Internet Service Provider;payment;-59.99
+01.02.24;Cellular Company;payment;-39.99
+01.02.24;Online Store;Payment;-499.21
+01.02.24;Drugstore;Payment;-44.21
+01.02.24;A nice restaurant;payment;-45.86
 01.03.24;Business LLC;Wage;3456.12
-01.03.24;Local Real Estate;Rent;1022.00
-01.03.24;Get Gas!;Tank up;44.33
-01.03.24;Electricity Company;payment;109.12
-01.03.24;City of Springfield;Waste and Sewage;27.99
-01.03.24;A big Supermarkt chain;payment;766.11
-01.03.24;Insurance Company;Car insurance;159.00
-01.03.24;Another insurance company;Private liability;59.00
-01.03.24;Internet Service Provider;payment;59.99
-01.03.24;Cellular Company;payment;39.99
-01.03.24;Online Store;Payment;333.12
-01.03.24;Drugstore;Payment;90.12
-01.03.24;A nice restaurant;payment;166.23
+01.03.24;Local Real Estate;Rent;-1022.00
+01.03.24;Get Gas!;Tank up;-44.33
+01.03.24;Electricity Company;payment;-109.12
+01.03.24;City of Springfield;Waste and Sewage;-27.99
+01.03.24;A big Supermarkt chain;payment;-766.11
+01.03.24;Insurance Company;Car insurance;-159.00
+01.03.24;Another insurance company;Private liability;-59.00
+01.03.24;Internet Service Provider;payment;-59.99
+01.03.24;Cellular Company;payment;-39.99
+01.03.24;Online Store;Payment;-333.12
+01.03.24;Drugstore;Payment;-90.12
+01.03.24;A nice restaurant;payment;-166.23
 01.04.24;Business LLC;Wage;3456.12
-01.04.24;Local Real Estate;Rent;1022.00
-01.04.24;Get Gas!;Tank up;99.22
-01.04.24;Electricity Company;payment;132.99
-01.04.24;City of Springfield;Waste and Sewage;27.99
-01.04.24;A big Supermarkt chain;payment;798.12
-01.04.24;Insurance Company;Car insurance;159.00
-01.04.24;Another insurance company;Private liability;59.00
-01.04.24;Internet Service Provider;payment;59.99
-01.04.24;Cellular Company;payment;39.99
-01.04.24;Online Store;Payment;100.23
-01.04.24;Drugstore;Payment;76.34
-01.04.24;A nice restaurant;payment;143.65
+01.04.24;Local Real Estate;Rent;-1022.00
+01.04.24;Get Gas!;Tank up;-99.22
+01.04.24;Electricity Company;payment;-132.99
+01.04.24;City of Springfield;Waste and Sewage;-27.99
+01.04.24;A big Supermarkt chain;payment;-798.12
+01.04.24;Insurance Company;Car insurance;-159.00
+01.04.24;Another insurance company;Private liability;-59.00
+01.04.24;Internet Service Provider;payment;-59.99
+01.04.24;Cellular Company;payment;-39.99
+01.04.24;Online Store;Payment;-100.23
+01.04.24;Drugstore;Payment;-76.34
+01.04.24;A nice restaurant;payment;-143.65
 01.05.24;Business LLC;Wage;3765.00
-01.05.24;Local Real Estate;Rent;1022.00
-01.05.24;Get Gas!;Tank up;133.54
-01.05.24;Electricity Company;payment;95.82
-01.05.24;City of Springfield;Waste and Sewage;27.99
-01.05.24;A big Supermarkt chain;payment;811.23
-01.05.24;Insurance Company;Car insurance;159.00
-01.05.24;Another insurance company;Private liability;59.00
-01.05.24;Internet Service Provider;payment;59.99
-01.05.24;Cellular Company;payment;39.99
-01.05.24;Online Store;Payment;345.65
-01.05.24;Drugstore;Payment;22.43
-01.05.24;A nice restaurant;payment;244.22
+01.05.24;Local Real Estate;Rent;-1022.00
+01.05.24;Get Gas!;Tank up;-133.54
+01.05.24;Electricity Company;payment;-95.82
+01.05.24;City of Springfield;Waste and Sewage;-27.99
+01.05.24;A big Supermarkt chain;payment;-811.23
+01.05.24;Insurance Company;Car insurance;-159.00
+01.05.24;Another insurance company;Private liability;-59.00
+01.05.24;Internet Service Provider;payment;-59.99
+01.05.24;Cellular Company;payment;-39.99
+01.05.24;Online Store;Payment;-345.65
+01.05.24;Drugstore;Payment;-22.43
+01.05.24;A nice restaurant;payment;-244.22

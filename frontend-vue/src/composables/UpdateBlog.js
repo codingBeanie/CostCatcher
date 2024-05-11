@@ -4,7 +4,7 @@ export const updateBlog = [
         date: '2024-05-07',
         title: 'Hello World!',
         description:    `This tool is still in its infancy. 
-                        Some convenience features may be absent, and bugs might still arise. I'm striving to improve it`,
+                        Some convenience features may be absent, and bugs might still arise. I'm striving to improve it. Nevertheless, i hope you can utilize the Costcatcher for your personal finance management.`,
         chapter: [
             {
                 title: 'How To',
@@ -30,7 +30,8 @@ export const updateBlog = [
                 icon: 'mdi-party-popper',
                 text: '',
                 bullets: ['Password reset via email',
-                    'created a 404-not-found page',
+                            'minor design changes',
+                        'created a 404-not-found page',
                             'improved the routing. Refreshes should now work properly',
                 ]
             },

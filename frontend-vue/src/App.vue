@@ -3,36 +3,40 @@
     <!--App Bar-->
     <v-app-bar flat color="secondary">
         <v-app-bar-title>
-          <div class="d-flex align-center">
+          <v-row no-gutters class="d-flex justify-center align-center">
             <!--LOGO-->
-            <div class="w-25">
+            <v-col cols="1">
               <router-link to="/welcome">
                 <v-img src="./assets/logo2.webp" max-height="50px"></v-img>
               </router-link>
-            </div>
+            </v-col>
 
             <!--MENU-->
-            <div v-if="username" class="justify-center w-50 d-flex">
-              <div class="">
-                <v-btn to="import" width="200px" prepend-icon="mdi-upload" variant="text" size="large" stacked>Import</v-btn>
-              </div>
-              
-              <div>
-                <v-btn to="assignments" width="200px" text prepend-icon="mdi-tag-multiple" variant="text" size="large" stacked>Categorization</v-btn>
-              </div>
-              
-              <div>
-                <v-btn to="statistics" width="200px" text prepend-icon="mdi-sigma" variant="text" size="large" stacked>Statistics</v-btn>
-              </div>
+            <v-col cols="10" v-if="username">
+              <v-row class="d-flex">
+                <v-col></v-col>
+                <v-col>
+                  <v-btn to="import" width="200px" prepend-icon="mdi-upload" variant="text" size="large" stacked>Import</v-btn>
+                </v-col>
 
-                <div>
-                <v-btn to="graphs" width="200px" text prepend-icon="mdi-chart-bar" variant="text" size="large" stacked>Graphs</v-btn>
-              </div>
+                <v-col>
+                  <v-btn to="assignments" width="200px" text prepend-icon="mdi-tag-multiple" variant="text" size="large" stacked>Categorization</v-btn>
+                </v-col>
+              
+                <v-col>
+                  <v-btn to="statistics" width="200px" text prepend-icon="mdi-sigma" variant="text" size="large" stacked>Statistics</v-btn>
+                </v-col>
 
-            </div>
+                  <v-col>
+                    <v-btn to="graphs" width="200px" text prepend-icon="mdi-chart-bar" variant="text" size="large" stacked>Graphs</v-btn>
+                  </v-col>
+                  <v-col></v-col>
+              </v-row>
+
+            </v-col>
 
             <!--End Button-->
-            <div v-if="username" class="w-25 text-end">
+            <v-col cols="1" v-if="username">
 
               <!--Settings-->
               <v-btn class="mr-4" icon @click="componentStore.openSettings('general')">
@@ -71,9 +75,9 @@
                   </v-list-item>
                 </v-list>
               </v-menu>
-            </div>
+            </v-col>
             
-          </div>
+          </v-row>
         </v-app-bar-title>
     </v-app-bar>
 
@@ -182,7 +186,8 @@ const logout = () => {
 const checkResize = () => {
   windowWidth.value = window.innerWidth
   windowHeight.value = window.innerHeight
-  if (windowWidth.value < 1000 || windowHeight.value < 1000) {
+  console.log(windowWidth.value, windowHeight.value)
+  if (windowWidth.value < 1140 || windowHeight.value < 1000) {
     componentStore.app.screen = 'mobile'
   }
   else {

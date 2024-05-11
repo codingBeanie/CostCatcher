@@ -1,11 +1,11 @@
 <template>
-<v-row class="mt-6 mb-2">
+<v-row class="mt-6">
     <v-col cols="12">
         <Title title="Info Board" subtitle="Get the latest news about the Costcatcher"/>
     </v-col>
 </v-row>
 <v-row>
-    <v-card v-for="entry in updateBlog" class="mb-6 bg-primary-light" width="100%">
+    <v-card v-for="entry in updateBlog" class="mb-10 bg-primaryLight" width="100%">
 
         <!--TITLE-->
         <v-card-title>
@@ -39,7 +39,7 @@
 
                     <!--CHAPTER BULLETS-->
                     <v-row v-if="chapter.bullets">
-                        <v-list>
+                        <v-list class="bg-primaryLight">
                             <v-list-item v-for="bullet in chapter.bullets" :key="bullet" prepend-icon="mdi-circle-small">
                                     <v-list-item-title class="bullet mb-1">{{ bullet }}</v-list-item-title>
                             </v-list-item>
