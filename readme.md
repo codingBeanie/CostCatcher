@@ -1,4 +1,6 @@
 ![Costcatcher Logo](https://github.com/codingBeanie/CostCatcher/blob/main/frontend-vue/src/assets/costcatcher_logo_prim.webp)
+
+
 Costcatcher is a small application utilizing a Django-Backend and a Vue.js-Frontend for analysing personal financial information. The goal is to get an overview over your spendings, as well as manage the types or categories of your spendings for a deeper analysis.
 Visit the website: [Costcatcher](costcatcher.cbeanie.com).
 
