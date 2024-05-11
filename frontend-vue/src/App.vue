@@ -213,6 +213,10 @@ onMounted(() => {
   
 })
 
+watch(() => userStore.username, () => {
+  username.value = userStore.username
+})
+
 watch(() => route.path, () => {
   const passwordReset = route.path.includes('resetpassword')
   if (!passwordReset) {
