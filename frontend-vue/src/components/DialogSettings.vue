@@ -176,6 +176,7 @@
 
                     <!--Dialog Actions-->
                     <v-card-actions>
+                        <v-btn color="info" @click="userStore.resetTutorials">reset Tutorials</v-btn>
                         <v-spacer></v-spacer>
                         <v-btn text="Cancel" color="sucess" @click="close"></v-btn>
                         <v-btn text="Save" color="sucess" @click="save"></v-btn>
@@ -193,6 +194,7 @@ import { onMounted, watch } from 'vue'
 import { ref } from 'vue'
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore.js'
+import { useUserStore } from '../stores/UserStore.js'
 
 ////////////////////////////////////////////////////////////////
 // State Management
@@ -200,6 +202,7 @@ import { useComponentStore } from '../stores/ComponentStore.js'
 const active = ref(false)
 const tab = ref('')
 const componentStore = useComponentStore()
+const userStore = useUserStore()
 
 ////////////////////////////////////////////////////////////////
 // Variables

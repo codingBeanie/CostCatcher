@@ -24,7 +24,6 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text="Never Show Again" color="info" @click="nevershow"></v-btn>
             <v-btn text="OK" color="accent" @click="close"></v-btn>
         </v-card-actions>
     </v-card>
@@ -51,15 +50,10 @@ const content = ref([])
 // Actions
 ////////////////////////////////////////////////////////////////
 const load = () => {
-    content.value = Tutorials.filter(tutorial => tutorial.id === componentStore.tutorial.type)[0]
+    content.value = Tutorials.filter(tutorial => tutorial.id == componentStore.tutorial.type)[0]
  }
 
 const close = () => {
-    active.value = false
-}
-
-const nevershow = () => {
-    userStore.setTutorialStatus(componentStore.tutorial.type, false)
     active.value = false
 }
 

@@ -1,14 +1,21 @@
 <template>
     <div>
-        <h1 class="text-h3">{{ title }}</h1>
-        <p class="mb-10 ml-1 mt-1 text-h6 font-weight-light">{{ subtitle }}</p>
+        <p class="text-h3 mb-2">{{ title }}</p>
+        <p v-if="subtitle" class="mb-2 text-subtitle">{{ subtitle }}</p>
+        <v-btn v-if="tutorial" @click="componentStore.openTutorial(tutorial)" prepend-icon="mdi-school" color="info" density="compact" variant="tonal" class="mb-10">show tutorial</v-btn>
     </div>
 </template>
 
 <script setup>
-
+import { useComponentStore } from '../stores/ComponentStore.js'
+////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////
 const props = defineProps({
     title: String,
-    subtitle: String
+    subtitle: String,
+    tutorial: String
 })
+const componentStore = useComponentStore()
+
 </script>

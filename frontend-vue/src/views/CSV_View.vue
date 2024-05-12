@@ -1,6 +1,6 @@
 <template>
     <!--Titles-->
-    <Title title="Import Data" subtitle="Upload your csv-files here."></Title>
+    <Title title="Import Data" tutorial="import"></Title>
     <Divider title="Upload File"></Divider>
     <!--File-Input-->
     <v-row>

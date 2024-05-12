@@ -203,8 +203,6 @@ const checkResize = () => {
 // Lifecycle Hooks //
 onMounted(() => {
   getUserdata()
-  getTutorialStatus()
-  console.log(userStore.showTutorialCategorization, userStore.showTutorialStatistics, userStore.showTutorialReview)
   username.value = userStore.username
   checkResize()
   window.addEventListener('resize', checkResize)

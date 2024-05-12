@@ -17,25 +17,3 @@ export function getUserdata() {
         userStore.email = email
      }
 }
-
-export function getTutorialStatus() {
-    const userStore = useUserStore()
-
-    const showTutorialImport = localStorage.getItem('showTutorialImport')
-    const showTutorialCategorization = localStorage.getItem('showTutorialCategorization')
-    const showTutorialStatistics = localStorage.getItem('showTutorialStatistics')
-    const showTutorialReview = localStorage.getItem('showTutorialReview')
-
-    if(showTutorialImport != null) {
-        userStore.showTutorialImport = showTutorialImport
-    }
-    if(showTutorialCategorization != null) {
-        userStore.showTutorialCategorization = showTutorialCategorization
-    }
-    if(showTutorialStatistics != null) {
-        userStore.showTutorialStatistics = showTutorialStatistics
-    }
-    if(showTutorialReview != null) {
-        userStore.showTutorialReview = showTutorialReview
-    }
-}

@@ -1,5 +1,5 @@
 <template>
-<v-row class="mt-6">
+<v-row class="">
     <v-col cols="12">
         <Title title="Info Board" subtitle="Get the latest news about the Costcatcher"/>
     </v-col>
