@@ -64,26 +64,26 @@ import Title from '../components/Title.vue'
 
 <style scoped>
 .title {
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: 500;
 }
 .subtitle {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 400;
 }
 .description {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 400;
     line-height: 1.4;
 }
 .chapter-title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 500;
 }
 .chapter-text {
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 .bullet {
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 </style>
