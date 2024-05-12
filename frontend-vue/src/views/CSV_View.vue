@@ -208,6 +208,9 @@ const load = async () => {
 
 onMounted(() => {
     load()
+    if (userStore.showTutorialImport) {
+        componentStore.openTutorial('import')
+    }
 })
 
 watch(() => userStore.username, () => {

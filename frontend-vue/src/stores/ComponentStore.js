@@ -32,6 +32,10 @@ export const useComponentStore = defineStore('component', {
         dataProtection: {
             trigger: false,
         },
+        tutorial: {
+            trigger: false,
+            type: null
+        },
         settings: {
             trigger: false,
             tab: 'general',
@@ -87,6 +91,10 @@ export const useComponentStore = defineStore('component', {
         },
         openDataProtection() {
             this.dataProtection.trigger = !this.dataProtection.trigger
+        },
+        openTutorial(type) {
+            this.tutorial.trigger = !this.tutorial.trigger
+            this.tutorial.type = type
         },
         openSettings(tab) {
             this.settings.trigger = !this.settings.trigger

@@ -133,12 +133,14 @@
 <DialogReview></DialogReview>
 <EditTransaction></EditTransaction>
 
+<Tutorial></Tutorial>
+
 </template>
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 
-import { getUserdata } from './composables/LocalStorage'
+import { getTutorialStatus, getUserdata } from './composables/LocalStorage'
 import { useUserStore } from './stores/UserStore'
 import { useComponentStore } from './stores/ComponentStore.js'
 
@@ -153,6 +155,8 @@ import DialogPasswordReset from './components/DialogPasswordReset.vue'
 import DialogNewPassword from './components/DialogNewPassword.vue'
 import DialogUpdateEmail from './components/DialogUpdateEmail.vue'
 import DialogDataProtection from './components/DialogDataProtection.vue'
+
+import Tutorial from './components/Tutorial.vue'
 
 import DialogSettings from './components/DialogSettings.vue'
 import DialogDelete from './components/DialogDelete.vue'
@@ -199,6 +203,8 @@ const checkResize = () => {
 // Lifecycle Hooks //
 onMounted(() => {
   getUserdata()
+  getTutorialStatus()
+  console.log(userStore.showTutorialCategorization, userStore.showTutorialStatistics, userStore.showTutorialReview)
   username.value = userStore.username
   checkResize()
   window.addEventListener('resize', checkResize)
