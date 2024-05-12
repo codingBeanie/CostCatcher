@@ -101,7 +101,7 @@
         </v-col>
 
         <v-col>
-          <v-btn href="mailto:mail.costcatcher.cbeanie.com" color="primaryLight" variant="text" prepend-icon="mdi-mail">
+          <v-btn href="mailto:mail@costcatcher.cbeanie.com" color="primaryLight" variant="text" prepend-icon="mdi-mail">
               Contact
           </v-btn>   
         </v-col>
