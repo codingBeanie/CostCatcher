@@ -24,7 +24,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text="OK" color="accent" @click="close"></v-btn>
+            <v-btn text="OK" color="info" @click="close"></v-btn>
         </v-card-actions>
     </v-card>
         
