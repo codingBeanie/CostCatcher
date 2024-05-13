@@ -9,7 +9,7 @@ export const updateBlog = [
             {
                 title: 'How To',
                 icon: 'mdi-school',
-                text: `Unfortunately, I have not created a proper tutorial yet. So just click around and see what happens.`,
+                text: `Unfortunately, I have not created a proper tutorial yet. There are some text boxes that you can find beneath the titles. Hopefully, they will help you to get started.`,
                 bullets: []
             },
             {
@@ -32,7 +32,8 @@ export const updateBlog = [
                 bullets: ['Password reset via email',
                             'minor design changes',
                         'created a 404-not-found page',
-                            'improved the routing. Refreshes should now work properly',
+                    'improved the routing. Refreshes should now work properly',
+                            'minor design changes',
                 ]
             },
             {
