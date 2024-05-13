@@ -158,7 +158,7 @@
         </v-row>
     </div>
 
-<Hint class="mt-10" v-if="!waiting" text="You can collapse the upper table."></Hint>
+<Hint class="mt-10" v-if="!waitingNoCategories" text="You can collapse the upper table."></Hint>
 </template>
 
 <script setup>
