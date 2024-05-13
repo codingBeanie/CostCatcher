@@ -40,7 +40,6 @@
             indeterminate
         ></v-progress-linear>
     </v-row>
-    <v-btn @click="exportPDF">EXPORT</v-btn>
     <Hint v-if="!waiting" text="Click on the values (except the sums) to see how they have been formed."></Hint>
     
 </template>
@@ -54,7 +53,6 @@ import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
 import Tableau from '../components/Tableau.vue'
 import Hint from '../components/Hint.vue'
-import {html2pdf} from 'html2pdf.js'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -136,12 +134,6 @@ const loadSettings = async () => {
     const settings = await API('settings', 'GET')
     currency.value = settings.currency
     locale.value = settings.locale
-}
-
-
-const exportPDF = () => { 
-    const element = document.getElementById('tableau')
-    html2pdf(element)
 }
 
 ////////////////////////////////////////////////////////////////
