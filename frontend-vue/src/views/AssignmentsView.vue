@@ -1,6 +1,6 @@
 <template>
     <!--Titles-->
-    <Title title="Categorization" subtitle="Create rulesets for an automatic assignment of your transactions to custom categories."></Title>
+    <Title title="Categorization" tutorial="categorization"></Title>
 
     <!--Create Form-->
     <div>

@@ -17,7 +17,7 @@
             <v-container>
                 <v-row v-for="chapter in content.chapter" class="mb-6">
                     <p class="text-h6 font-weight-bold">{{ chapter.title }}</p>
-                    <p>{{ chapter.text }}</p>
+                    <p v-html="chapter.text"></p>
                 </v-row>
             </v-container>
         </v-card-text>
