@@ -36,7 +36,7 @@ class Categories(APIView):
             return Response(status=200, data=serializer.data)
 
         except Exception as e:
-            log.error("API ERROR [categories/GET]:", e)
+            self.log.error("API ERROR [categories/GET]:", e)
             return Response(status=500, data="Error in Categories GET")
 
     ####################################################################################################
@@ -55,9 +55,13 @@ class Categories(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response(status=200, data="Category has been created")
+            else:
+                self.log.error(
+                    "API ERROR [categories/POST]:", serializer.errors)
+                return Response(status=400, data=serializer.errors)
 
         except Exception as e:
-            log.error("API ERROR [categories/POST]:", e)
+            self.log.error("API ERROR [categories/POST]:", e)
             return Response(status=500, data="Error in Categories POST")
 
     ####################################################################################################
@@ -74,9 +78,13 @@ class Categories(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response(status=200, data="Category has been updated")
+            else:
+                self.log.error(
+                    "API ERROR [categories/PUT]:", serializer.errors)
+                return Response(status=400, data=serializer.errors)
 
         except Exception as e:
-            log.error("API ERROR [categories/PUT]:", e)
+            self.log.error("API ERROR [categories/PUT]:", e)
             return Response(status=500, data="Error in Categories PUT")
 
     ####################################################################################################
@@ -90,5 +98,5 @@ class Categories(APIView):
             return Response(status=200, data="Category has been deleted")
 
         except Exception as e:
-            log.error("API ERROR [categories/DELETE]:", e)
+            self.log.error("API ERROR [categories/DELETE]:", e)
             return Response(status=500, data="Error in Categories DELETE")

@@ -92,6 +92,8 @@ class Transactions(APIView):
                 createBindingByTransactions(serializer.instance)
                 return Response(status=200, data="Transactions have been uploaded")
             else:
+                self.log.error(
+                    "API ERROR [transaction/POST]:", serializer.errors)
                 return Response(status=400, data=serializer.errors)
 
         except Exception as e:
@@ -146,7 +148,10 @@ class Transactions(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response(status=200, data="Transaction has been updated")
-            return Response(status=400, data=serializer.errors)
+            else:
+                self.log.error(
+                    "API ERROR [transaction/PUT]:", serializer.errors)
+                return Response(status=400, data=serializer.errors)
 
         except Exception as e:
             self.log.error("API ERROR [transaction/PUT]:", e)
