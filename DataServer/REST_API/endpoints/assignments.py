@@ -59,22 +59,38 @@ class Assignments(APIView):
     # PUT
     ####################################################################################################
     def put(self, request):
-        data = request.data
-        assignment = Assignment.objects.get(id=data['id'])
-        deleteBinding(assignment)
+        try:
+            data = request.data
+            assignment = Assignment.objects.get(
+                id=data['id'], user=request.user.id)
+            deleteBinding(assignment)
 
-        assignment.keyword = data['keyword']
-        assignment.checkMode = data['checkMode']
-        assignment.category = Category.objects.get(id=data['category'])
-        assignment.save()
-        createBinding(assignment)
+            data['user'] = request.user.id
+            data['category'] = Category.objects.get(
+                id=data['category'], user=request.user.id).id
+            serializer = AssignmentSerializer(assignment, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                createBinding(serializer.instance)
+                return Response(status=200, data="Assignment has been updated")
+            else:
+                self.log.error(
+                    "API ERROR [assignments/PUT]:", serializer.errors)
+                return Response(status=400, data=serializer.errors)
 
-        return Response(status=200, data="Assignment has been updated")
+        except Exception as e:
+            self.log.error("API ERROR [assignments/PUT]:", e)
+            return Response(status=500, data="Assignment could not be updated")
 
     ####################################################################################################
     # DELETE
     ####################################################################################################
     def delete(self, request):
-        assignment = Assignment.objects.get(id=request.data)
-        deleteBinding(assignment)
-        return Response(status=200, data="Assignment has been deleted")
+        try:
+            assignment = Assignment.objects.get(
+                id=request.data, user=request.user.id)
+            deleteBinding(assignment)
+            return Response(status=200, data="Assignment has been deleted")
+        except Exception as e:
+            self.log.error("API ERROR [assignments/DELETE]:", e)
+            return Response(status=500, data="Assignment could not be deleted")
