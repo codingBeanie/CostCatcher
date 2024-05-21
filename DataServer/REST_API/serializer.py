@@ -37,7 +37,6 @@ class CategorySerializer(serializers.ModelSerializer):
 class AssignmentSerializer(serializers.ModelSerializer):
     color = serializers.SerializerMethodField()
     categoryName = serializers.SerializerMethodField()
-    conflict = serializers.SerializerMethodField()
     numberOfAssignments = serializers.SerializerMethodField()
 
     class Meta:
@@ -54,20 +53,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
             categoryName = obj.category.name
             return categoryName
 
-    def get_conflict(self, obj):
-        if obj.category:
-            transactions = Transaction.objects.filter(assignments=obj)
-            if transactions:
-                for transaction in transactions:
-                    amountRules = len(transaction.assignments.all())
-                    if amountRules > 1:
-                        return True
-            else:
-                return False
-        return False
-
     def get_numberOfAssignments(self, obj):
-        transactions = Transaction.objects.filter(assignments=obj)
+        transactions = Transaction.objects.filter(assignment=obj)
         if transactions:
             return len(transactions)
         else:

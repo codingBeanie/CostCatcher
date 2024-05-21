@@ -140,7 +140,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 
-import { getTutorialStatus, getUserdata } from './composables/LocalStorage'
+import { getUserdata } from './composables/LocalStorage'
 import { useUserStore } from './stores/UserStore'
 import { useComponentStore } from './stores/ComponentStore.js'
 

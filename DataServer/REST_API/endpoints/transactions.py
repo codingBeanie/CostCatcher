@@ -2,10 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..models import Transaction
 from ..serializer import TransactionSerializer
-from ..bindings import createBindingByTransactions
+from ..binding import *
 import calendar
 import datetime
 import uuid
+import logging
 
 
 class Transactions(APIView):
@@ -78,27 +79,55 @@ class Transactions(APIView):
             print("Error in Transactions API:", e)
             return Response(status=500, data="Transactions could not be queried")
 
+
+####################################################################################################
+# PUT
+####################################################################################################
+
     def post(self, request):
+        log = logging.getLogger('api')
         try:
             data = request.data
+            dates = []
+            # add additional data
             for item in data:
                 item['user'] = request.user.id
                 item['uploadID'] = uuid.uuid5(
                     uuid.NAMESPACE_DNS, item['fileName'] + item['fileDate'])
+                dates.append(int(item['date'].split('-')[0]))
 
+            # check period range
+            createPeriods(min(dates), max(dates))
+
+            # assign a period to each item
+            for item in data:
+                item['period'] = Period.objects.get(
+                    year=int(item['date'].split('-')[0]), month=int(item['date'].split('-')[1])).id
+
+            # check serializer and save
             serializer = TransactionSerializer(data=data, many=True)
             if serializer.is_valid():
                 serializer.save()
-                createBindingByTransactions(serializer.instance)
+
+                # each new Transaction has to be checked for a valid assignment rule
+                for instance in serializer.instance:
+                    assignTransaction(instance)
                 return Response(status=200, data="Transactions have been uploaded")
+
             else:
                 return Response(status=400, data=serializer.errors)
 
         except Exception as e:
-            print("Error in Transactions API:", e)
+            log.error(f"Error in Transactions API (POST): {e}")
             return Response(status=500, data="Transactions could not be uploaded")
 
+
+####################################################################################################
+# PUT
+####################################################################################################
+
     def put(self, request):
+        log = logging.getLogger('api')
         try:
             data = request.data
             user = request.user

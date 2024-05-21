@@ -9,16 +9,48 @@ class Transaction(models.Model):
     fileName = EncryptedCharField(max_length=100, null=True)
     fileDate = EncryptedDateTimeField(null=True)
     uploadID = models.UUIDField(null=True)
-    date = models.DateField(null=True, blank=True)
-    amount = EncryptedIntegerField(default=0, blank=True)
-    recipient = EncryptedCharField(max_length=200, default='NONE', blank=True)
+    date = EncryptedDateField(null=True)
+    amount = EncryptedIntegerField(default=None, null=True)
+    recipient = EncryptedCharField(max_length=200, null=True, default=None)
     description = EncryptedCharField(
-        max_length=200, default='NONE', blank=True)
+        max_length=200, null=True, default=None)
     category = models.ForeignKey(
-        'Category', on_delete=models.SET_NULL, null=True)
-    assignments = models.ManyToManyField(
-        'Assignment', related_name='transaction', blank=True, default=None)
-    overruled = EncryptedBooleanField(default=False)
+        'Category', on_delete=models.SET_NULL, null=True, default=None)
+    assignment = models.ForeignKey(
+        'Assignment', on_delete=models.SET_NULL, null=True, default=None)
+    period = models.ForeignKey(
+        'Period', on_delete=models.SET_NULL, null=True, default=None)
+    overruled = models.BooleanField(default=False)
+
+
+class Period(models.Model):
+    fromDate = models.DateField(null=True)
+    toDate = models.DateField(null=True)
+    month = models.IntegerField(default=1)
+    year = models.IntegerField(default=2024)
+    quarter = models.IntegerField(default=1)
+
+
+class Category(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=False)
+    name = EncryptedCharField(max_length=100)
+    color = EncryptedCharField(max_length=7, default='#444444')
+
+
+class Assignment(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=False)
+    keyword = EncryptedCharField(max_length=100)
+    checkMode = EncryptedCharField(max_length=100)
+    category = models.ForeignKey(
+        'Category', on_delete=models.CASCADE, null=False)
+
+
+class Statistic(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=False)
+    category = models.ForeignKey(
+        'Category', on_delete=models.CASCADE, null=False)
+    period = models.ForeignKey('Period', on_delete=models.CASCADE, null=False)
+    amount = models.IntegerField(default=0)
 
 
 class Setting(models.Model):
@@ -35,17 +67,3 @@ class Setting(models.Model):
     thousandsSeparator = models.CharField(max_length=1, default='.')
     decimalSeparator = models.CharField(max_length=1, default=',')
     dateFormat = models.CharField(max_length=100, default='DD.MM.YYYY')
-
-
-class Category(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=False)
-    name = EncryptedCharField(max_length=100)
-    color = EncryptedCharField(max_length=7, default='#444444')
-
-
-class Assignment(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=False)
-    keyword = EncryptedCharField(max_length=100)
-    checkMode = EncryptedCharField(max_length=100)
-    category = models.ForeignKey(
-        'Category', on_delete=models.CASCADE, null=False)

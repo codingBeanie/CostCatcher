@@ -8,3 +8,4 @@ DataServer/DataServer/__pycache__/env.cpython-312.pyc
 docker-share/
 frontend-vue/.env.development
 frontend-vue/.env.production
+notes.md

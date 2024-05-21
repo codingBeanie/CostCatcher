@@ -26,7 +26,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = SECRET_KEY
 
 MODE = 'DOCKER' if os.path.exists('/.dockerenv') else 'LOCAL'
-print("MODE: ", MODE)
 DEBUG = False if MODE == "DOCKER" else True
 
 ALLOWED_HOSTS = ["*"]
@@ -184,6 +183,16 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
-        }
+        },
+        'api': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'utils': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     }
 }

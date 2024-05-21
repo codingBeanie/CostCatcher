@@ -38,7 +38,7 @@ class Assignments(APIView):
             serializer = AssignmentSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                createBinding(serializer.instance)
+                # createBinding(serializer.instance)
                 return Response(status=200, data="Assignment has been created")
             else:
                 return Response(status=400, data=serializer.errors)
@@ -50,17 +50,18 @@ class Assignments(APIView):
     def put(self, request):
         data = request.data
         assignment = Assignment.objects.get(id=data['id'])
-        deleteBinding(assignment)
+        # deleteBinding(assignment)
 
         assignment.keyword = data['keyword']
         assignment.checkMode = data['checkMode']
         assignment.category = Category.objects.get(id=data['category'])
         assignment.save()
-        createBinding(assignment)
+       # createBinding(assignment)
 
         return Response(status=200, data="Assignment has been updated")
 
     def delete(self, request):
         assignment = Assignment.objects.get(id=request.data)
-        deleteBinding(assignment)
+        assignment.delete()
+        # deleteBinding(assignment)
         return Response(status=200, data="Assignment has been deleted")
