@@ -31,7 +31,7 @@ class Categories(APIView):
                 filters['name'] = queryName
 
             # if no filter query is made, return all categories
-            categories = Category.objects.filter(**filters)
+            categories = Category.objects.filter(**filters).order_by('name')
             serializer = CategorySerializer(categories, many=True)
             return Response(status=200, data=serializer.data)
 

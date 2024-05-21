@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from ..models import Assignment, Category
 from ..serializer import AssignmentSerializer
 from ..bindings import createBinding, deleteBinding
-import time
 import logging
 
 
@@ -14,18 +13,25 @@ class Assignments(APIView):
     ####################################################################################################
 
     def get(self, request):
-        user = request.user.id
-        assignments = Assignment.objects.filter(user=user)
-        queryID = request.query_params.get('id', None)
-        if queryID:
-            data = assignments.get(id=queryID)
-            serializer = AssignmentSerializer(data)
-        else:
-            data = assignments.all()
-            serializer = AssignmentSerializer(data, many=True)
+        try:
+            user = request.user.id
+            queryID = request.query_params.get('id', None)
+            queryID = None if queryID == 'null' else queryID
 
-        endTime = time.time()
-        return Response(status=200, data=serializer.data)
+            filters = {}
+            filters['user'] = user
+
+            if queryID:
+                filters['id'] = queryID
+
+            assignments = Assignment.objects.filter(
+                **filters).order_by('keyword')
+            serializer = AssignmentSerializer(assignments, many=True)
+            return Response(status=200, data=serializer.data)
+
+        except Exception as e:
+            self.log.error("API ERROR [assignments/GET]:", e)
+            return Response(status=500, data="Error in Assignments GET")
 
     ####################################################################################################
     # POST
