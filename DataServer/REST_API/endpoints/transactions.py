@@ -1,14 +1,20 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ..models import Transaction
+from ..models import *
 from ..serializer import TransactionSerializer
 from ..bindings import createBindingByTransactions
 import calendar
 import datetime
 import uuid
+import logging
+from ..periods import createPeriods
 
 
 class Transactions(APIView):
+    log = logging.getLogger("api")
+    ####################################################################################################
+    # GET
+    ####################################################################################################
 
     def get(self, request):
         try:
@@ -75,16 +81,29 @@ class Transactions(APIView):
             return Response(status=200, data=result)
 
         except Exception as e:
-            print("Error in Transactions API:", e)
+            self.log.error("API ERROR [transaction/GET]:", e)
             return Response(status=500, data="Transactions could not be queried")
 
+####################################################################################################
+# POST
+####################################################################################################
     def post(self, request):
         try:
             data = request.data
+            dates = []
             for item in data:
                 item['user'] = request.user.id
                 item['uploadID'] = uuid.uuid5(
                     uuid.NAMESPACE_DNS, item['fileName'] + item['fileDate'])
+                dates.append(int(item['date'].split('-')[0]))
+
+            # check period range
+            createPeriods(request.user, min(dates), max(dates))
+
+            # assign a period to each item
+            for item in data:
+                item['period'] = Period.objects.get(
+                    year=int(item['date'].split('-')[0]), month=int(item['date'].split('-')[1])).id
 
             serializer = TransactionSerializer(data=data, many=True)
             if serializer.is_valid():
@@ -95,9 +114,12 @@ class Transactions(APIView):
                 return Response(status=400, data=serializer.errors)
 
         except Exception as e:
-            print("Error in Transactions API:", e)
+            self.log.error("API ERROR [transaction/POST]:", e)
             return Response(status=500, data="Transactions could not be uploaded")
 
+####################################################################################################
+# PUT
+####################################################################################################
     def put(self, request):
         try:
             data = request.data
@@ -122,6 +144,23 @@ class Transactions(APIView):
                     else:
                         data['category'] = None
 
+            # check if date has changed and set period
+            if transaction.date != data['date']:
+                newYear = int(data['date'].split('-')[0])
+                newMonth = int(data['date'].split('-')[1])
+                # make sure period exists
+                checkPeriod = Period.objects.filter(
+                    user=user, year=newYear, month=newMonth)
+
+                # if period does not exist, create it
+                if checkPeriod:
+                    data['period'] = checkPeriod.first().id
+                else:
+                    createPeriods(user, newYear, newYear)
+                    period = Period.objects.get(
+                        user=user, year=newYear, month=newMonth)
+                    data['period'] = period.id
+
             serializer = TransactionSerializer(transaction, data=data)
             if serializer.is_valid():
                 serializer.save()
@@ -129,9 +168,12 @@ class Transactions(APIView):
             return Response(status=400, data=serializer.errors)
 
         except Exception as e:
-            print("Error in Transactions API:", e)
+            self.log.error("API ERROR [transaction/PUT]:", e)
             return Response(status=500, data="Transaction could not be updated")
 
+####################################################################################################
+# DELETE
+####################################################################################################
     def delete(self, request):
         try:
             data = request.data
@@ -139,5 +181,5 @@ class Transactions(APIView):
             Transaction.objects.filter(id=data, user=user).delete()
             return Response(status=200, data="Transaction has been deleted")
         except Exception as e:
-            print("Error in Transactions API:", e)
+            self.log.error("API ERROR [transaction/DELETE]:", e)
             return Response(status=500, data="Transaction could not be deleted")
