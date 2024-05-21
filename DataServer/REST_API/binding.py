@@ -17,9 +17,9 @@ def assignTransaction(transaction, prevData=None, reevaluate=False):
                 transaction.category = assignment.category
                 transaction.save()
 
-                statistic = Statistic.objects.get(user=user,
-                                                  period=transaction.period, category=transaction.category)
-                statistic.amount += transaction.amount
+                statistic = Statistic.objects.get_or_create(user=user,
+                                                            period=transaction.period, category=transaction.category)
+                statistic[0].amount += transaction.amount
 
         # CASE: transaction is updated or assignment is updated
         else:
@@ -50,9 +50,9 @@ def assignTransaction(transaction, prevData=None, reevaluate=False):
                 prevStatistic.save()
 
             # find statistic for new assignment
-            newStatistic = Statistic.objects.get(
+            newStatistic = Statistic.objects.get_or_create(
                 user=user, period=transaction.period, category=transaction.category)
-            newStatistic.amount += transaction.amount
+            newStatistic[0].amount += transaction.amount
             newStatistic.save()
 
     except Exception as e:
