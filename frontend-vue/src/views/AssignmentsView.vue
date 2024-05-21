@@ -249,6 +249,7 @@ const loadAssignments = async () => {
 const loadNoCategory = async () => {
     waitingNoCategories.value = true
     dataNoCategory.value = await API("transactions/?category=0", 'GET')
+    dataNoCategory.value.sort((a, b) => new Date(a.date) - new Date(b.date))
     waitingNoCategories.value = false
 }
 

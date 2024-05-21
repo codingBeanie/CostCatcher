@@ -24,11 +24,7 @@ def assignTransaction(transaction, prevData=None, reevaluate=False):
         # CASE: transaction is updated or assignment is updated
         else:
             # for checks, find the previous assignment. might be None, if assignment was deleted, or none was set
-            if prevData:
-                prevAssignment = Assignment.objects.get(
-                    user=user, id=prevData['assignment'])
-            else:
-                prevAssignment = transaction.assignment
+            prevAssignment = transaction.assignment
 
             # assign new assignment to transaction
             if assignment:
@@ -44,16 +40,21 @@ def assignTransaction(transaction, prevData=None, reevaluate=False):
 
             # find statistic for old assignment
             if prevAssignment:
+                prevPeriod = Period.objects.get(id=prevData['period'])
                 prevStatistic = Statistic.objects.get(
-                    user=user, period=transaction.period, category=prevAssignment.category)
-                prevStatistic.amount -= transaction.amount
+                    user=user, period=prevPeriod, category=prevAssignment.category)
+                prevStatistic.amount -= prevData['amount']
                 prevStatistic.save()
 
             # find statistic for new assignment
-            newStatistic = Statistic.objects.get_or_create(
-                user=user, period=transaction.period, category=transaction.category)
-            newStatistic[0].amount += transaction.amount
-            newStatistic.save()
+            if transaction.category:
+                newStatistic = Statistic.objects.get_or_create(
+                    user=user, period=transaction.period, category=transaction.category)
+                newStatistic[0].amount += transaction.amount
+                newStatistic.save()
+
+        log.debug(f"{transaction}, {assignment}, {
+                  transaction.category}, {transaction.overruled}")
 
     except Exception as e:
         log.error(f"Error in assignTransaction: {e}")
