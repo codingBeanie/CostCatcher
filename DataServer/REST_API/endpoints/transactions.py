@@ -20,16 +20,21 @@ class Transactions(APIView):
         try:
             # Query parameters
             queryID = request.query_params.get('id', None)
+            queryCategory = request.query_params.get('category', None)
+            queryYear = request.query_params.get('year', None)
+            queryMonth = request.query_params.get('month', None)
+            queryQuarter = request.query_params.get('quarter', None)
+
+            # Validate query parameters
             queryID = None if queryID == 'null' else queryID
-            category = request.query_params.get('category', None)
-            category = None if category == 'null' else category
-            period = request.query_params.get('period', None)
-            period = None if period == 'null' else period
+            category = None if queryCategory == 'null' else queryCategory
+            year = None if queryYear == 'null' else queryYear
+            month = None if queryMonth == 'null' else queryMonth
+            quarter = None if queryQuarter == 'null' else queryQuarter
 
             # Filters
             filters = {}
-            amountFilterMode = None
-
+            filters['user'] = request.user.id
             if queryID:
                 filters['id'] = queryID
 
@@ -40,45 +45,21 @@ class Transactions(APIView):
                 if int(category) == 0:
                     filters['category'] = None
 
-                # -1 = INCOME
-                if int(category) == -1:
-                    amountFilterMode = 'income'
-
-                # -2 = EXPENSE
-                if int(category) == -2:
-                    amountFilterMode = 'expense'
-
                 # filter to valid category
                 if int(category) > 0:
                     filters['category__id'] = category
 
             # PERIOD
-            if period:
-                fromDate = datetime.datetime(
-                    int(period[0:4]), int(period[5:7]), 1)
-                lastDay = calendar.monthrange(fromDate.year, fromDate.month)[1]
-                toDate = datetime.datetime(
-                    fromDate.year, fromDate.month, lastDay)
-                filters['date__gte'] = fromDate
-                filters['date__lte'] = toDate
+            if year:
+                filters['period__year'] = year
+            if month:
+                filters['period__month'] = month
+            if quarter:
+                filters['period__quarter'] = quarter
 
-            transactions = Transaction.objects.filter(user=request.user.id)
-            # this just works for non-enctypted fields
-            transactions = transactions.filter(**filters)
-            # amount field is encrypted, so we have to filter it manually
-            if amountFilterMode:
-                for transaction in transactions:
-                    if transaction.amount < 0:
-                        if amountFilterMode == 'income':
-                            transactions = transactions.exclude(
-                                id=transaction.id)
-                    else:
-                        if amountFilterMode == 'expense':
-                            transactions = transactions.exclude(
-                                id=transaction.id)
-
-            result = TransactionSerializer(transactions, many=True).data
-            return Response(status=200, data=result)
+            transactions = Transaction.objects.filter(**filters)
+            result = TransactionSerializer(transactions, many=True)
+            return Response(status=200, data=result.data)
 
         except Exception as e:
             self.log.error("API ERROR [transaction/GET]:", e)
