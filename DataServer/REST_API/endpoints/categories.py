@@ -2,71 +2,93 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..models import Category
 from ..serializer import CategorySerializer
+import logging
 
 
 class Categories(APIView):
+    log = logging.getLogger("api")
+    ####################################################################################################
+    # GET
+    ####################################################################################################
+
     def get(self, request):
         try:
             queryID = request.query_params.get('id', None)
             queryName = request.query_params.get('name', None)
-            categories = Category.objects.filter(user=request.user.id)
+
+            queryID = None if queryID == 'null' else queryID
+            queryName = None if queryName == 'null' else queryName
+
+            filters = {}
+            filters['user'] = request.user.id
 
             # if a certain ID is queried
-            if queryID and queryID != 'null':
-                data = categories.get(id=queryID)
-                serializer = CategorySerializer(data)
+            if queryID:
+                filters['id'] = queryID
 
             # if a certain name is queried
-            elif queryName:
-                data = categories.get(name=queryName)
-                serializer = CategorySerializer(data)
+            if queryName:
+                filters['name'] = queryName
 
             # if no filter query is made, return all categories
-            else:
-                # sort Data by name
-                queryList = []
-                for category in categories:
-                    queryList.append(category)
-                queryList.sort(key=lambda x: x.name)
-
-                serializer = CategorySerializer(queryList, many=True)
+            categories = Category.objects.filter(**filters)
+            serializer = CategorySerializer(categories, many=True)
             return Response(status=200, data=serializer.data)
+
         except Exception as e:
-            print("Error in Categories GET: ", e)
+            log.error("API ERROR [categories/GET]:", e)
             return Response(status=500, data="Error in Categories GET")
 
+    ####################################################################################################
+    # POST
+    ####################################################################################################
     def post(self, request):
-        data = request.data
-        user = request.user.id
-        data['user'] = user
+        try:
+            data = request.data
+            user = request.user.id
+            data['user'] = user
 
-        categories = Category.objects.filter(user=user)
-        if categories.filter(name=data['name']).exists():
-            return Response(status=400, data="Category already exists")
+            if Category.objects.filter(user=user, name=data['name']).exists():
+                return Response(status=400, data="Category already exists")
 
-        serializer = CategorySerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=200, data="Category has been created")
-        return Response(status=500, data=serializer.errors)
+            serializer = CategorySerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=200, data="Category has been created")
 
+        except Exception as e:
+            log.error("API ERROR [categories/POST]:", e)
+            return Response(status=500, data="Error in Categories POST")
+
+    ####################################################################################################
+    # PUT
+    ####################################################################################################
     def put(self, request):
-        data = request.data
-        user = request.user.id
-        data['user'] = user
-        categories = Category.objects.filter(user=user)
-        category = categories.get(id=data['id'])
+        try:
+            data = request.data
+            user = request.user.id
+            data['user'] = user
+            category = Category.objects.get(id=data['id'])
 
-        serializer = CategorySerializer(category, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=200, data="Category has been updated")
-        return Response(status=500, data=serializer.errors)
+            serializer = CategorySerializer(category, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=200, data="Category has been updated")
 
+        except Exception as e:
+            log.error("API ERROR [categories/PUT]:", e)
+            return Response(status=500, data="Error in Categories PUT")
+
+    ####################################################################################################
+    # DELETE
+    ####################################################################################################
     def delete(self, request):
-        if request.data:
-            categories = Category.objects.filter(user=request.user.id)
-            category = categories.get(id=request.data)
+        try:
+            category = Category.objects.filter(
+                user=request.user.id, id=request.data)
             category.delete()
             return Response(status=200, data="Category has been deleted")
-        return Response(status=400, data="Invalid Category ID")
+
+        except Exception as e:
+            log.error("API ERROR [categories/DELETE]:", e)
+            return Response(status=500, data="Error in Categories DELETE")

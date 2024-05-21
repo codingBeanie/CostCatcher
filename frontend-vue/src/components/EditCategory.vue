@@ -67,8 +67,8 @@ const id = ref('')
 const loadData = async () => {
     id.value = componentStore.categoryEdit.id
     const data = await API(`categories/?id=${id.value}`, 'GET')
-    newCategory.value = data.name
-    newColor.value = data.color
+    newCategory.value = data[0].name
+    newColor.value = data[0].color
 }
 
 ////////////////////////////////////////////////////////////////
