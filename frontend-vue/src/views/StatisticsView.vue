@@ -11,7 +11,7 @@
     
     <v-row>
         <!--File-Table-->
-        <Tableau id="tableau" class="mb-4"></Tableau>
+        <Tableau></Tableau>
     </v-row>
    <v-row v-if="waiting" class="">
         <v-progress-linear
@@ -29,12 +29,10 @@
 import { onMounted, ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { useUserStore } from '../stores/UserStore.js'
-import { API } from '../composables/API.js'
 import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
 import Tableau from '../components/Tableau.vue'
 import Hint from '../components/Hint.vue'
-import Filter from '../components/Filter.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

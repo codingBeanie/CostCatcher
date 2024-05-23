@@ -138,6 +138,14 @@ const textUndefined = ref('These transactions are not assigned to any category.'
 const currency = ref('€')
 const locale = ref('de-DE')
 
+// DataFrames
+const headers = ref([])
+const incomeData = ref([])
+const expenseData = ref([])
+const incomeSums = ref([])
+const expenseSums = ref([])
+const netSums = ref([])
+
 ////////////////////////////////////////////////////////////////
 // Methods
 ////////////////////////////////////////////////////////////////
