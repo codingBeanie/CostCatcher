@@ -16,6 +16,12 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PeriodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Period
+        fields = '__all__'
+
+
 class FileSerializer(serializers.Serializer):
     class Meta:
         model = Transaction

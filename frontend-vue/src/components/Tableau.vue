@@ -120,10 +120,10 @@
 
 <script setup>
 import { watchEffect, ref } from 'vue';
-import { load } from 'webfontloader';
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore'
 import Filter from './Filter.vue'
+import { onMounted } from 'vue';
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -131,16 +131,7 @@ import Filter from './Filter.vue'
 // State Management
 const componentStore = useComponentStore()
 
-// Props
-const props = defineProps({
-    incomeData: Array,
-    expenseData: Array,
-    headers: Array
-})
 // variables
-const incomeSums = ref([])
-const expenseSums = ref([])
-const netSums = ref([])
 const textUndefined = ref('These transactions are not assigned to any category.')
 
 // Settings
@@ -156,59 +147,16 @@ const loadSettings = async () => {
     locale.value = settingsData.locale
 }
 
-const sortData = () => {
-    // Sort Expense Data
-    for (let object of props.expenseData) {
-        let values = Object.values(object.Data)
-        let sum = values.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue), 0)
-        object.sum = sum
-    }
-    props.expenseData.sort((a, b) => a.sum - b.sum)
-
-    // Sort Income Data
-    for (let object of props.incomeData) {
-        let values = Object.values(object.Data)
-        let sum = values.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue), 0)
-        object.sum = sum
-    }
-    props.incomeData.sort((a, b) => b.sum - a.sum)
-
- }
-
-const calculateSums = () => {
-    incomeSums.value = []
-    expenseSums.value = []
-    netSums.value = []
-    for (let period of props.headers) {
-        let incomeSum = 0
-        let expenseSum = 0
-        let netSum = 0
-
-        for (let income of props.incomeData) {
-            incomeSum += income.Data[period]
-            netSum += income.Data[period]
-        }
-        for (let expense of props.expenseData) {
-            expenseSum += expense.Data[period]
-            netSum += expense.Data[period]
-        }
-        incomeSums.value.push(incomeSum)
-        expenseSums.value.push(expenseSum)
-        netSums.value.push(netSum)
-    }
- }
-
 ////////////////////////////////////////////////////////////////
 // Lifecycle
 ////////////////////////////////////////////////////////////////
-watchEffect(() => {
-    if (props.incomeData && props.headers) {
-    sortData()
-    calculateSums()
+const load = async () => { 
     loadSettings()
-  }
-})
+}
 
+onMounted(() => {
+    load()
+})
 </script>
 
 <style scoped>

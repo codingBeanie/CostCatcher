@@ -25,10 +25,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useFilterStore } from '../stores/FilterStore.js'
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
+import { API } from '../composables/API.js' 
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
+// Setup
 const filterStore = useFilterStore()
 const filterType = ref(0)
 
@@ -36,6 +38,8 @@ const fromYear = ref(2024)
 const toYear = ref(2024)
 const years = ref([2024,2023])
 
+
+// Props
 const props = defineProps({
     object: String
 })
@@ -60,9 +64,8 @@ const updateFilter = () => {
     filterStore[props.object].toYear = toYear.value
 }
 
-// Lifecycle Hooks
-onMounted(() => {
-
+const loadFilterMode = () => {
+    // Filter Mode
     if (filterStore[props.object].type == 'monthly') {
         filterType.value = 0
     } else if (filterStore[props.object].type == 'quarterly') {
@@ -70,5 +73,20 @@ onMounted(() => {
     } else if (filterStore[props.object].type == 'yearly') {
         filterType.value = 2
     }
+
+}
+
+const loadYears = async () => {
+    let currentYear = await API('period/default', 'GET')
+    fromYear.value = currentYear.year
+    toYear.value = currentYear.year
+
+    years.value = await API('period/list', 'GET')
+}
+
+// Lifecycle Hooks
+onMounted(async () => {
+    loadFilterMode()
+    loadYears()
 })
 </script>

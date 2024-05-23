@@ -11,7 +11,7 @@
     
     <v-row>
         <!--File-Table-->
-        <Tableau id="tableau" class="mb-4" :incomeData="incomeData" :expenseData="expenseData" :headers="headers"></Tableau>
+        <Tableau id="tableau" class="mb-4"></Tableau>
     </v-row>
    <v-row v-if="waiting" class="">
         <v-progress-linear
