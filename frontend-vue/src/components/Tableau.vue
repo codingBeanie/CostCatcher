@@ -1,4 +1,7 @@
 <template>
+    <!--FILTER-->
+    <Filter object="tableau"></Filter>
+
     <!--MAINFRAME-->
     <v-container class="d-flex-row overflow bg-white">
 
@@ -120,6 +123,7 @@ import { watchEffect, ref } from 'vue';
 import { load } from 'webfontloader';
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore'
+import Filter from './Filter.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

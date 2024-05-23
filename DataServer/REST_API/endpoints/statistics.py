@@ -6,6 +6,11 @@ from django.db.models import Sum
 from statistics import mean, median
 from datetime import datetime
 
+# STATISTICS RESPONSE
+# [ {   'Category': {'name': 'UNDEFINED', 'id': 0, 'color': '#444444'},
+#       'Data': {'01-2021': 0, '02-2021': 0},
+#       'Statistics': {'Sum': 0, 'Average': 0, 'Median': 0} }, ... ]
+
 
 class Statistics(APIView):
     def get(self, request):
