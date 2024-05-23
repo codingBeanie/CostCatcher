@@ -12,10 +12,15 @@
                 </v-btn-toggle>
             </v-row>
        </v-col>
-       <v-col></v-col>
+
+       <v-col class="align-self-center text-center">
+            <p class="text-error text-button">{{ message }}</p>
+       </v-col>
+
         <v-col class="mt-2" cols="2">
             <v-select label="From" :items="years" v-model="fromYear" @change="updateFilter"></v-select>
         </v-col>
+
         <v-col class="mt-2" cols="2">
             <v-select label="To" :items="years" v-model="toYear" @change="updateFilter"></v-select>
         </v-col>
@@ -41,7 +46,11 @@ const years = ref([2024,2023])
 
 // Props
 const props = defineProps({
-    object: String
+    object: String,
+    message: {
+        type: String,
+        default: ''
+    }
 })
 
 ////////////////////////////////////////////////////////////////
