@@ -133,9 +133,10 @@
 </template>
 
 <script setup>
-import { watchEffect, ref } from 'vue';
+import { watch, ref } from 'vue';
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore'
+import { useFilterStore } from '../stores/FilterStore'
 import Filter from './Filter.vue'
 import { onMounted } from 'vue'
 import Hint from './Hint.vue'
@@ -145,6 +146,7 @@ import Hint from './Hint.vue'
 ////////////////////////////////////////////////////////////////
 // State Management
 const componentStore = useComponentStore()
+const filterStore = useFilterStore()
 const waiting = ref(false)
 
 // variables
@@ -174,7 +176,7 @@ const loadSettings = async () => {
 
 const loadData = async () => { 
     waiting.value = true
-    const data = await API('statistics', 'GET')
+    const data = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.from}`, 'GET')
     console.log(data)
     waiting.value = false
 }
@@ -189,6 +191,10 @@ const load = async () => {
 
 onMounted(() => {
     load()
+})
+
+watch([() => filterStore.tableau.from, () => filterStore.tableau.to, () => filterStore.tableau.type], () => {
+    loadData()
 })
 </script>
 

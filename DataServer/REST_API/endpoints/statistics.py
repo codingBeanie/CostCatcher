@@ -13,7 +13,13 @@ class Statistics(APIView):
 
     def get(self, request):
         try:
-            return Response(status=200, data="Statistics GET")
+            periodMode = request.query_params.get('periodmode', 'monthly')
+            fromYear = request.query_params.get('fromyear', None)
+            toYear = request.query_params.get('toyear', None)
+            self.log.debug(f"Statistics GET: periodMode={
+                periodMode}, fromYear={fromYear}, toYear={toYear}")
+
+            return Response(status=200, data="")
 
         except Exception as e:
             self.log.error("API ERROR [statistics/GET]:", e)

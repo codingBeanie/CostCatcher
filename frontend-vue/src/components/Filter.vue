@@ -18,11 +18,11 @@
        </v-col>
 
         <v-col class="mt-2" cols="2">
-            <v-select label="From" :items="years" v-model="fromYear" @change="updateFilter"></v-select>
+            <v-select label="From" :items="years" v-model="fromYear" :onUpdate:modelValue="updateFilter"></v-select>
         </v-col>
 
         <v-col class="mt-2" cols="2">
-            <v-select label="To" :items="years" v-model="toYear" @change="updateFilter"></v-select>
+            <v-select label="To" :items="years" v-model="toYear" :onUpdate:modelValue="updateFilter"></v-select>
         </v-col>
     </v-row>
 </template>
@@ -39,9 +39,9 @@ import { API } from '../composables/API.js'
 const filterStore = useFilterStore()
 const filterType = ref(0)
 
-const fromYear = ref(2024)
-const toYear = ref(2024)
-const years = ref([2024,2023])
+const fromYear = ref(null)
+const toYear = ref(null)
+const years = ref([])
 
 
 // Props
@@ -67,10 +67,9 @@ const updateFilter = () => {
     } else {
         filterStore[props.object].type = null
     }
-
     // From/To Year
-    filterStore[props.object].fromYear = fromYear.value
-    filterStore[props.object].toYear = toYear.value
+    filterStore[props.object].from = fromYear.value
+    filterStore[props.object].to = toYear.value
 }
 
 const loadFilterMode = () => {
@@ -82,6 +81,10 @@ const loadFilterMode = () => {
     } else if (filterStore[props.object].type == 'yearly') {
         filterType.value = 2
     }
+
+    // From/To Year
+    fromYear.value = filterStore[props.object].from == null? fromYear.value : filterStore[props.object].from
+    toYear.value = filterStore[props.object].to == null ? toYear.value : filterStore[props.object].to
 
 }
 
@@ -95,7 +98,8 @@ const loadYears = async () => {
 
 // Lifecycle Hooks
 onMounted(async () => {
+    await loadYears()
     loadFilterMode()
-    loadYears()
+    
 })
 </script>
