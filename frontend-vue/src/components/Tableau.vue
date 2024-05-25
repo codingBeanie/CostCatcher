@@ -215,7 +215,7 @@ onMounted(() => {
     load()
 })
 
-watch([() => filterStore.tableau.from, () => filterStore.tableau.to, () => filterStore.tableau.type], () => {
+watch([() => filterStore.tableau.from, () => filterStore.tableau.to, () => filterStore.tableau.type, () => componentStore.app.refresh], () => {
     loadData()
 })
 </script>
