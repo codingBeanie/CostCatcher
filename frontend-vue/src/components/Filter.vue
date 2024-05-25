@@ -85,7 +85,6 @@ const loadFilterMode = () => {
     // From/To Year
     fromYear.value = filterStore[props.object].from == null? fromYear.value : filterStore[props.object].from
     toYear.value = filterStore[props.object].to == null ? toYear.value : filterStore[props.object].to
-
 }
 
 const loadYears = async () => {

@@ -27,13 +27,6 @@ import Hint from '../components/Hint.vue'
 const componentStore = useComponentStore()
 const userStore = useUserStore()
 
-// Data
-const incomeData = ref([])
-const expenseData = ref([])
-const headers = ref()
-
-// Inputs
-
 ////////////////////////////////////////////////////////////////
 // Methods
 ////////////////////////////////////////////////////////////////
@@ -42,20 +35,6 @@ const headers = ref()
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
-const load = () => {
-}
-
-onMounted(async () => {
-    load()
-})
-
-watch(() => componentStore.app.refresh, () => {
-    load()
-})
-
-watch(() => userStore.username, () => {
-    load()
-})
 
 </script>
 

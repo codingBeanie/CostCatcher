@@ -13,7 +13,7 @@
                     <p class="text-button"></p>
                 </v-col>
                 <v-col v-for="header in headers" class="column pr-6">
-                    <p class="text-button">{{ header }}</p>
+                    <p class="text-button">{{ header.title }}</p>
                 </v-col>
             </v-row>
 
@@ -36,7 +36,7 @@
                     <div v-if="income.Category.name == 'UNDEFINED'">
                         <v-tooltip :text="textUndefined">
                             <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" variant="text">{{ income.Category.name }}</v-btn>
+                                <v-btn v-bind="props" variant="text" color="accent">not assigned</v-btn>
                             </template>
                         </v-tooltip>
                     </div>
@@ -46,7 +46,7 @@
                 </v-col>
                 <!--INCOME DATA-->
                 <v-col v-for="(value, key) in income.Data" class="column">
-                    <v-btn variant="plain" @click="componentStore.openReview(income.Category.id, key)">{{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    <v-btn variant="plain" @click="componentStore.openReview(income.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                 </v-col>
             </v-row>
             <!--INCOME SUM-->
@@ -77,7 +77,7 @@
                     <div v-if="expense.Category.name == 'UNDEFINED'">
                         <v-tooltip :text="textUndefined">
                             <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" variant="text">{{ expense.Category.name }}</v-btn>
+                                <v-btn v-bind="props" variant="text" color="accent">not assigned</v-btn>
                             </template>
                         </v-tooltip>
                     </div>
@@ -87,7 +87,7 @@
                 </v-col>
                 <!--EXPENSE DATA-->
                 <v-col v-for="(value, key) in expense.Data" class="column">
-                    <v-btn variant="plain" @click="componentStore.openReview(expense.Category.id, key)">{{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    <v-btn variant="plain" @click="componentStore.openReview(expense.Category.id, headers[key])">{{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                 </v-col>
             </v-row>
             <!--EXPENSE SUM-->
@@ -176,8 +176,30 @@ const loadSettings = async () => {
 
 const loadData = async () => { 
     waiting.value = true
-    const data = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.from}`, 'GET')
-    console.log(data)
+
+    // check if data selection is possible
+    if (filterStore.tableau.from <= filterStore.tableau.to) {
+        message.value = ''
+    } else {
+        message.value = 'From year must be smaller or equal to To year.'
+        waiting.value = false
+        return
+    }
+    // get the API DATA dump
+    const incomeDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=income`, 'GET')
+    const expenseDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=expense`, 'GET')
+
+    // fill the dataframes
+    incomeData.value = incomeDataFrame['data']
+    incomeSums.value = incomeDataFrame['sumData']
+    expenseData.value = expenseDataFrame['data']
+    expenseSums.value = expenseDataFrame['sumData']
+
+    // calculate the net sums
+    netSums.value = Object.values(incomeSums.value).map((value, index) => value + Object.values(expenseSums.value)[index])
+
+    // extract the headers
+    headers.value = Object.values(incomeData.value[0].Period)
     waiting.value = false
 }
 
