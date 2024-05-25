@@ -82,9 +82,11 @@ const save = async () => {
 const load = async () => {
     id.value = componentStore.assignmentEdit.id
     const data = await API(`assignments/?id=${id.value}`, 'GET')
-    keyword.value = data.keyword
-    category.value = data.category
-    checkMode.value = data.checkMode
+    keyword.value = data[0].keyword
+    category.value = data[0].category
+    checkMode.value = data[0].checkMode
+
+    console.log(keyword.value)
 
     categories.value = await API('categories', 'GET')
 }
