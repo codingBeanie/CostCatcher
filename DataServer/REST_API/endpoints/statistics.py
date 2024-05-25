@@ -24,16 +24,16 @@ class Statistics(APIView):
 
             # get parameters from request
             periodMode = request.query_params.get('periodmode', 'monthly')
-            valueMode = request.query_params.get('valuemode', 'income')
+            valueMode = request.query_params.get('valuemode', None)
             fromYear = request.query_params.get('fromyear', None)
             toYear = request.query_params.get('toyear', None)
             user = request.user.id
 
             # check if null and get default value
-            if fromYear is None or fromYear == 'null':
+            if fromYear is None or fromYear == 'null' or fromYear == 'undefined':
                 fromYear = Period.objects.filter(
                     user=user).order_by('year').first().year
-            if toYear is None or toYear == 'null':
+            if toYear is None or toYear == 'null' or toYear == 'undefined':
                 toYear = Period.objects.filter(
                     user=user).order_by('year').first().year
 

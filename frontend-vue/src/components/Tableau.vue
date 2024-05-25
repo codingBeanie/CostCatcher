@@ -178,10 +178,7 @@ const loadData = async () => {
     waiting.value = true
 
     // check if data selection is possible
-    if (filterStore.tableau.from <= filterStore.tableau.to) {
-        message.value = ''
-    } else {
-        message.value = 'From year must be smaller or equal to To year.'
+    if (filterStore.tableau.from > filterStore.tableau.to) {
         waiting.value = false
         return
     }
@@ -215,7 +212,7 @@ onMounted(() => {
     load()
 })
 
-watch([() => filterStore.tableau.from, () => filterStore.tableau.to, () => filterStore.tableau.type, () => componentStore.app.refresh], () => {
+watch(() => componentStore.app.refresh, () => {
     loadData()
 })
 </script>
