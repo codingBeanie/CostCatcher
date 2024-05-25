@@ -15,7 +15,7 @@
                         <v-row class="mb-4">
                             <h2 class="mr-4 font-weight-thin">Review Transactions</h2>
                             <v-btn class="text-h5 font-weight-bold" variant="text" :color="selectCategory.color">{{ selectCategory.name }}</v-btn>
-                            <h2>({{ period }})</h2>
+                            <h2>({{ period.title }})</h2>
                         </v-row>
                         <v-row>
                             <v-data-table
@@ -114,8 +114,26 @@ const loadSettings = async () => {
 }
 
 const loadTable = async () => {
-    const originalData = await API(`transactions/?category=${category.value}&period=${period.value}`, 'GET')
-    data.value = originalData.map(item => ({ ...item, action: null }))
+
+    // Check if period and category are set
+    if (period.value == null || category.value == null) {
+        return
+    }
+
+    let responseData = []
+    // if monthly
+    if (period.value['month'] != undefined) {
+        responseData = await API(`transactions/?month=${period.value['month']}&year=${period.value['year']}&category=${category.value}`, 'GET')
+    }
+    // if quarterly
+    else if (period.value['quarter'] != undefined) {
+        responseData = await API(`transactions/?quarter=${period.value['quarter']}&year=${period.value['year']}&category=${category.value}`, 'GET')
+    }
+    // if yearly
+    else {
+        responseData = await API(`transactions/?year=${period.value['year']}&category=${category.value}`, 'GET')
+    }
+    data.value = responseData.map(item => ({ ...item, action: null }))
 }
 
 const loadCategory = async () => {
@@ -124,23 +142,9 @@ const loadCategory = async () => {
         selectCategory.value = { name: 'Undefined', color: 'info' }
         return
     }
-    // Income
-    if(category.value === -1) {
-        selectCategory.value = { name: 'Income', color: 'success' }
-        return
-    }
-    // Expense
-    if(category.value === -2) {
-        selectCategory.value = { name: 'Expense', color: 'error' }
-        return
-    }
-    // Net / All
-    if(category.value === -3) {
-        selectCategory.value = { name: 'All', color: 'info' }
-        return
-    }
     // Valid Category
-    selectCategory.value = await API(`categories/?id=${category.value}`, 'GET')
+    const categoryData = await API(`categories/?id=${category.value}`, 'GET')
+    selectCategory.value = categoryData[0]
 }
 
 ////////////////////////////////////////////////////////////////
@@ -162,12 +166,12 @@ const close = () => {
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
-const load = () => {
+const load =  async () => {
     period.value = componentStore.review.period
     category.value = componentStore.review.category
-    loadSettings()
-    loadCategory()
-    loadTable()
+    await loadSettings()
+    await loadCategory()
+    await loadTable()
 }
 
 watch(() => componentStore.review.trigger, () => {
