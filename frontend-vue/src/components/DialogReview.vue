@@ -51,7 +51,7 @@
                             </v-data-table>
                         </v-row>
 
-                        <Hint class="mt-10" v-if="!waiting" text="If a transaction is assigned wrongly, you can edit it here."></Hint>
+                        <Hint class="mt-10" text="If a transaction is assigned wrongly, you can edit it here."></Hint>
                     </v-container>
                 </v-card-text>
 
