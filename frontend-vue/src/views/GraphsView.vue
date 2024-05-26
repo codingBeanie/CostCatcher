@@ -6,7 +6,7 @@
     <!--Selectors-->
     <v-row class="mt-2">
         <v-col>
-            <Filter object="bargraph" :incomeExpense="true"></Filter>
+            <Filter object="bargraph" :incomeExpense="true" :yearsSelect="true"></Filter>
         </v-col>
     </v-row>
 
@@ -98,6 +98,10 @@ const pieGraphPlaceholder = ref(null)
 const loadBarGraph = async () => {
     waitingBar.value = true
     const responseData = await API(`statistics/?periodmode=${filterStore.bargraph.type}&fromyear=${filterStore.bargraph.from}&toyear=${filterStore.bargraph.to}&valuemode=${filterStore.bargraph.filter}`, 'GET')
+    if (responseData["data"].length == 0) {
+        waitingBar.value = false
+        return
+    }
     barData.value = responseData["data"]
 
     let data = barData.value.map(item => item.Data)
