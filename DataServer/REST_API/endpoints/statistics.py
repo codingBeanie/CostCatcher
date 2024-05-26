@@ -160,9 +160,13 @@ class Statistics(APIView):
                         filters['category'] = None
 
                     # periodmode filter
-                    if periodMode != 'yearly':
+                    if periodMode == 'monthly' or periodMode == 'single':
                         filters['period__year'] = period['year']
                         filters['period__month'] = period['month']
+
+                    if periodMode == 'quarterly':
+                        filters['period__year'] = period['year']
+                        filters['period__quarter'] = period['quarter']
 
                     if periodMode == 'yearly':
                         filters['period__year'] = period['year']

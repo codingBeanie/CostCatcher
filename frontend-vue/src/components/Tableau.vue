@@ -120,16 +120,17 @@
         </v-container>
 
 
-   <v-row v-if="waiting" class="">
-        <v-progress-linear
-            color="accent"
-            indeterminate
-        ></v-progress-linear>
-    </v-row>
+
 
     <v-row class="mt-4 d-flex text-center justify-center">
         <Hint v-if="!waiting" text="Click on the values (except the sums) to see how they have been formed."></Hint>
     </v-row>
+
+    <v-progress-linear
+        v-if="waiting"
+        color="accent"
+        indeterminate
+    ></v-progress-linear>
 </template>
 
 <script setup>
