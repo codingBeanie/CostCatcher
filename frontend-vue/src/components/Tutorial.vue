@@ -8,14 +8,14 @@
                     <v-icon class="">mdi-school</v-icon>
                 </v-col>
                 <v-col cols="9">
-                    <p class="text-h4">{{ content.title }}</p>
+                    <p class="text-h4 font-weight-bold text-secondary">{{ content.title }}</p>
                 </v-col>
             </v-row>
         </v-card-title>
 
         <v-card-text>
             <v-container>
-                <v-row v-for="chapter in content.chapter" class="mb-6">
+                <v-row v-for="chapter in content.chapter" class="mb-6 d-flex flex-column">
                     <p class="text-h6 font-weight-bold">{{ chapter.title }}</p>
                     <p v-html="chapter.text"></p>
                 </v-row>
@@ -24,7 +24,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text="OK" color="info" @click="close"></v-btn>
+            <v-btn text="OK" color="accent" variant="tonal" @click="close"></v-btn>
         </v-card-actions>
     </v-card>
         

@@ -19,6 +19,10 @@ export const Tutorials = [
             title: 'Review the imported data',
             text: 'Check if the imported data looks correct. If not, try to change the <span class="text-button">CSV-SETTINGS</span> accordingly.'
           },
+          {
+            title: 'Manual upload',
+            text: 'Use the <span class="text-button">MANUAL</span> mode to upload single transaction without uploading a csv-file.'
+          },
         ]
     },
       {

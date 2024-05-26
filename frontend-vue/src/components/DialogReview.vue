@@ -57,7 +57,7 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text="Close" color="sucess" @click="close"></v-btn>
+                    <v-btn text="Close" color="accent" @click="close"></v-btn>
                 </v-card-actions>
 
             </v-card>

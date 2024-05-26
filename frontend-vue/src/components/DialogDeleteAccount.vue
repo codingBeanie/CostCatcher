@@ -1,21 +1,21 @@
 <template>
     <v-row justify="center">
-        <v-dialog v-model="active" max-width="400px">
+        <v-dialog v-model="active" max-width="600px">
 
             <v-card>
 
                 <v-card-title>
-                    <h4 class="font-weight-thin">Are you sure you?</h4>
+                    <p class="text">Are you sure you want to delete your account?</p>
                 </v-card-title>
 
                 <v-card-text>
-                    <h4>This will delete all data you uploaded!</h4>
+                    <p class="text-h5 text-error font-weight-bold">This will delete all data you uploaded!</p>
                 </v-card-text>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text="Cancel" color="sucess" @click="close"></v-btn>
-                    <v-btn text="Confirm" color="error" @click="confirm"></v-btn>
+                    <v-btn text="Confirm" variant="tonal" color="error" @click="confirm"></v-btn>
                 </v-card-actions>
 
             </v-card>

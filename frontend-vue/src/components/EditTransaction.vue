@@ -3,7 +3,7 @@
 
     <v-card>
         <v-card-title>
-            <h2>Edit Transaction</h2>
+            <DialogTitle title="Edit Transaction"></DialogTitle>    
         </v-card-title>
 
         <v-card-text>
@@ -49,7 +49,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="sucess" @click="close"></v-btn>
-            <v-btn text="Save" color="sucess" @click="save"></v-btn>
+            <v-btn text="Save" variant="tonal" color="accent" @click="save"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -61,7 +61,7 @@ import { ref } from 'vue'
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { watch } from 'vue';
-
+import DialogTitle from './DialogTitle.vue'
 ////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////

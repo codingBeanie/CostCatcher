@@ -15,7 +15,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Send Mail" color="accent" @click="sendMail"></v-btn>
+            <v-btn text="Send Mail" variant="tonal" color="accent" @click="sendMail"></v-btn>
         </v-card-actions>
     </v-card>
         

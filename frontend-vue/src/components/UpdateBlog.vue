@@ -5,7 +5,7 @@
     </v-col>
 </v-row>
 <v-row>
-    <v-card v-for="entry in updateBlog" class="mb-10 bg-primaryLight" width="100%">
+    <v-card v-for="entry in updateBlog" class="mb-10 mt-10 bg-primaryLight" width="100%">
 
         <!--TITLE-->
         <v-card-title>
@@ -39,9 +39,9 @@
 
                     <!--CHAPTER BULLETS-->
                     <v-row v-if="chapter.bullets">
-                        <v-list class="bg-primaryLight">
+                        <v-list lines="one" class="bg-primaryLight">
                             <v-list-item v-for="bullet in chapter.bullets" :key="bullet" prepend-icon="mdi-circle-small">
-                                    <v-list-item-title class="bullet mb-1">{{ bullet }}</v-list-item-title>
+                                    <v-list-item-title class="bullet">{{ bullet }}</v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-row>

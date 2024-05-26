@@ -1,28 +1,25 @@
 export const updateBlog = [
-    
-    {
-        date: '2024-05-07',
-        title: 'Hello World!',
-        description:    `This tool is still in its infancy. 
-                        Some convenience features may be absent, and bugs might still arise. I'm striving to improve it. Nevertheless, i hope you can utilize the Costcatcher for your personal finance management.`,
+       {
+        date: '2024-05-26',
+        title: 'V2.0.0 | A huge leap forward',
+        description:   `Already in version 2.0? Yes, the backend has changed vastly and is not compatible with the previous version. Luckily, no one except me was using it.`,
         chapter: [
             {
-                title: 'How To',
-                icon: 'mdi-school',
-                text: `Unfortunately, I have not created a proper tutorial yet. There are some text boxes that you can find beneath the titles. Hopefully, they will help you to get started.`,
-                bullets: []
-            },
-            {
-                title: 'Upcoming Features',
-                icon: 'mdi-road-variant',
-                text: `I already got some ideas for improvements. I do not know when I will implement them, but I will try to keep you updated.`,
-                bullets: []
-            },
+                title: 'New Features / Changed',
+                icon: 'mdi-party-popper',
+                text: '',
+                bullets: ['Huge performance improvements',
+                        'Manual upload of single transactions is now possible',
+                        'Statistics tableau with new filtering system',
+                    'Graphs with new filtering system',
+                        'Minor design tweaks',
+                ]
+            }
         ]
-    },
+    }, 
     {
         date: '2024-05-11',
-        title: 'V1.1.0 | Never mind forgetting passwords',
+        title: 'V1.1.0 | Forget about worrying over your password',
         description:   ``,
         chapter: [
             {
@@ -30,10 +27,9 @@ export const updateBlog = [
                 icon: 'mdi-party-popper',
                 text: '',
                 bullets: ['Password reset via email',
-                            'minor design changes',
+                        'minor design changes',
                         'created a 404-not-found page',
-                    'improved the routing. Refreshes should now work properly',
-                            'minor design changes',
+                        'improved the routing. Refreshes should now work properly',
                 ]
             },
             {

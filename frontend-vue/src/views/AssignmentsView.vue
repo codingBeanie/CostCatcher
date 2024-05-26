@@ -37,15 +37,15 @@
             </v-col>
 
             <!--Category Button-->
-            <v-col cols="2" class="mt-2 text-start">
+            <v-col cols="2" class="mt-1 text-start">
                 <v-btn v-if="display.mdAndDown.value" color="info" @click="componentStore.openCategories()" icon="mdi-bookshelf"></v-btn>
-                <v-btn v-else class="" color="info" @click="componentStore.openCategories()">Edit Categories</v-btn>
+                <v-btn v-else class="" color="info" @click="componentStore.openCategories()" prepend-icon="mdi-bookshelf">Edit Categories</v-btn>
             </v-col>
             
             <!--Button-->
-            <v-col cols="2" class="mt-2 text-center">
+            <v-col cols="2" class="mt-1 text-center">
                 <v-btn v-if="display.mdAndDown.value" class="" color="accent" @click="createAssignment" icon="mdi-plus"></v-btn>
-                <v-btn v-else class="" color="accent" @click="createAssignment">Create</v-btn>
+                <v-btn v-else class="" color="accent" @click="createAssignment" prepend-icon="mdi-plus">create</v-btn>
             </v-col>
         </v-row>
 
@@ -53,7 +53,7 @@
 
     <!--Assignment-Table-->
     <div>
-        <Divider title="Created rulesets" spacing=16 :showToggle=true :showState=showAssignments @toggle="(state) => showAssignments = state"></Divider>    
+        <Divider title="Created rulesets" spacing=6 :showToggle=true :showState=showAssignments @toggle="(state) => showAssignments = state"></Divider>    
         <v-row class="mt-4" v-show="showAssignments">
             <v-data-table :items="data" :headers="headersAssignments">
 
@@ -198,7 +198,7 @@ const checkItems = [{ 'value': 'recipient_or_description', 'title': 'Keyword mus
                     { 'value': 'recipient_and_description', 'title': 'Keyword must be in recipient and description' }]
 
 // Tooltips
-const infoKeyword = 'These characters will be search for in the transactions. The keyword is case-insensitive.'
+const infoKeyword = 'These characters will be searched for in the transactions. The keyword is case-insensitive.'
 const infoCheckMode = 'The check mode determines where the keyword will be searched for in the transaction.'
 const infoCategory = 'The category that will be assigned to the transaction if the keyword is found.'
 

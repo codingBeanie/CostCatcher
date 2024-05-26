@@ -14,19 +14,27 @@
                     <v-container>
                         <v-row>
                             <v-col>
-                                <h3>Create category</h3>
+                                <p class="text-h5 font-weight-bold text-secondary">Create new category</p>
                             </v-col>
                             <v-col>
-                                <h3>Edit categories</h3>
+                                <p class="text-h5 font-weight-bold text-secondary">Edit categories</p>
                             </v-col>
                         </v-row>
                         <v-row>
                         <v-col class="mr-4">
                         <!--Create Section-->
                         <v-row>
-                            <v-col cols="">
+                            <v-col cols="8">
                                 <v-text-field clearable v-model="inputCategory" label="Category Name"></v-text-field>
                             </v-col>
+                            <v-col cols="2" class="mt-2 text-center">
+                                    <v-chip v-if="inputCategory" :color="inputColor" size="large">{{ inputCategory }}</v-chip>
+                                    <v-chip v-else color="grey" size="large">Preview</v-chip>
+                            </v-col>
+                            <v-col cols="2" class="mt-2">
+                                <v-btn class="" color="accent" @click="createCategory" prependIcon="mdi-plus">Create</v-btn>
+                            </v-col>
+
                         </v-row>
 
                         <v-row cols="" class="">
@@ -38,22 +46,13 @@
                                     <v-color-picker v-model="inputColor" hide-inputs></v-color-picker>
                                 </v-row>
                             </v-col>
-                            <v-col class="ml-2">
-                                <v-row>
-                                    <h4 class="mb-4 ml-2 font-weight-thin">Preview</h4>
-                                </v-row>
-                                <v-row class="justify-center">
-                                    <v-chip v-if="inputCategory" :color="inputColor" size="large">{{ inputCategory }}</v-chip>
-                                    <v-chip v-else color="grey" size="large">Enter a category name above</v-chip>
+                            <v-col class="">
+                                <v-row class="">
+
                                 </v-row>
                             </v-col>
                         </v-row>
 
-                        <v-row>
-                            <v-col cols="" class="mt-2 text-start">
-                                <v-btn class="" color="accent" @click="createCategory" prependIcon="mdi-plus">Create</v-btn>
-                            </v-col>
-                        </v-row>
                         </v-col>
 
                         <v-col class="ml-4">
@@ -79,7 +78,7 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text="Close" color="sucess" @click="close"></v-btn>
+                    <v-btn text="Close" color="accent" variant="tonal" @click="close"></v-btn>
                 </v-card-actions>
 
             </v-card>

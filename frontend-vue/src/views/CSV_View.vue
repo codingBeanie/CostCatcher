@@ -107,8 +107,8 @@
             <v-text-field v-model="inputAmount" label="Amount" type="number"></v-text-field>
         </v-col>
         <v-col class="text-end mt-3">
-            <v-btn color="accent" @click="manuallyUpload()" prependIcon="mdi-upload">
-                Upload
+            <v-btn color="accent" @click="manuallyUpload()" prependIcon="mdi-plus">
+                create
             </v-btn>
         </v-col>
     </v-row>
