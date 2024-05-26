@@ -19,8 +19,8 @@
                             <!--CSV Settings-->
                             <v-window-item value="CSV">
                                 <v-container>
-                                    <v-row>
-                                        <h4>Row settings</h4>
+                                    <v-row class="mr-3">
+                                        <DialogTitle title="Row settings" size="small" ></DialogTitle>
                                     </v-row>
                                     <v-row>
 
@@ -45,8 +45,8 @@
                                         </v-col>
                                     </v-row>
 
-                                    <v-row>
-                                        <h4>Column settings</h4>
+                                    <v-row class="mr-3">
+                                        <DialogTitle title="Column settings" size="small"></DialogTitle>
                                     </v-row>
                         
                                     <v-row>
@@ -93,8 +93,8 @@
                                         </v-col>
                                     </v-row>
 
-                                    <v-row>
-                                        <h4>Data settings</h4>
+                                    <v-row class="mr-3">
+                                        <DialogTitle title="Data settings" size="small"></DialogTitle>
                                     </v-row>
 
                                     <v-row>
@@ -147,8 +147,8 @@
                             <!--General Settings-->
                             <v-window-item value="general">
                                 <v-container>
-                                    <v-row>
-                                        <h4>General settings</h4>
+                                    <v-row class="mr-3">
+                                        <DialogTitle title="Format" size="small"></DialogTitle>
                                     </v-row>
                                     <v-row>
                                         <v-col class="d-flex">
@@ -176,10 +176,9 @@
 
                     <!--Dialog Actions-->
                     <v-card-actions>
-                        <v-btn color="info" @click="userStore.resetTutorials">reset Tutorials</v-btn>
                         <v-spacer></v-spacer>
                         <v-btn text="Cancel" color="sucess" @click="close"></v-btn>
-                        <v-btn text="Save" color="sucess" @click="save"></v-btn>
+                        <v-btn text="Save" variant="tonal" color="accent" @click="save"></v-btn>
                     </v-card-actions>
                 </v-card>
             </template>
@@ -195,6 +194,7 @@ import { ref } from 'vue'
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { useUserStore } from '../stores/UserStore.js'
+import DialogTitle from './DialogTitle.vue'
 
 ////////////////////////////////////////////////////////////////
 // State Management

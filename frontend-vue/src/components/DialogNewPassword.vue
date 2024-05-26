@@ -3,7 +3,7 @@
 
     <v-card>
         <v-card-title>
-            <h2>Set your new password</h2>
+            <DialogTitle title="Set your new password"></DialogTitle>  
         </v-card-title>
 
         <v-card-text>
@@ -17,7 +17,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Change" color="accent" @click="submitPassword"></v-btn>
+            <v-btn text="Change" variant="tonal" color="accent" @click="submitPassword"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -29,7 +29,7 @@ import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { setNewPassword } from '../composables/UserAuth.js'
 import { useRoute } from 'vue-router'
-
+import DialogTitle from './DialogTitle.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////

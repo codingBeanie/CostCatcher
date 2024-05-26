@@ -3,19 +3,19 @@
 
     <v-card>
         <v-card-title>
-            <h2>Get an password reset mail</h2>
+            <DialogTitle title="Password reset"></DialogTitle>
         </v-card-title>
 
         <v-card-text>
             <v-container>
-               <v-text-field v-model="username" @keydown.enter="sendMail" label="Name"></v-text-field>
+               <v-text-field v-model="username" @keydown.enter="sendMail" label="Username"></v-text-field>
             </v-container>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Send Mail" color="accent" @click="sendMail"></v-btn>
+            <v-btn text="Send Mail" variant="tonal" color="accent" @click="sendMail"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -26,6 +26,7 @@
 import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { passwordReset } from '../composables/UserAuth'
+import DialogTitle from './DialogTitle.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

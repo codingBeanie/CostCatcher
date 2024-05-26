@@ -3,7 +3,7 @@
 
     <v-card>
         <v-card-title>
-            <h2>Edit Assignment</h2>
+            <DialogTitle title="Edit Assignment"></DialogTitle> 
         </v-card-title>
 
         <v-card-text>
@@ -27,7 +27,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="sucess" @click="close"></v-btn>
-            <v-btn text="Save" color="sucess" @click="save"></v-btn>
+            <v-btn text="Save" color="accent" @click="save"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -38,6 +38,7 @@
 import { ref, watch } from 'vue'
 import { useComponentStore } from '@/stores/ComponentStore.js';
 import { API } from '../composables/API.js'
+import DialogTitle from './DialogTitle.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -82,9 +83,11 @@ const save = async () => {
 const load = async () => {
     id.value = componentStore.assignmentEdit.id
     const data = await API(`assignments/?id=${id.value}`, 'GET')
-    keyword.value = data.keyword
-    category.value = data.category
-    checkMode.value = data.checkMode
+    keyword.value = data[0].keyword
+    category.value = data[0].category
+    checkMode.value = data[0].checkMode
+
+    console.log(keyword.value)
 
     categories.value = await API('categories', 'GET')
 }

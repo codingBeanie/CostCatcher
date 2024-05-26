@@ -8,3 +8,4 @@ DataServer/DataServer/__pycache__/
 docker-share/
 frontend-vue/.env.development
 frontend-vue/.env.production
+.gitignore

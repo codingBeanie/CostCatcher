@@ -1,192 +1,212 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ..models import Transaction, Category
+from ..models import Transaction, Category, Period
 from ..datelist import datelist
 from django.db.models import Sum
 from statistics import mean, median
 from datetime import datetime
+import logging
+
+# STATISTICS RESPONSE
+# [ {   'Period': {'title':2021-01, 'year': 2021, 'month': 1, 'quarter': 1},
+#       'Category': {'name': 'UNDEFINED', 'id': 0, 'color': '#444444'},
+#       'Data': {0, 0},
+#       'Statistics': {'Sum': 0, 'Average': 0, 'Median': 0} }, ... ]
 
 
 class Statistics(APIView):
+    log = logging.getLogger("api")
+
     def get(self, request):
         try:
-            data = []
-            dateto = request.query_params.get('dateto', None)
-            datefrom = request.query_params.get('datefrom', None)
-            showTotals = request.query_params.get(
-                'showTotals', True)  # categories, totals, all
-            filtermode = request.query_params.get(
-                'filtermode', 'all')  # only income, expenses or all
-            showStatistics = request.query_params.get('statistics', False)
+            # ****************************************************************************************************#
+            # *** PARAMETERS ***#
+
+            # get parameters from request
+            periodMode = request.query_params.get('periodmode', 'monthly')
+            valueMode = request.query_params.get('valuemode', None)
+            fromYear = request.query_params.get('fromyear', None)
+            toYear = request.query_params.get('toyear', None)
+            fromPeriod = request.query_params.get('fromperiod', None)
+            toPeriod = request.query_params.get('toperiod', None)
             user = request.user.id
-            transactions = Transaction.objects.filter(user=user)
 
-            # produces [{'month-year': '01-2021', 'datefrom': '2021-01-01', 'dateto': '2021-01-31'}, ...]
-            dates = datelist(datefrom, dateto)
-            if dates == []:
-                return Response(status=400, data="Invalid date range")
+            # check if null and get default value
+            if fromYear is None or fromYear == 'null' or fromYear == 'undefined':
+                fromYear = Period.objects.filter(
+                    user=user).order_by('year').first().year
 
-            ####################################################################################################
-            # Period/Category statistics
-            categories = Category.objects.filter(user=request.user.id)
-            for category in categories:
-                item = createStatisticsObject(
-                    category, dates, user, filtermode, showStatistics)
-                if item:
-                    data.append(item)
+            if toYear is None or toYear == 'null' or toYear == 'undefined':
+                toYear = Period.objects.filter(
+                    user=user).order_by('year').first().year
 
-            # if transactions have no category, create a category 'UNDEFINED'/NONE
-            if transactions.filter(category=None).exists():
-                item = createStatisticsObject(
-                    None, dates, user, filtermode, showStatistics)
-                if item:
-                    data.append(item)
-
-            ####################################################################################################
-            # Totals
-            if showTotals == 'true' or showTotals == True:
-                totals = createStatisticsTotals(dates, user)
-                for total in totals:
-                    data.append(total)
-
-            return Response(status=200, data=data)
-        except Exception as e:
-            print("Error in Statistics GET: ", e)
-            return Response(status=500, data="Can not get the data.")
-
-
-def createStatisticsObject(category, dates, user, filtermode, showStatistics):
-    item = {}
-    categoryName = category.name if category else 'UNDEFINED'
-    categoryID = category.id if category else 0
-    categoryColor = category.color if category else '#444444'
-
-    item['Category'] = {'name': categoryName,
-                        'id': categoryID, 'color': categoryColor}
-    item['Data'] = {}
-
-    sumlist = []
-
-    # monthly statistics
-    for daterange in dates:
-        dateFrom = datetime.strptime(daterange['datefrom'], '%Y-%m-%d').date()
-        dateTo = datetime.strptime(daterange['dateto'], '%Y-%m-%d').date()
-        filters = {'user': user, 'date__gte': dateFrom, 'date__lte': dateTo}
-        transactions = Transaction.objects.filter(**filters)
-        monthlySum = 0
-        for transaction in transactions:
-            if transaction.category == category:
-                if filtermode == 'income':
-                    if transaction.amount >= 0:
-                        monthlySum += transaction.amount / 100
-                elif filtermode == 'expense':
-                    if transaction.amount < 0:
-                        monthlySum += transaction.amount / 100
-                else:
-                    monthlySum += transaction.amount / 100
-
-        # if no transactions are found, set monthlySum to 0
-        if monthlySum is not None:
-            sumlist.append(monthlySum)
-            item['Data'][daterange['month-year']] = monthlySum
-        else:
-            item['Data'][daterange['month-year']] = 0
-
-    # Statistics
-    if showStatistics or showStatistics == 'true':
-        itemSum = sum(sumlist)
-        itemAverage = mean(sumlist) if len(sumlist) > 1 else sum(sumlist)
-        itemMedian = median(sumlist) if len(sumlist) > 1 else 0
-        item['Statistics'] = {'Sum': itemSum,
-                              'Average': itemAverage, 'Median': itemMedian}
-
-    # check for each filtermode if item is 0, if so, return None
-    if filtermode == "income" and sum(sumlist) <= 0 or filtermode == "expense" and sum(sumlist) >= 0:
-        return None
-    return item
-
-
-def createStatisticsTotals(dates, user):
-    totals = []
-
-    # Preparation
-    income = {}
-    incomeDateRange = []
-    incomeList = []
-    income['Category'] = {'name': 'Income', 'id': -1, 'color': '#005403'}
-    income['Data'] = {}
-
-    expenses = {}
-    expensesList = []
-    expenseDateRange = []
-    expenses['Category'] = {'name': 'Expenses', 'id': -2, 'color': '#540000'}
-    expenses['Data'] = {}
-
-    net = {}
-    netList = []
-    netDateRange = []
-    net['Category'] = {'name': 'Net', 'id': -3, 'color': '#111111'}
-    net['Data'] = {}
-
-    # collect data
-    for daterange in dates:
-        expenseDateRange = []
-        incomeDateRange = []
-        netDateRange = []
-        filters = {'date__gte': daterange['datefrom'],
-                   'date__lte': daterange['dateto'],
-                   'user': user}
-        transactions = Transaction.objects.filter(
-            **filters)
-        for transaction in transactions:
-            value = transaction.amount / 100
-            # INCOME
-            if value >= 0:
-                incomeList.append(value)
-                incomeDateRange.append(value)
-            # EXPENSES
+            if fromPeriod is None or fromPeriod == 'null' or fromPeriod == 'undefined':
+                fromPeriodYear = Period.objects.filter(
+                    user=user).order_by('year').first().year
+                fromPeriodMonth = 1
             else:
-                expensesList.append(value)
-                expenseDateRange.append(value)
-            # NET
-            netList.append(value)
-            netDateRange.append(value)
+                fromPeriodYear = int(fromPeriod.split('-')[0])
+                fromPeriodMonth = int(fromPeriod.split('-')[1])
 
-        income['Data'][daterange['month-year']] = sum(incomeDateRange)
-        expenses['Data'][daterange['month-year']] = sum(expenseDateRange)
-        net['Data'][daterange['month-year']] = sum(netDateRange)
+            if toPeriod is None or toPeriod == 'null' or toPeriod == 'undefined':
+                toPeriodYear = Period.objects.filter(
+                    user=user).order_by('year').first().year
+                toPeriodMonth = 1
+            else:
+                toPeriodYear = int(toPeriod.split('-')[0])
+                toPeriodMonth = int(toPeriod.split('-')[1])
 
-    # in case of no data
-    if len(incomeList) == 0:
-        incomeList.append(0)
-    if len(expensesList) == 0:
-        expensesList.append(0)
-    if len(netList) == 0:
-        netList.append(0)
+            # ****************************************************************************************************#
+            # *** PERIODS ***#
 
-    # Statistics
-    incomeSum = sum(incomeList)
-    incomeAverage = mean(incomeList) if len(
-        incomeList) > 1 else sum(incomeList)
-    incomeMedian = median(incomeList) if len(incomeList) > 1 else 0
-    income['Statistics'] = {'Sum': incomeSum,
-                            'Average': incomeAverage, 'Median': incomeMedian}
+            periods = []
 
-    expensesSum = sum(expensesList)
-    expensesAverage = mean(expensesList) if len(
-        expensesList) > 1 else sum(expensesList)
-    expensesMedian = median(expensesList) if len(expensesList) > 1 else 0
-    expenses['Statistics'] = {'Sum': expensesSum,
-                              'Average': expensesAverage, 'Median': expensesMedian}
+            # MODES: monthly, quarterly, yearly
+            if periodMode != 'single':
+                for year in range(int(fromYear), int(toYear) + 1):
 
-    netSum = sum(netList)
-    netAverage = mean(netList) if len(netList) > 1 else sum(netList)
-    netMedian = median(netList) if len(netList) > 1 else 0
-    net['Statistics'] = {'Sum': netSum,
-                         'Average': netAverage, 'Median': netMedian}
+                    if periodMode == 'monthly':
+                        for month in range(1, 13):
+                            entry = {}
+                            period = Period.objects.get(
+                                user=user, year=year, month=month)
+                            entry['title'] = f"{period.year}-{period.month}"
+                            entry['year'] = period.year
+                            entry['month'] = period.month
+                            periods.append(entry)
 
-    totals.append(income)
-    totals.append(expenses)
-    totals.append(net)
+                    if periodMode == 'quarterly':
+                        for quarter in range(1, 5):
+                            entry = {}
+                            period = Period.objects.filter(
+                                user=user, year=year, quarter=quarter).order_by('month')
+                            entry['title'] = f"{
+                                period[0].year}-Q{period[0].quarter}"
+                            entry['year'] = period[0].year
+                            entry['quarter'] = period[0].quarter
+                            periods.append(entry)
 
-    return totals
+                    if periodMode == 'yearly':
+                        entry = {}
+                        period = Period.objects.filter(
+                            user=user, year=year).values('year').distinct().order_by('year')
+                        for p in period:
+                            entry['title'] = f"{p['year']}"
+                            entry['year'] = p['year']
+                            periods.append(entry)
+
+            # MODE: single
+            if periodMode == 'single':
+                entry = {}
+                filters = {}
+                filters['user'] = user
+                filters['year__gte'] = fromPeriodYear
+                filters['year__lte'] = toPeriodYear
+                filters['month__gte'] = fromPeriodMonth
+                filters['month__lte'] = toPeriodMonth
+
+                period = Period.objects.filter(**filters)
+                for p in period:
+                    entry['title'] = f"{p.year}-{p.month}"
+                    entry['year'] = p.year
+                    entry['month'] = p.month
+                    periods.append(entry)
+
+            # self.log.debug(f"Statistics GET: periods={periods}")
+            # ****************************************************************************************************#
+            # *** CATEGORIES ***#
+
+            categories = []
+            categoriesQueried = Category.objects.filter(user=user)
+            for category in categoriesQueried:
+                entry = {}
+                entry['name'] = category.name
+                entry['id'] = category.id
+                entry['color'] = category.color
+                categories.append(entry)
+
+            # add UNDEFINED category
+            entry = {}
+            entry['name'] = 'UNDEFINED'
+            entry['id'] = 0
+            entry['color'] = '#444444'
+            categories.append(entry)
+            # self.log.debug(f"Statistics GET: categories={categories}")
+
+            # ****************************************************************************************************#
+            # *** CONSTRUCTION AND DATA ***#
+
+            data = []
+            sumData = {}
+            for category in categories:
+                # setup
+                entry = {}
+                entry['Category'] = category
+                entry['Period'] = periods
+                entry['Data'] = []
+                entry['Statistics'] = {}
+
+                # fill data
+                for period in periods:
+                    # set sumData
+                    if period['title'] not in sumData:
+                        sumData[period['title']] = 0
+
+                    # filter
+                    filters = {}
+                    filters['user'] = user
+                    filters['category'] = category['id']
+                    if filters['category'] == 0:
+                        filters['category'] = None
+
+                    # periodmode filter
+                    if periodMode == 'monthly' or periodMode == 'single':
+                        filters['period__year'] = period['year']
+                        filters['period__month'] = period['month']
+
+                    if periodMode == 'quarterly':
+                        filters['period__year'] = period['year']
+                        filters['period__quarter'] = period['quarter']
+
+                    if periodMode == 'yearly':
+                        filters['period__year'] = period['year']
+
+                    # valuemode filter
+                    if valueMode == 'income':
+                        filters['amount__gte'] = 0
+
+                    if valueMode == 'expense':
+                        filters['amount__lt'] = 0
+
+                    # get transactions
+                    transactions = Transaction.objects.filter(**filters)
+                    amount = transactions.aggregate(
+                        Sum('amount'))['amount__sum']
+                    if amount is None:
+                        amount = 0
+                    else:
+                        amount = amount / 100
+                        sumData[period['title']] += amount
+
+                    entry['Data'].append(amount)
+
+                # statistics
+                sumlist = entry['Data']
+                allZero = all(x == 0 for x in sumlist)
+                # only if there are values add statistics and append to data
+                if not allZero:
+                    entry['Statistics']['Sum'] = sum(sumlist)
+                    entry['Statistics']['Average'] = mean(sumlist)
+                    entry['Statistics']['Median'] = median(sumlist)
+                    data.append(entry)
+
+            # ****************************************************************************************************#
+            # sort data by sumvalue
+            data = sorted(
+                data, key=lambda x: x['Statistics']['Sum'], reverse=True if valueMode == 'income' else False)
+            response = {'data': data, 'sumData': sumData}
+            return Response(status=200, data=response)
+
+        except Exception as e:
+            self.log.error("API ERROR [statistics/GET]:", e)
+            return Response(status=500, data="Error in Statistics GET")

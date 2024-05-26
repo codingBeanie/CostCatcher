@@ -5,7 +5,7 @@
             <v-container>
                 <v-row class="padding text-center">
                     <v-col cols="">
-                        <p class="text-h5">COSTCATCHER</p>
+                        <v-img src="@/assets/logo_trans_light.webp" max-height="50"></v-img>
                     </v-col>
                 </v-row>
 

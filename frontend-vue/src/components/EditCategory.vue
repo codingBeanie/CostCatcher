@@ -3,7 +3,7 @@
 
     <v-card>
         <v-card-title>
-            <h2>Edit Category</h2>
+            <DialogTitle title="Edit Category"></DialogTitle>   
         </v-card-title>
 
         <v-card-text>
@@ -37,7 +37,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Save" color="success" @click="save"></v-btn>
+            <v-btn text="Save" variant="tonal" color="accent" @click="save"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -48,6 +48,7 @@
 import { ref, watch } from 'vue'
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore.js'
+import DialogTitle from './DialogTitle.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables
@@ -67,8 +68,8 @@ const id = ref('')
 const loadData = async () => {
     id.value = componentStore.categoryEdit.id
     const data = await API(`categories/?id=${id.value}`, 'GET')
-    newCategory.value = data.name
-    newColor.value = data.color
+    newCategory.value = data[0].name
+    newColor.value = data[0].color
 }
 
 ////////////////////////////////////////////////////////////////

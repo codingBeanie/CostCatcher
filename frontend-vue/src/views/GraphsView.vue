@@ -5,41 +5,12 @@
     <Divider title="Bar Graph"></Divider>
     <!--Selectors-->
     <v-row class="mt-2">
-        <!--fromDate-->
         <v-col>
-            <v-text-field clearable label="From Date" 
-                        type="date"
-                        v-model="dateFromBar" 
-                        placeholder="e.g. 01.01.23"
-                        @update:model-value="loadBarGraph"
-                        >
-            </v-text-field>
-        </v-col>
-
-        <!--toDate-->
-        <v-col>
-            <v-text-field clearable label="To Date" 
-                        type="date"
-                        v-model="dateToBar" 
-                        placeholder="e.g. 01.01.23"
-                        @update:model-value="loadBarGraph"
-                        >
-            </v-text-field>
-        </v-col>
-
-        <!--Category-->
-        <v-col>
-            <v-select
-                label="Categories"
-                :items=categories
-                chips
-                clearable
-                v-model="selectedCategoriesBar"
-                multiple
-                @update:model-value="loadBarGraph"
-                ></v-select>
+            <Filter object="bargraph" :incomeExpense="true" :yearsSelect="true"></Filter>
         </v-col>
     </v-row>
+
+
 
     <v-row v-if="waitingBar">
         <v-progress-linear
@@ -53,39 +24,20 @@
         <canvas ref="barGraphPlaceholder"></canvas>
     </v-row>
 
+    <v-row>
+        <v-col>
+            <Hint text="You can click on the category names in the legend to hide them. "></Hint>
+        </v-col>
+    </v-row>
 
     <Divider title="Pie Chart" spacing="16"></Divider>
     <!-- Selectors Pie-->
     <v-row class="mt-2">
         <!--fromDate-->
         <v-col>
-            <v-text-field clearable label="From Date" 
-                        type="date"
-                        v-model="dateFromPie" 
-                        placeholder="e.g. 01.01.23"
-                        @update:model-value="loadPieGraph"
-                        >
-            </v-text-field>
+            <Filter object="piechart" :yearsSelect="false" :periodMode="false" :periodSelect="true" :incomeExpense="true"></Filter>
         </v-col>
 
-        <!--toDate-->
-        <v-col>
-            <v-text-field clearable label="To Date" 
-                        type="date"
-                        v-model="dateToPie" 
-                        placeholder="e.g. 01.01.23"
-                        @update:model-value="loadPieGraph"
-                        >
-            </v-text-field>
-        </v-col>
-
-        <!--Filter Mode-->
-        <v-col cols="3">
-            <v-radio-group inline v-model="filterMode" @update:model-value="loadPieGraph" class="mt-2">
-                <v-radio label="Income" value="income"></v-radio>
-                <v-radio label="Expense" value="expense"></v-radio>
-            </v-radio-group>
-        </v-col>
     </v-row>
 
     <v-row v-if="waitingPie">
@@ -108,24 +60,25 @@ import { ref, onMounted, shallowRef } from 'vue'
 import { API } from '../composables/API.js'
 import { watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
-import { useAlertStore } from '../stores/AlertStore.js'
+import { useFilterStore } from '../stores/FilterStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 import { barGraphOptions, pieGraphOptions} from '../composables/graphSettings.js'
 import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
 import Chart from 'chart.js/auto'
+import Filter from '../components/Filter.vue'
+import Hint from '../components/Hint.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
 // State Management
 const componentStore = useComponentStore()
+const filterStore = useFilterStore()
 const userStore = useUserStore()
-const alertStore = useAlertStore()
 const waitingBar = ref(false)
 const waitingPie = ref(false)
 
 // Data Objects
-const categories = ref([])
 const barData = ref([])
 const pieData = ref([])
 
@@ -136,58 +89,29 @@ const pieGraph = shallowRef(null)
 const pieGraphPlaceholder = ref(null)
 
 // Input Objects
-const dateFromBar = ref(``)
-const dateToBar = ref(``)
-const selectedCategoriesBar = ref(['Net'])
-const dateFromPie = ref(``)
-const dateToPie = ref(``)
-const filterMode = ref('income')
-
-// Display Objects
-const currency = ref('€')
-const locale = ref('de-DE')
-
 
 ////////////////////////////////////////////////////////////////
 // Data Methods
 ////////////////////////////////////////////////////////////////
-const loadDateRange = async () => {
-    if (dateFromBar.value == '' && dateToBar.value == '') {
-        // Load the default date range
-        const data = await API('datespan', 'GET')
-        if(data == undefined || data == 0) {
-            alertStore.showAlert('No data available.', 'error')
-            return
-        }
-        dateFromBar.value = data.defaultFirst
-        dateToBar.value = data.defaultLast
-
-        const lastYear = data.defaultLast.split('-')[0]
-        const lastMonth = data.defaultLast.split('-')[1]
-        dateFromPie.value = `${lastYear}-${lastMonth}-01`
-        dateToPie.value = data.defaultLast
-    }
-}
 
 // Bar Graph //////////////////////////////////////////////////////////
-const loadBarData = async () => {
-    barData.value = await API(`statistics/?datefrom=${dateFromBar.value}&dateto=${dateToBar.value}`, 'GET')
-    categories.value = barData.value.map(item => item.Category.name)
-    barData.value = barData.value.filter(item => selectedCategoriesBar.value.includes(item.Category.name))
-}
-
-
 const loadBarGraph = async () => {
     waitingBar.value = true
-    await loadBarData()
+    const responseData = await API(`statistics/?periodmode=${filterStore.bargraph.type}&fromyear=${filterStore.bargraph.from}&toyear=${filterStore.bargraph.to}&valuemode=${filterStore.bargraph.filter}`, 'GET')
+    if (responseData["data"].length == 0) {
+        waitingBar.value = false
+        return
+    }
+    barData.value = responseData["data"]
+
     let data = barData.value.map(item => item.Data)
     let categories = barData.value.map(item => item.Category)
+    let periods = barData.value[0].Period.map(item => item.title)
 
     if (data.length == 0) {
         return
     }
 
-    let labels = Object.keys(data[0])
     let datasets = []
     for (let i = 0; i < data.length; i++) { 
         datasets.push({
@@ -199,7 +123,7 @@ const loadBarGraph = async () => {
     if (!barGraph.value) {
         initBarGraph()
     }
-    barGraph.value.data.labels = labels
+    barGraph.value.data.labels = periods 
     barGraph.value.data.datasets = datasets
     barGraph.value.options = barGraphOptions
     barGraph.value.update()
@@ -220,13 +144,10 @@ const initBarGraph = () => {
 }
 
 // Pie Graph //////////////////////////////////////////////////////////
-const loadPieData = async () => {
-    pieData.value = await API(`statistics/?datefrom=${dateFromPie.value}&dateto=${dateToPie.value}&totals=False&filtermode=${filterMode.value}&showTotals=false`, 'GET')
-}
-
 const loadPieGraph = async () => {
     waitingPie.value = true
-    await loadPieData()
+    const responseData = await API(`statistics/?periodmode=${filterStore.piechart.type}&fromperiod=${filterStore.piechart.from}&toperiod=${filterStore.piechart.to}&valuemode=${filterStore.piechart.filter}`, 'GET')
+    pieData.value = responseData["data"]
 
     if (!pieGraph.value) {
         initPieGraph()
@@ -269,7 +190,6 @@ const initPieGraph = () => {
 // Lifecycle Hooks
 ////////////////////////////////////////////////////////////////
 const load = async () => {
-    await loadDateRange()
     loadBarGraph()
     loadPieGraph()
 }

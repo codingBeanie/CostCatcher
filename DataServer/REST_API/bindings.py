@@ -33,18 +33,15 @@ def createBinding(assignment):
     for transaction in transactions:
         if transaction.overruled == False and transaction.category == None:
             transaction.category = assignment.category
-
-    # add assignment to transactions
-    for transaction in transactions:
         transaction.assignments.add(assignment.id)
         transaction.save()
+
     return
 
 
 def deleteBinding(assignment):
-    userTransactions = Transaction.objects.filter(user=assignment.user)
-    userTransactions = userTransactions.filter(
-        Q(assignments__id=assignment.id))
+    userTransactions = Transaction.objects.filter(
+        user=assignment.user, assignments__id=assignment.id)
 
     for transaction in userTransactions:
         transaction.assignments.remove(assignment.id)

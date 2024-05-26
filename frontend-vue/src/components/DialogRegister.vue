@@ -3,32 +3,39 @@
 
     <v-card>
         <v-card-title>
-            <h2>Register</h2>
+            <DialogTitle title="Become a Costcatcher today!"></DialogTitle> 
         </v-card-title>
 
         <v-card-text>
             <v-container>
-               <v-text-field v-model="username" @keydown.enter="register" label="Name"></v-text-field>
+               <v-text-field v-model="username" @keydown.enter="register" label="Username"></v-text-field>
                <v-text-field v-model="email" @keydown.enter="register" label="E-Mail (optional)"></v-text-field>
                 <v-text-field v-model="password" type="password" @keydown.enter="register" label="Password"></v-text-field>
                 <v-text-field v-model="repeatPassword" type="password" @keydown.enter="register" label="Repeat Password"></v-text-field>
+                
+                <v-row>
+                    <v-col class="text-center">
+                        <v-btn variant="tonal" @click="componentStore.openDataProtection">privacy policy</v-btn>
+                    </v-col>
+                </v-row>
+
+                
                 <v-row class="d-flex align-center">
                     <v-col>
                         <v-checkbox v-model="checkPrivacyStatement" label="I acknowledge that I have read and agree to the privacy policy.">
                         </v-checkbox>
                     </v-col>
-                    <v-col>
-                        <v-btn @click="componentStore.openDataProtection">privacy policy</v-btn>
-                    </v-col>
+
                 </v-row>
+
                 <p v-if="errorMessage" class="text-error">{{ errorMessage }}</p>
             </v-container>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Register" color="accent" @click="register"></v-btn>
+            <v-btn text="Cancel" color="info" variant="" @click="close"></v-btn>
+            <v-btn text="Register" color="accent" variant="tonal" @click="register"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -40,6 +47,7 @@ import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { registerUser } from '../composables/UserAuth.js'
 import { useRouter } from 'vue-router'
+import DialogTitle from './DialogTitle.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////

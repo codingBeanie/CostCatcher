@@ -24,6 +24,7 @@ from REST_API.endpoints.settings import Settings
 from REST_API.endpoints.statistics import Statistics
 from REST_API.endpoints.datespan import Datespan
 from REST_API.endpoints.users import *
+from REST_API.endpoints.period import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,5 +41,8 @@ urlpatterns = [
     path('api/categories/', Categories.as_view()),
     path('api/assignments/', Assignments.as_view()),
     path('api/statistics/', Statistics.as_view()),
+    path('api/period/default/', PeriodDefault.as_view()),
+    path('api/period/list/years/', PeriodListYears.as_view()),
+    path('api/period/list/months/', PeriodListMonths.as_view()),
     path('api/datespan/', Datespan.as_view())
 ]

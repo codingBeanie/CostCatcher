@@ -3,7 +3,7 @@
 
     <v-card>
         <v-card-title>
-            <h2>Change Email</h2>
+             <DialogTitle title="Change E-Mail"></DialogTitle>  
         </v-card-title>
 
         <v-card-text>
@@ -16,7 +16,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Change" color="accent" @click="changeEmail"></v-btn>
+            <v-btn text="Change" variant="tonal" color="accent" @click="changeEmail"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -28,7 +28,7 @@ import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { useUserStore } from '../stores/UserStore'
 import { updateEmail } from '../composables/UserAuth.js'
-
+import DialogTitle from './DialogTitle.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
