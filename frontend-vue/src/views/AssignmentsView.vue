@@ -8,30 +8,30 @@
         <v-row class="mt-2">
             <!--Keyword-->
             <v-col class="d-flex" cols="3">
-                <v-text-field v-model="keyword" label="Keyword"></v-text-field>
+                <v-text-field  density="comfortable" v-model="keyword" label="Keyword"></v-text-field>
                 <v-tooltip :text="infoKeyword">
                     <template v-slot:activator="{ props }">
-                        <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
+                        <v-icon color="info" v-bind="props" density="compact" class="mt-3 ml-2">mdi-information</v-icon>
                     </template>
                 </v-tooltip>
             </v-col>
             
             <!--CheckMode-->
             <v-col cols="2" class="d-flex">
-                <v-select v-model="checkMode" label="Check-Mode" :items="checkItems" item-title="title" item-value="value"/>
+                <v-select density="comfortable" v-model="checkMode" label="Check-Mode" :items="checkItems" item-title="title" item-value="value"/>
                     <v-tooltip :text="infoCheckMode">
                         <template v-slot:activator="{ props }">
-                            <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
+                            <v-icon color="info" v-bind="props" density="compact" class="mt-3 ml-2">mdi-information</v-icon>
                         </template>
                 </v-tooltip>
             </v-col>
 
             <!--Category-->
             <v-col cols="3" class="d-flex">
-                <v-select label="Category" v-model="category" :items="categories" item-title="name" item-value="id"></v-select>
+                <v-select  density="comfortable" label="Category" v-model="category" :items="categories" item-title="name" item-value="id"></v-select>
                 <v-tooltip :text="infoCategory">
                     <template v-slot:activator="{ props }">
-                        <v-icon color="info" v-bind="props" density="compact" class="mt-5 ml-2">mdi-information</v-icon>
+                        <v-icon color="info" v-bind="props" density="compact" class="mt-3 ml-2">mdi-information</v-icon>
                     </template>
                 </v-tooltip>
             </v-col>

@@ -42,6 +42,7 @@ urlpatterns = [
     path('api/assignments/', Assignments.as_view()),
     path('api/statistics/', Statistics.as_view()),
     path('api/period/default/', PeriodDefault.as_view()),
-    path('api/period/list/', PeriodList.as_view()),
+    path('api/period/list/years/', PeriodListYears.as_view()),
+    path('api/period/list/months/', PeriodListMonths.as_view()),
     path('api/datespan/', Datespan.as_view())
 ]

@@ -27,51 +27,90 @@ class Statistics(APIView):
             valueMode = request.query_params.get('valuemode', None)
             fromYear = request.query_params.get('fromyear', None)
             toYear = request.query_params.get('toyear', None)
+            fromPeriod = request.query_params.get('fromperiod', None)
+            toPeriod = request.query_params.get('toperiod', None)
             user = request.user.id
 
             # check if null and get default value
             if fromYear is None or fromYear == 'null' or fromYear == 'undefined':
                 fromYear = Period.objects.filter(
                     user=user).order_by('year').first().year
+
             if toYear is None or toYear == 'null' or toYear == 'undefined':
                 toYear = Period.objects.filter(
                     user=user).order_by('year').first().year
+
+            if fromPeriod is None or fromPeriod == 'null' or fromPeriod == 'undefined':
+                fromPeriodYear = Period.objects.filter(
+                    user=user).order_by('year').first().year
+                fromPeriodMonth = 1
+            else:
+                fromPeriodYear = int(fromPeriod.split('-')[0])
+                fromPeriodMonth = int(fromPeriod.split('-')[1])
+
+            if toPeriod is None or toPeriod == 'null' or toPeriod == 'undefined':
+                toPeriodYear = Period.objects.filter(
+                    user=user).order_by('year').first().year
+                toPeriodMonth = 1
+            else:
+                toPeriodYear = int(toPeriod.split('-')[0])
+                toPeriodMonth = int(toPeriod.split('-')[1])
 
             # ****************************************************************************************************#
             # *** PERIODS ***#
 
             periods = []
-            for year in range(int(fromYear), int(toYear) + 1):
 
-                if periodMode == 'monthly':
-                    for month in range(1, 13):
-                        entry = {}
-                        period = Period.objects.get(
-                            user=user, year=year, month=month)
-                        entry['title'] = f"{period.year}-{period.month}"
-                        entry['year'] = period.year
-                        entry['month'] = period.month
-                        periods.append(entry)
+            # MODES: monthly, quarterly, yearly
+            if periodMode != 'single':
+                for year in range(int(fromYear), int(toYear) + 1):
 
-                if periodMode == 'quarterly':
-                    for quarter in range(1, 5):
+                    if periodMode == 'monthly':
+                        for month in range(1, 13):
+                            entry = {}
+                            period = Period.objects.get(
+                                user=user, year=year, month=month)
+                            entry['title'] = f"{period.year}-{period.month}"
+                            entry['year'] = period.year
+                            entry['month'] = period.month
+                            periods.append(entry)
+
+                    if periodMode == 'quarterly':
+                        for quarter in range(1, 5):
+                            entry = {}
+                            period = Period.objects.filter(
+                                user=user, year=year, quarter=quarter).order_by('month')
+                            entry['title'] = f"{
+                                period[0].year}-Q{period[0].quarter}"
+                            entry['year'] = period[0].year
+                            entry['quarter'] = period[0].quarter
+                            periods.append(entry)
+
+                    if periodMode == 'yearly':
                         entry = {}
                         period = Period.objects.filter(
-                            user=user, year=year, quarter=quarter).order_by('month')
-                        entry['title'] = f"{
-                            period[0].year}-Q{period[0].quarter}"
-                        entry['year'] = period[0].year
-                        entry['quarter'] = period[0].quarter
-                        periods.append(entry)
+                            user=user, year=year).values('year').distinct().order_by('year')
+                        for p in period:
+                            entry['title'] = f"{p['year']}"
+                            entry['year'] = p['year']
+                            periods.append(entry)
 
-                if periodMode == 'yearly':
-                    entry = {}
-                    period = Period.objects.filter(
-                        user=user, year=year).values('year').distinct().order_by('year')
-                    for p in period:
-                        entry['title'] = f"{p['year']}"
-                        entry['year'] = p['year']
-                        periods.append(entry)
+            # MODE: single
+            if periodMode == 'single':
+                entry = {}
+                filters = {}
+                filters['user'] = user
+                filters['year__gte'] = fromPeriodYear
+                filters['year__lte'] = toPeriodYear
+                filters['month__gte'] = fromPeriodMonth
+                filters['month__lte'] = toPeriodMonth
+
+                period = Period.objects.filter(**filters)
+                for p in period:
+                    entry['title'] = f"{p.year}-{p.month}"
+                    entry['year'] = p.year
+                    entry['month'] = p.month
+                    periods.append(entry)
 
             # self.log.debug(f"Statistics GET: periods={periods}")
             # ****************************************************************************************************#
@@ -121,13 +160,9 @@ class Statistics(APIView):
                         filters['category'] = None
 
                     # periodmode filter
-                    if periodMode == 'monthly':
+                    if periodMode != 'yearly':
                         filters['period__year'] = period['year']
                         filters['period__month'] = period['month']
-
-                    if periodMode == 'quarterly':
-                        filters['period__year'] = period['year']
-                        filters['period__quarter'] = period['quarter']
 
                     if periodMode == 'yearly':
                         filters['period__year'] = period['year']

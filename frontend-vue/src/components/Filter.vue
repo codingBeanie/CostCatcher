@@ -40,12 +40,27 @@
             </v-row>
             <v-row  class="d-flex justify-center align-center">
                 <v-col>
-                    <v-select label="From" :items="years" v-model="fromValue" :onUpdate:modelValue="updateFilter"></v-select>
+                    <v-select density="comfortable" label="From" :items="years" v-model="fromYear" :onUpdate:modelValue="updateFilter"></v-select>
                 </v-col>
                 <v-col>
-                    <v-select label="To" :items="years" v-model="toValue" :onUpdate:modelValue="updateFilter"></v-select>
+                    <v-select density="comfortable" label="To" :items="years" v-model="toYear" :onUpdate:modelValue="updateFilter"></v-select>
                 </v-col>
             </v-row>
+        </v-col>
+
+        <!--Period Select-->
+        <v-col v-if="periodSelect">
+            <v-row class="d-flex justify-center">
+                <p class="text-overline">Period Selection</p>
+            </v-row>
+            <v-row  class="d-flex justify-center align-center">
+                <v-col>
+                    <v-select density="comfortable" label="From" :items="periods" v-model="fromPeriod" :onUpdate:modelValue="updateFilter"></v-select>
+                </v-col>
+                <v-col>
+                    <v-select density="comfortable" label="To" :items="periods" v-model="toPeriod" :onUpdate:modelValue="updateFilter"></v-select>
+                </v-col>
+            </v-row> 
         </v-col>
 
     </v-row>
@@ -69,9 +84,12 @@ const filterPeriodMode = ref(0)
 const filterIncomeExpense = ref(0)
 const message = ref('')
 
-const fromValue = ref(null)
-const toValue = ref(null)
+const fromYear = ref(null)
+const toYear = ref(null)
+const fromPeriod = ref(null)
+const toPeriod = ref(null)
 const years = ref([])
+const periods = ref([])
 
 
 // Props
@@ -84,6 +102,10 @@ const props = defineProps({
     yearsSelect: {
         type: Boolean,
         default: true
+    },
+    periodSelect: {
+        type: Boolean,
+        default: false
     },
     incomeExpense: {
         type: Boolean,
@@ -110,11 +132,21 @@ const updateFilter = () => {
 
     // Year Selection
     if (props.yearsSelect) {
-        filterStore[props.object].from = fromValue.value
-        filterStore[props.object].to = toValue.value
+        filterStore[props.object].from = fromYear.value
+        filterStore[props.object].to = toYear.value
 
-        if (fromValue.value > toValue.value) {
+        if (fromYear.value > toYear.value) {
         alertStore.showAlert('Selection Error', 'From-year must be smaller than to-year', 'error', 5000)
+        }
+    }
+
+    // Period Selection
+    if (props.periodSelect) {
+        filterStore[props.object].from = fromPeriod.value
+        filterStore[props.object].to = toPeriod.value
+
+        if (fromPeriod.value > toPeriod.value) {
+        alertStore.showAlert('Selection Error', 'From-period must be smaller than to-period', 'error', 5000)
         }
     }
 
@@ -146,10 +178,19 @@ const loadFilter = async () => {
 
     // Year Selection
     if (props.yearsSelect) {
-        let currentYear = await API('period/default', 'GET')
-        fromValue.value = filterStore[props.object].from == null ? currentYear.value : filterStore[props.object].from
-        toValue.value = filterStore[props.object].to == null ? currentYear.value : filterStore[props.object].to
-        years.value = await API('period/list', 'GET')
+        let latestPeriod = await API('period/default', 'GET')
+        fromYear.value = filterStore[props.object].from == null ? latestPeriod.year : filterStore[props.object].from
+        toYear.value = filterStore[props.object].to == null ? latestPeriod.year : filterStore[props.object].to
+        years.value = await API('period/list/years', 'GET')
+    }
+
+    // Period Selection
+    if (props.periodSelect) {
+        let latestPeriod = await API('period/default', 'GET')
+        latestPeriod = latestPeriod.year + '-' + latestPeriod.month
+        fromPeriod.value = filterStore[props.object].from == null ? latestPeriod : filterStore[props.object].from
+        toPeriod.value = filterStore[props.object].to == null ? latestPeriod : filterStore[props.object].to
+        periods.value = await API('period/list/months', 'GET')
     }
 
     // Income/Expense Mode

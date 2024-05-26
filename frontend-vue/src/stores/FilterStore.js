@@ -14,9 +14,10 @@ export const useFilterStore = defineStore('filter', {
             filter: 'both',
         },
         piechart: {
-            type: 'all',
+            type: 'single',
             from: null,
             to: null,
+            filter: 'expense',
         },
     }),
 }
