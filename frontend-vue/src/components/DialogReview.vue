@@ -13,9 +13,7 @@
                 <v-card-text>
                     <v-container>
                         <v-row class="mb-4">
-                            <h2 class="mr-4 font-weight-thin">Review Transactions</h2>
-                            <v-btn class="text-h5 font-weight-bold" variant="text" :color="selectCategory.color">{{ selectCategory.name }}</v-btn>
-                            <h2>({{ period.title }})</h2>
+                            <DialogTitle :title="'Review Transactions for ' + selectCategory.name + ' [' + period.title + ']'"></DialogTitle>
                         </v-row>
                         <v-row>
                             <v-data-table
@@ -73,6 +71,7 @@ import { useComponentStore } from '../stores/ComponentStore.js'
 import { useUserStore } from '../stores/UserStore.js'
 import { API } from '../composables/API.js'
 import Hint from '../components/Hint.vue'
+import DialogTitle from '../components/DialogTitle.vue'
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////

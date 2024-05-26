@@ -9,10 +9,10 @@
 
             <!--HEADERS-->
             <v-row no-gutters class="border-b  d-flex flex-nowrap text-end">
-                <v-col class="column">
+                <v-col class="chip">
                     <p class="text-button"></p>
                 </v-col>
-                <v-col v-for="header in headers" class="column pr-6">
+                <v-col v-for="header in headers" class="column pr-3">
                     <p class="text-button">{{ header.title }}</p>
                 </v-col>
             </v-row>
@@ -22,7 +22,7 @@
 
             <!--INCOME TITLE-->
             <v-row no-gutters class="d-flex flex-nowrap">
-                <v-col class="colunn">
+                <v-col class="chip">
                     <p class="text-overline text-success">INCOME</p>
                 </v-col>
                 <v-col v-for="header in headers" class="column">
@@ -30,9 +30,9 @@
                 </v-col>
             </v-row>
             <!--INCOME DATA-->
-            <v-row no-gutters v-for="income in incomeData" class="d-flex flex-nowrap text-end">
+            <v-row no-gutters v-for="income in incomeData" class="d-flex flex-nowrap text-end mb-2">
                 <!--CATEGORY TITLE-->
-                <v-col class="column">
+                <v-col class="chip text-end align-self-center">
                     <div v-if="income.Category.name == 'UNDEFINED'">
                         <v-tooltip :text="textUndefined">
                             <template v-slot:activator="{ props }">
@@ -41,17 +41,17 @@
                         </v-tooltip>
                     </div>
                     <div v-else>
-                        <v-btn variant="text" @click="componentStore.openCategoryEdit(income.Category.id)">{{ income.Category.name}}</v-btn>
+                        <v-chip variant="tonal" label :color="income.Category.color" class="chip" @click="componentStore.openCategoryEdit(income.Category.id)">{{ income.Category.name}}</v-chip>
                     </div>
                 </v-col>
                 <!--INCOME DATA-->
-                <v-col v-for="(value, key) in income.Data" class="column">
+                <v-col v-for="(value, key) in income.Data" class="column align-self-center">
                     <v-btn variant="plain" @click="componentStore.openReview(income.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                 </v-col>
             </v-row>
             <!--INCOME SUM-->
             <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
-                <v-col class="column">
+                <v-col class="chip">
                     <v-btn variant="text">SUM INCOME</v-btn>
                 </v-col>
                 <v-col v-for="sum in incomeSums" class="column">
@@ -63,7 +63,7 @@
 
             <!--EXPENSE TITLE-->
             <v-row no-gutters class="mt-10 d-flex flex-nowrap">
-                <v-col class="column">
+                <v-col class="chip">
                     <p class="text-overline text-error">EXPENSES</p>
                 </v-col>
                 <v-col v-for="header in headers" class="column">
@@ -71,9 +71,9 @@
                 </v-col>
             </v-row>
             <!--EXPENSE DATA-->
-            <v-row no-gutters v-for="expense in expenseData" class="d-flex flex-nowrap text-end">
+            <v-row no-gutters v-for="expense in expenseData" class="d-flex flex-nowrap text-end mb-2">
                 <!--CATEGORY TITLE-->
-                <v-col class="column">
+                <v-col class="chip align-self-center">
                     <div v-if="expense.Category.name == 'UNDEFINED'">
                         <v-tooltip :text="textUndefined">
                             <template v-slot:activator="{ props }">
@@ -82,17 +82,17 @@
                         </v-tooltip>
                     </div>
                     <div v-else>
-                        <v-btn variant="text" @click="componentStore.openCategoryEdit(expense.Category.id)">{{ expense.Category.name}}</v-btn>
+                        <v-chip label variant="tonal" :color="expense.Category.color" class="chip" @click="componentStore.openCategoryEdit(expense.Category.id)">{{ expense.Category.name}}</v-chip>
                     </div>
                 </v-col>
                 <!--EXPENSE DATA-->
-                <v-col v-for="(value, key) in expense.Data" class="column">
+                <v-col v-for="(value, key) in expense.Data" class="column align-self-center">
                     <v-btn variant="plain" @click="componentStore.openReview(expense.Category.id, headers[key])">{{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                 </v-col>
             </v-row>
             <!--EXPENSE SUM-->
             <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
-                <v-col class="column">
+                <v-col class="chip">
                     <v-btn variant="text">SUM EXPENSES</v-btn>
                 </v-col>
                 <v-col v-for="sum in expenseSums" class="column">
@@ -224,7 +224,16 @@ watch(() => componentStore.app.refresh, () => {
 }
 
 .column {
-    min-width: 140px;
-    max-width: 300px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+.line-height {
+    line-height: 1.2;
+}
+
+.chip {
+    min-width: 150px;
+    max-width: 150px;
 }
 </style>
