@@ -57,7 +57,8 @@ class Transactions(APIView):
             if quarter:
                 filters['period__quarter'] = quarter
 
-            transactions = Transaction.objects.filter(**filters)
+            transactions = Transaction.objects.filter(
+                **filters).order_by('-date')
             result = TransactionSerializer(transactions, many=True)
             return Response(status=200, data=result.data)
 

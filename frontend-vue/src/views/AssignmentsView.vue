@@ -220,7 +220,6 @@ const headersNoCategory = [
     { title: 'Recipient', value: 'recipient', sortable: true},
     { title: 'Description', value: 'description', sortable: true},
     { title: 'Amount', value: 'amount', sortable: true, align: 'center' },
-    { title: 'Period', value: 'period', sortable: true, align: 'center' },
     { title: 'Action', value: 'action', sortable: false, align: 'center'}
 
 ]

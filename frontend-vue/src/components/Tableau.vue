@@ -1,7 +1,7 @@
 <template>
     <v-row class="mt-4">
     <!--FILTER-->
-        <Filter object="tableau" :message="message"></Filter>
+        <Filter object="tableau" :message="message" :periodMode="true" :yearsSelect="true"></Filter>
     </v-row>
     
     <!--MAINFRAME-->

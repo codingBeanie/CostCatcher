@@ -19,6 +19,9 @@ export const useFilterStore = defineStore('filter', {
             to: null,
             filter: 'expense',
         },
+        import: {
+            mode: 'csv'
+        },
     }),
 }
 )   

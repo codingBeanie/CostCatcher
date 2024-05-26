@@ -1,6 +1,21 @@
 <template>
     <v-row class="ml-4 mr-4 d-flex">
 
+        <!--Import Mode-->
+        <v-col v-if="importMode" class="justify-center">
+            <v-row class="d-flex justify-center">
+                <p class="text-overline">Import Mode</p>
+            </v-row>
+            <v-row class="d-flex justify-center">
+                <v-col class="text-center">
+                    <v-btn-toggle mandatory v-model="importModeSelect" :onUpdate:modelValue="updateFilter">
+                        <v-btn value="0">CSV</v-btn>
+                        <v-btn value="1">MANUAL</v-btn>
+                    </v-btn-toggle>
+                </v-col>
+            </v-row>
+       </v-col>
+
         <!--Period Mode-->
         <v-col v-if="periodMode" class="justify-center">
             <v-row class="d-flex justify-center">
@@ -82,7 +97,6 @@ const componentStore = useComponentStore()
 const alertStore = useAlertStore()
 const filterPeriodMode = ref(0)
 const filterIncomeExpense = ref(0)
-const message = ref('')
 
 const fromYear = ref(null)
 const toYear = ref(null)
@@ -90,24 +104,28 @@ const fromPeriod = ref(null)
 const toPeriod = ref(null)
 const years = ref([])
 const periods = ref([])
-
+const importModeSelect = ref(0)
 
 // Props
 const props = defineProps({
     object: String,
     periodMode: {
         type: Boolean,
-        default: true
+        default: false
     },
     yearsSelect: {
         type: Boolean,
-        default: true
+        default: false
     },
     periodSelect: {
         type: Boolean,
         default: false
     },
     incomeExpense: {
+        type: Boolean,
+        default: false
+    },
+    importMode: {
         type: Boolean,
         default: false
     }
@@ -117,6 +135,11 @@ const props = defineProps({
 // Methods
 ////////////////////////////////////////////////////////////////
 const updateFilter = () => {
+    // Import Mode
+    if (props.importMode) {
+        filterStore[props.object].mode = importModeSelect.value == 0 ? 'csv' : 'manual'
+    }
+
     // Period Mode
     if (props.periodMode) { 
         if (filterPeriodMode.value == 0) {
@@ -165,6 +188,15 @@ const updateFilter = () => {
 }
 
 const loadFilter = async () => {
+    // Import Mode
+    if (props.importMode) {
+        if (filterStore[props.object].mode == 'csv') {
+            importModeSelect.value = 0
+        } else if (filterStore[props.object].mode == 'manual') {
+            importModeSelect.value = 1
+        }
+    }
+
     // Period Mode
     if (props.periodMode){
         if (filterStore[props.object].type == 'monthly') {
