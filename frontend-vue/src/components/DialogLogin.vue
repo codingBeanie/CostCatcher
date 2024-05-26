@@ -3,22 +3,22 @@
 
     <v-card>
         <v-card-title>
-            <h2>Heyho, welcome back!</h2>
+            <DialogTitle title="Welcome back!"></DialogTitle>   
         </v-card-title>
 
         <v-card-text>
             <v-container>
-               <v-text-field v-model="username" @keydown.enter="login" label="Name"></v-text-field>
+               <v-text-field v-model="username" @keydown.enter="login" label="Username"></v-text-field>
                 <v-text-field v-model="password" @keydown.enter="login" type="password" label="Password"></v-text-field>
                 <p v-if="failedLogin" class="text-error">Name or password is wrong!</p>
-                <v-btn variant="text" @click="componentStore.openPasswordReset">Forgot Password?</v-btn>
+                <v-btn variant="plain" @click="componentStore.openPasswordReset">Forgot Password?</v-btn>
             </v-container>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Cancel" color="info" @click="close"></v-btn>
-            <v-btn text="Login" color="accent" @click="login"></v-btn>
+            <v-btn text="Login" variant="tonal" color="accent" @click="login"></v-btn>
         </v-card-actions>
     </v-card>
         
@@ -30,6 +30,7 @@ import { ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import { loginUser } from '../composables/UserAuth.js'
 import { useRouter } from 'vue-router'
+import DialogTitle from './DialogTitle.vue'
 
 ////////////////////////////////////////////////////////////////
 // Variables

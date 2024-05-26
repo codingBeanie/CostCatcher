@@ -16,7 +16,7 @@
                     <v-col></v-col>
 
                     <!--LOGIN BUTTON-->
-                    <v-col cols="2">
+                    <v-col cols="2" class="mt-2">
                         <v-btn color="info" prepend-icon="mdi-login" @click="componentStore.openLogin">Login</v-btn>
                     </v-col>
 
@@ -35,12 +35,12 @@
 
                         <!--TITLE-->
                         <v-row class="mb-4">
-                            <p class="text-h2 font-weight-bold">Get rid of your spreadsheet for your personal finances.</p>
+                            <p class="text-h2 font-weight-bold">Say goodbye to your spreadsheets!</p>
                         </v-row>
 
                         <!--SUBTITLE-->
                         <v-row class="">
-                            <p class="text-h6">Upload csv-files with your bank transactions, categorize your expenses and analyse your spendings.</p>
+                            <p class="text-h6">Upload your transactions, set your categorization rules, and enjoy automatic sorting for instant, easy-to-understand financial insights.</p>
                         </v-row>
 
                         <!--BUTTON-->
