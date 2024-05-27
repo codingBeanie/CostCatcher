@@ -104,7 +104,7 @@
     <!--*************************************************************************************************-->
             <!--NET SUM-->
             <v-row no-gutters class="text-end border-t-lg d-flex flex-nowrap mt-10">
-                <v-col class="column">
+                <v-col class="chip">
                     <v-btn variant="text">NET</v-btn>
                 </v-col>
                 <v-col v-for="sum in netSums" class="column">

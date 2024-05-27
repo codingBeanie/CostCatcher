@@ -91,13 +91,13 @@ class Statistics(APIView):
                         period = Period.objects.filter(
                             user=user, year=year).values('year').distinct().order_by('year')
                         for p in period:
+                            entry = {}
                             entry['title'] = f"{p['year']}"
                             entry['year'] = p['year']
                             periods.append(entry)
 
             # MODE: single
             if periodMode == 'single':
-                entry = {}
                 filters = {}
                 filters['user'] = user
                 filters['year__gte'] = fromPeriodYear
@@ -107,12 +107,13 @@ class Statistics(APIView):
 
                 period = Period.objects.filter(**filters)
                 for p in period:
+                    entry = {}
                     entry['title'] = f"{p.year}-{p.month}"
                     entry['year'] = p.year
                     entry['month'] = p.month
                     periods.append(entry)
 
-            # self.log.debug(f"Statistics GET: periods={periods}")
+           # self.log.debug(f"Statistics GET: periods={periods}")
             # ****************************************************************************************************#
             # *** CATEGORIES ***#
 

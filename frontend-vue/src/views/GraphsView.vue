@@ -6,7 +6,7 @@
     <!--Selectors-->
     <v-row class="mt-2">
         <v-col>
-            <Filter object="bargraph" :incomeExpense="true" :yearsSelect="true"></Filter>
+            <Filter object="bargraph" :incomeExpense="true" :yearsSelect="true" :periodMode="true"></Filter>
         </v-col>
     </v-row>
 
