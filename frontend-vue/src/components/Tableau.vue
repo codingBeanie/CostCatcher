@@ -51,8 +51,8 @@
             </v-row>
             <!--INCOME SUM-->
             <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
-                <v-col class="chip">
-                    <v-btn variant="text">SUM INCOME</v-btn>
+                <v-col class="chip align-self-center">
+                    <v-chip label variant="text" class="text-button">SUM INCOME</v-chip>
                 </v-col>
                 <v-col v-for="sum in incomeSums" class="column">
                     <v-btn variant="text" @click="">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
@@ -92,11 +92,11 @@
             </v-row>
             <!--EXPENSE SUM-->
             <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
-                <v-col class="chip">
-                    <v-btn variant="text">SUM EXPENSES</v-btn>
+                <v-col class="chip align-self-center">
+                    <v-chip label variant="text" class="text-button">SUM EXPENSES</v-chip>
                 </v-col>
-                <v-col v-for="sum in expenseSums" class="column">
-                    <v-btn variant="text" @click="">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                <v-col v-for="sum in expenseSums" class="column align-self-center">
+                    <v-chip label variant="text" @click="">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-chip>
                 </v-col>
             </v-row>
             
