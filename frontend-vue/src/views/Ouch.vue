@@ -16,7 +16,7 @@
                         </v-row>
 
                         <v-row class="mr-10">
-                            <p class="text-h6 font-weight-light">You are trying to view this website on a small screen. Sorry, but the developer did not optimised it for mobile... yet.</p>
+                            <p class="text-h6 font-weight-light">You are trying to view this website on a small or zoomed in screen. Sorry, but the developer did not optimised it for small spaces. Switch to a desktop PC or zoom out a bit.</p>
                         </v-row>
 
                     </v-col>
@@ -40,13 +40,13 @@ const componentStore = useComponentStore()
 ////////////////////////////////////////
 // Lifecylce //
 onMounted(() => { 
-    if (componentStore.app.screen === 'mobile') {
-        active.value = false
+    if (componentStore.app.screen == 0) {
+        active.value = true
     }
 })
 
 watch(componentStore.app, () => {
-    if (componentStore.app.screen === 'mobile') {
+    if (componentStore.app.screen == 0) {
         active.value = true
     }
     else {

@@ -47,9 +47,18 @@
                     <p>Check if your data is recognised correctly. Adjust the csv settings <v-btn size="small" variant="plain" icon="mdi-cog" @click="componentStore.openSettings('CSV')" class="mb-1"></v-btn> if needed.</p>     
                 </v-col>
                 <v-col cols="2" class="mt-2 text-end">
-                    <v-btn color="accent" @click="uploadData()" prependIcon="mdi-upload">
-                    
+                    <v-btn v-if="componentStore.app.screen>1" color="accent" @click="uploadData()" prependIcon="mdi-upload">
                         Confirm
+                        <v-progress-circular
+                        v-if="waitingUpload"
+                        class="ml-2"
+                        color="primary"
+                        indeterminate
+                        ></v-progress-circular>    
+                    </v-btn>
+
+                    <v-btn v-else color="accent" @click="uploadData()">
+                        <v-icon>mdi-upload</v-icon>
                         <v-progress-circular
                         v-if="waitingUpload"
                         class="ml-2"
@@ -107,8 +116,11 @@
             <v-text-field v-model="inputAmount" label="Amount" type="number"></v-text-field>
         </v-col>
         <v-col class="text-end mt-3">
-            <v-btn color="accent" @click="manuallyUpload()" prependIcon="mdi-plus">
+            <v-btn v-if="componentStore.app.screen > 1" color="accent" @click="manuallyUpload()" prependIcon="mdi-plus">
                 create
+            </v-btn>
+            <v-btn v-else color="accent" @click="manuallyUpload()">
+                <v-icon>mdi-plus</v-icon>
             </v-btn>
         </v-col>
     </v-row>
