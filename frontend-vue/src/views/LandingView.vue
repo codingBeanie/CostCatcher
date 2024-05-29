@@ -11,6 +11,7 @@
                     <!--LOGO-->
                     <v-col cols="2">
                         <v-img src="@/assets/logo_trans_light.webp" max-height="50"></v-img>
+                        {{  device.mobile }}
                     </v-col>
 
                     <v-col></v-col>
@@ -74,6 +75,7 @@ import { onMounted, ref} from 'vue'
 import { useUserStore } from '../stores/UserStore.js'
 import { useComponentStore } from '../stores/ComponentStore'
 import { useRoute } from 'vue-router'
+import { createDeviceDetector } from "next-vue-device-detector"
 ////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////
@@ -82,6 +84,7 @@ const userStore = useUserStore()
 const componentStore = useComponentStore()
 const active = ref(true)
 const route = useRoute()
+const device = createDeviceDetector()
 
 ////////////////////////////////////////////////////////////////
 // Lifecycle Hooks

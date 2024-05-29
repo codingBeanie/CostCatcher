@@ -8,6 +8,7 @@
             <v-col cols="2" class="text-start justify-start">
               <router-link to="/welcome">
                 <v-img src="./assets/logo2.webp" max-height="50px" max-width="50px"></v-img>
+
               </router-link>
             </v-col>
 
@@ -175,6 +176,7 @@ import EditAssignment from './components/EditAssignment.vue'
 import DialogReview from './components/DialogReview.vue'
 import EditTransaction from './components/EditTransaction.vue'
 import { useRouter, useRoute } from 'vue-router'
+
 ////////////////////////////////////////////////////////////////
 // Variables //
 // State Management
