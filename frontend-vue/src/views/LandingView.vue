@@ -11,7 +11,6 @@
                     <!--LOGO-->
                     <v-col cols="2">
                         <v-img src="@/assets/logo_trans_light.webp" max-height="50"></v-img>
-                        {{  device.mobile }}
                     </v-col>
 
                     <v-col></v-col>
