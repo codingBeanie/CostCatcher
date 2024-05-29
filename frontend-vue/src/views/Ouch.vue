@@ -51,7 +51,12 @@ onMounted(() => {
 })
 
 watch(componentStore.app, () => {
-
+    if (componentStore.app.screen == 0 || device.mobile == true) {
+        active.value = true
+    }
+    else {
+        active.value = false
+    }
 })
 </script>
 
