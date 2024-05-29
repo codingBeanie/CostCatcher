@@ -31,22 +31,24 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { useComponentStore } from '../stores/ComponentStore.js'
+import { createDeviceDetector } from "next-vue-device-detector"
 ////////////////////////////////////////
 // Variables //
 // State Management
 const active = ref(true)
 const componentStore = useComponentStore()
+const device = createDeviceDetector()
 
 ////////////////////////////////////////
 // Lifecylce //
 onMounted(() => { 
-    if (componentStore.app.screen == 0) {
+    if (componentStore.app.screen == 0 || device.mobile ) {
         active.value = true
     }
 })
 
 watch(componentStore.app, () => {
-    if (componentStore.app.screen == 0) {
+    if (componentStore.app.screen == 0 || device.mobile) {
         active.value = true
     }
     else {

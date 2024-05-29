@@ -198,7 +198,7 @@ const logout = () => {
 const checkResize = () => {
   windowWidth.value = window.innerWidth
   windowHeight.value = window.innerHeight
-  if (windowWidth.value < 700 || windowHeight.value < 700) {
+  if (windowWidth.value < 750 || windowHeight.value < 700) {
     componentStore.app.screen = 0
   }
   else if (windowWidth.value < 1100)
