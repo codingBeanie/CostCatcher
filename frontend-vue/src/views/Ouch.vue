@@ -42,13 +42,16 @@ const device = createDeviceDetector()
 ////////////////////////////////////////
 // Lifecylce //
 onMounted(() => { 
-    if (componentStore.app.screen != 0 && device.mobile == false) {
+    if (device.mobile == true) {
+        active.value = true
+    }
+    if (componentStore.app.screen == 0) {
         active.value = true
     }
 })
 
 watch(componentStore.app, () => {
-    if (componentStore.app.screen != 0 && device.mobile == false) {
+    if (componentStore.app.screen == 0 || device.mobile == true) {
         active.value = true
     }
     else {
