@@ -58,6 +58,15 @@ watch(componentStore.app, () => {
         active.value = false
     }
 })
+
+watch(device, () => {
+    if (device.mobile == true) {
+        active.value = true
+    }
+    else {
+        active.value = false
+    }
+})
 </script>
 
 <style scoped>
