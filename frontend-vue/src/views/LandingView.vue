@@ -16,7 +16,7 @@
                     <v-col></v-col>
 
                     <!--LOGIN BUTTON-->
-                    <v-col v-if!="device.mobile" cols="2" class="mt-2">
+                    <v-col v-if="device.mobile == false" cols="2" class="mt-2">
                         <v-btn color="info" prepend-icon="mdi-login" @click="componentStore.openLogin">Login</v-btn>
                     </v-col>
 
@@ -34,26 +34,26 @@
                     <v-col cols="8" class="mt-6">
 
                         <!--TITLE-->
-                        <v-row v-if!="device.mobile" class="mb-4">
+                        <v-row v-if="device.mobile == false" class="mb-4">
                             <p class="text-h2 font-weight-bold">Say goodbye to your spreadsheets!</p>
                         </v-row>
 
                         <!--SUBTITLE-->
-                        <v-row v-if!="device.mobile" class="">
+                        <v-row v-if="device.mobile ==false" class="">
                             <p class="text-h6">Upload your transactions, set your categorization rules, and enjoy automatic sorting for instant, easy-to-understand financial insights.</p>
                         </v-row>
 
                         <!--Mobile Text-->
-                        <v-row v-if="device.mobile">
+                        <v-row v-if="device.mobile == true">
                             <v-img src="@/assets/logo_trans_light.webp"></v-img>
                         </v-row>
-                        <v-row v-if="device.mobile" class="">
+                        <v-row v-if="device.mobile == true" class="">
                             <p class="text-h6">This site is not optimised for mobile devices. Please switch to a desktop PC.</p>
                         </v-row>
 
 
                         <!--BUTTON-->
-                        <v-row v-if!="device.mobile" class="mt-10">
+                        <v-row v-if="device.mobile == false" class="mt-10">
                             <v-btn size="large" min-width="200px" max-width="300px" color="accent" @click="componentStore.openRegister">Register for free</v-btn>
                         </v-row> 
 
