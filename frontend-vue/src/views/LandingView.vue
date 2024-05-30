@@ -23,10 +23,10 @@
                 </v-row>
 
                 <!--STATEMENT-->
-                <v-row class="mb-16">
+                <v-row v-if="device.mobile == false">
 
                     <!--LOGO-->
-                    <v-col cols="3"  v-if="device.mobile == false">
+                    <v-col cols="3">
                         <v-img src="@/assets/logo2.webp" max-height="250"></v-img>
                     </v-col>
 
@@ -34,32 +34,34 @@
                     <v-col cols="8" class="mt-6">
 
                         <!--TITLE-->
-                        <v-row v-if="device.mobile == false" class="mb-4">
+                        <v-row  class="mb-4">
                             <p class="text-h2 font-weight-bold">Say goodbye to your spreadsheets!</p>
                         </v-row>
 
                         <!--SUBTITLE-->
-                        <v-row v-if="device.mobile ==false" class="">
+                        <v-row  class="">
                             <p class="text-h6">Upload your transactions, set your categorization rules, and enjoy automatic sorting for instant, easy-to-understand financial insights.</p>
-                        </v-row>
-
-                        <!--Mobile Text-->
-                        <v-row v-if="device.mobile == true">
-                            <v-img src="@/assets/logo_trans_light.webp"></v-img>
-                        </v-row>
-                        <v-row v-if="device.mobile == true" class="">
-                            <p class="text-h6">This site is not optimised for mobile devices. Please switch to a desktop PC.</p>
                         </v-row>
 
 
                         <!--BUTTON-->
-                        <v-row v-if="device.mobile == false" class="mt-10">
+                        <v-row  class="mt-10">
                             <v-btn size="large" min-width="200px" max-width="300px" color="accent" @click="componentStore.openRegister">Register for free</v-btn>
                         </v-row> 
 
                     </v-col>
 
+
                 </v-row>
+
+                <!--Mobile Text-->
+                <v-row v-if="device.mobile == true" class="d-flex justify-center mt-16">
+                    <v-img src="@/assets/logo_trans_light.webp"></v-img>
+                </v-row>
+                <v-row v-if="device.mobile == true" class="d-flex justify-center">
+                    <p class="text-h6">This site is not optimised for mobile devices. Please switch to a desktop PC.</p>
+                </v-row>
+
 
                 <!--FEATURES-->
                 <v-row class="">
