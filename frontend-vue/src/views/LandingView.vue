@@ -6,7 +6,7 @@
             <v-container>
 
                 <!--HEADER-->
-                <v-row class="padding">
+                <v-row  v-if="device.mobile == false" class="padding">
 
                     <!--LOGO-->
                     <v-col cols="2">
@@ -16,7 +16,7 @@
                     <v-col></v-col>
 
                     <!--LOGIN BUTTON-->
-                    <v-col v-if="device.mobile == false" cols="2" class="mt-2">
+                    <v-col cols="2" class="mt-2">
                         <v-btn color="info" prepend-icon="mdi-login" @click="componentStore.openLogin">Login</v-btn>
                     </v-col>
 
@@ -26,7 +26,7 @@
                 <v-row class="mb-16">
 
                     <!--LOGO-->
-                    <v-col cols="3">
+                    <v-col cols="3"  v-if="device.mobile == false">
                         <v-img src="@/assets/logo2.webp" max-height="250"></v-img>
                     </v-col>
 
@@ -62,7 +62,7 @@
                 </v-row>
 
                 <!--FEATURES-->
-                <v-row class="mt-16">
+                <v-row class="">
 
                     <v-col>
                         <v-carousel hide-delimiters show-arrows="hover" cycle>
