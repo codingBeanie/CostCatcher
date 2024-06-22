@@ -29,6 +29,7 @@ class Statistics(APIView):
             toYear = request.query_params.get('toyear', None)
             fromPeriod = request.query_params.get('fromperiod', None)
             toPeriod = request.query_params.get('toperiod', None)
+            queryCategories = request.query_params.get('categories', None)
             user = request.user.id
 
             # check if null and get default value
@@ -118,13 +119,19 @@ class Statistics(APIView):
             # *** CATEGORIES ***#
 
             categories = []
-            categoriesQueried = Category.objects.filter(user=user)
-            for category in categoriesQueried:
+            categoriesUser = Category.objects.filter(user=user)
+            for category in categoriesUser:
                 entry = {}
                 entry['name'] = category.name
                 entry['id'] = category.id
                 entry['color'] = category.color
-                categories.append(entry)
+
+                # if there is a query for categories, filter them
+                if queryCategories is not None and queryCategories != 'null':
+                    if str(entry['id']) in queryCategories:
+                        categories.append(entry)
+                else:
+                    categories.append(entry)
 
             # add UNDEFINED category
             entry = {}

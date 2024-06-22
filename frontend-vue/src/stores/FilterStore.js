@@ -4,6 +4,7 @@ export const useFilterStore = defineStore('filter', {
     state: () => ({
         tableau: {
             type: 'monthly',
+            categories: null,
             from: null,
             to: null,
         },

@@ -1,7 +1,7 @@
 <template>
     <v-row class="mt-4">
     <!--FILTER-->
-        <Filter object="tableau" :message="message" :periodMode="true" :yearsSelect="true"></Filter>
+        <Filter object="tableau" :message="message" :periodMode="true" :yearsSelect="true" :categoriesSelection="true"></Filter>
     </v-row>
     
     <!--MAINFRAME-->
@@ -184,8 +184,8 @@ const loadData = async () => {
         return
     }
     // get the API DATA dump
-    const incomeDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=income`, 'GET')
-    const expenseDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=expense`, 'GET')
+    const incomeDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=income&categories=${filterStore.tableau.categories}`, 'GET')
+    const expenseDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=expense&categories=${filterStore.tableau.categories}`, 'GET')
 
     // fill the dataframes
     incomeData.value = incomeDataFrame['data']
@@ -197,7 +197,15 @@ const loadData = async () => {
     netSums.value = Object.values(incomeSums.value).map((value, index) => value + Object.values(expenseSums.value)[index])
 
     // extract the headers
-    headers.value = Object.values(incomeData.value[0].Period)
+    try {
+        headers.value = Object.values(incomeData.value[0].Period)
+    } catch (error) {
+        try {
+            headers.value = Object.values(expenseData.value[0].Period)
+        } catch (error2) {
+            headers.value = []
+        }
+    }
     waiting.value = false
 }
 

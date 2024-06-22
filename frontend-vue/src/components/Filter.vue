@@ -78,6 +78,27 @@
             </v-row> 
         </v-col>
 
+        <!--Categories Select-->
+        <v-col v-if="categoriesSelection">
+            <v-row class="d-flex justify-center">
+                <p class="text-overline">Categories</p>
+            </v-row>
+            <v-row  class="d-flex justify-center align-center">
+                <v-col>
+                    <v-select density="comfortable" multiple label="Category" :items="categories" item-title="name" item-value="id" v-model="categoriesSelect" :onUpdate:modelValue="updateFilter">
+                        <template v-slot:selection="{ item, index }">
+                            <v-chip desity="compact" size="small" color="item.color" v-if="index < 3">
+                                {{ item.title }}
+                            </v-chip>
+                            <span class="text-caption" v-if="index == 3">
+                                (+ more)
+                            </span>
+                        </template>
+                    </v-select>
+                </v-col>
+            </v-row>
+        </v-col>
+
     </v-row>
 </template>
 
@@ -97,6 +118,8 @@ const componentStore = useComponentStore()
 const alertStore = useAlertStore()
 const filterPeriodMode = ref(0)
 const filterIncomeExpense = ref(0)
+const categories = ref([])
+const categoriesSelect = ref([])
 
 const fromYear = ref(null)
 const toYear = ref(null)
@@ -126,6 +149,10 @@ const props = defineProps({
         default: false
     },
     importMode: {
+        type: Boolean,
+        default: false
+    },
+    categoriesSelection: {
         type: Boolean,
         default: false
     }
@@ -184,6 +211,11 @@ const updateFilter = () => {
         }
     }
 
+    // Categories
+    if (props.categoriesSelection) {
+        filterStore[props.object].categories = categoriesSelect.value
+    }
+
     componentStore.refreshApp()
 }
 
@@ -233,6 +265,20 @@ const loadFilter = async () => {
             filterIncomeExpense.value = 1
         } else if (filterStore[props.object].filter == 'expense') {
             filterIncomeExpense.value = 2
+        }
+    }
+
+    // Categories
+    if (props.categoriesSelection) {
+        // load options
+        categories.value = await API('categories', 'GET')
+
+        // load selected
+        if (filterStore[props.object].categories != null) {
+            categoriesSelect.value = filterStore[props.object].categories
+        }
+        else {
+            categoriesSelect.value = categories.value
         }
     }
 }
