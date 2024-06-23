@@ -1,7 +1,7 @@
 export const updateBlog = [
     {
         date: '2024-06-23',
-        title: 'V2.1.0 | Seach and Filter',
+        title: 'V2.1 | Seach and Filter',
         description:   `I added a more advanced search and filter functionality.`,
         chapter: [
             {
@@ -16,7 +16,7 @@ export const updateBlog = [
     }, 
        {
         date: '2024-05-26',
-        title: 'V2.0.0 | A huge leap forward',
+        title: 'V2.0 | A huge leap forward',
         description:   `Already in version 2.0? Yes, the backend has changed vastly and is not compatible with the previous version. Luckily, no one except me was using it.`,
         chapter: [
             {
@@ -34,7 +34,7 @@ export const updateBlog = [
     }, 
     {
         date: '2024-05-11',
-        title: 'V1.1.0 | Forget about worrying over your password',
+        title: 'V1.1 | Forget about worrying over your password',
         description:   ``,
         chapter: [
             {
@@ -58,7 +58,7 @@ export const updateBlog = [
     },
     {
         date: '2024-05-07',
-        title: 'V1.0.0 | The Beginning',
+        title: 'V1.0 | The Beginning',
         description:   `Costcatcher is now online. 
                         I am excited to have created this platform and I am looking forward to the future. Enjoy and
                         feel free to reach out to me with any questions or feedback.`,

@@ -45,7 +45,15 @@
             </v-row>
         </template>
     </v-data-table>
+    
+    <v-row v-if="waiting" class="mt-10">
+        <v-progress-linear
+            color="accent"
+            indeterminate
+        ></v-progress-linear>
+    </v-row>
 
+    <Hint class="mt-8" v-if="!waiting" text="You can use the search field for every column."></Hint>
 </template>
 
 <script setup>
@@ -54,6 +62,7 @@ import { useUserStore } from '../stores/UserStore.js'
 import { useComponentStore } from '../stores/ComponentStore.js'
 import Title from '../components/Title.vue'
 import Divider from '../components/Divider.vue'
+import Hint from '../components/Hint.vue'
 import { API } from '../composables/API.js'
 import { watch } from 'vue'
 ////////////////////////////////////////////////////////////////
@@ -72,10 +81,24 @@ const header = [
     { title: 'Actions', value: 'action', sortable: false },
 ]
 const search = ref('')
+const waiting = ref(true)
+
+// Settings
+const currency = ref('€')
+const locale = ref('de-DE')
 ////////////////////////////////////////////////////////////////
 // Methods
 const load = async () => {
+    waiting.value = true
+    loadSettings()
     data.value = await API('transactions', 'GET')
+    waiting.value = false
+}
+
+const loadSettings = async () => {
+    const settingsData = await API('settings', 'GET')
+    currency.value = settingsData.currency
+    locale.value = settingsData.locale
 }
 
 const unlock = async (item) => {
