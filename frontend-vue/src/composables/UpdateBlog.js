@@ -1,4 +1,19 @@
 export const updateBlog = [
+    {
+        date: '2024-06-23',
+        title: 'V2.1.0 | Seach and Filter',
+        description:   `I added a more advanced search and filter functionality.`,
+        chapter: [
+            {
+                title: 'New Features / Changed',
+                icon: 'mdi-party-popper',
+                text: '',
+                bullets: ['New review page where you can see all your transactions',
+                        'Filter categories in the statistics page',
+                ]
+            }
+        ]
+    }, 
        {
         date: '2024-05-26',
         title: 'V2.0.0 | A huge leap forward',
