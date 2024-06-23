@@ -139,7 +139,6 @@ class Statistics(APIView):
             entry['id'] = 0
             entry['color'] = '#444444'
             categories.append(entry)
-            # self.log.debug(f"Statistics GET: categories={categories}")
 
             # ****************************************************************************************************#
             # *** CONSTRUCTION AND DATA ***#

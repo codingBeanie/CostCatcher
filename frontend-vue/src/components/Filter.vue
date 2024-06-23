@@ -278,7 +278,8 @@ const loadFilter = async () => {
             categoriesSelect.value = filterStore[props.object].categories
         }
         else {
-            categoriesSelect.value = categories.value
+            const categoryList = categories.value.map(category => category.id)
+            categoriesSelect.value = categoryList
         }
     }
 }
