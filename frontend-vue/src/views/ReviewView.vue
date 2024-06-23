@@ -73,11 +73,11 @@ const userStore = useUserStore()
 const componentStore = useComponentStore()
 const data = ref([])
 const header = [
-    { title: 'Date', value: 'date' },
-    { title: 'Recipient', value: 'recipient'},
-    { title: 'Description', value: 'description' },
-    { title: 'Category', value: 'categoryName'},
-    { title: 'Amount', value: 'amount' },
+    { title: 'Date', value: 'date', sortable: true},
+    { title: 'Recipient', value: 'recipient', sortable: true},
+    { title: 'Description', value: 'description', sortable: true},
+    { title: 'Category', value: 'categoryName', sortable: true},
+    { title: 'Amount', value: 'amount', sortable: true},
     { title: 'Actions', value: 'action', sortable: false },
 ]
 const search = ref('')
