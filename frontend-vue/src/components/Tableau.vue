@@ -96,7 +96,7 @@
                     <v-chip label variant="text" class="text-button">SUM EXPENSES</v-chip>
                 </v-col>
                 <v-col v-for="sum in expenseSums" class="column align-self-center">
-                    <v-chip label variant="text" @click="">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-chip>
+                    <v-btn label variant="text" @click="">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                 </v-col>
             </v-row>
             

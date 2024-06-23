@@ -5,7 +5,7 @@
         <v-app-bar-title>
           <v-row no-gutters class="d-flex align-center">
             <!--LOGO-->
-            <v-col cols="2" class="text-start justify-start">
+            <v-col cols="1" class="text-start justify-start">
               <router-link to="/welcome">
                 <v-img src="./assets/logo2.webp" max-height="50px" max-width="50px"></v-img>
 
@@ -13,7 +13,7 @@
             </v-col>
 
             <!--MENU-->
-            <v-col cols="8" v-if="username">
+            <v-col cols="9" v-if="username">
               <v-row class="d-flex">
                 <v-col></v-col>
                 <v-col>
@@ -25,6 +25,11 @@
                   <v-btn v-if="componentStore.app.screen > 1" to="assignments" class="w-links" text prepend-icon="mdi-tag-multiple" variant="text" size="large" stacked>Categorization</v-btn>
                   <v-btn v-else to="assignments" icon="mdi-tag-multiple" size="large"></v-btn>
                 </v-col>
+
+                  <v-col>
+                    <v-btn v-if="componentStore.app.screen > 1" to="review" class="w-links" text prepend-icon="mdi-text-box-search" variant="text" size="large" stacked>Review</v-btn>
+                    <v-btn v-else to="review" icon="mdi-text-box-search" size="large"></v-btn>
+                  </v-col>
               
                 <v-col>
                   <v-btn v-if="componentStore.app.screen > 1" to="statistics" class="w-links" text prepend-icon="mdi-sigma" variant="text" size="large" stacked>Statistics</v-btn>
@@ -35,7 +40,7 @@
                     <v-btn v-if="componentStore.app.screen > 1" to="graphs" class="w-links" text prepend-icon="mdi-chart-bar" variant="text" size="large" stacked>Graphs</v-btn>
                     <v-btn v-else to="graphs" icon="mdi-chart-bar" size="large"></v-btn>
                   </v-col>
-                  <v-col></v-col>
+
               </v-row>
 
             </v-col>
@@ -203,7 +208,7 @@ const checkResize = () => {
   if (windowWidth.value < 750 || windowHeight.value < 700) {
     componentStore.app.screen = 0
   }
-  else if (windowWidth.value < 1100)
+  else if (windowWidth.value < 1200)
   {
     componentStore.app.screen = 1
   }
