@@ -5,7 +5,7 @@
     </v-col>
 </v-row>
 <v-row>
-    <v-card v-for="entry in updateBlog" class="mb-10 mt-10 bg-primaryLight" width="100%">
+    <v-card v-for="entry in updateBlog" class="mb-4 mt-4 mr-1 ml-1 bg-primaryLight" width="100%">
 
         <!--TITLE-->
         <v-card-title>
@@ -85,5 +85,6 @@ import Title from '../components/Title.vue'
 }
 .bullet {
     font-size: 1rem;
+    white-space: normal;
 }
 </style>

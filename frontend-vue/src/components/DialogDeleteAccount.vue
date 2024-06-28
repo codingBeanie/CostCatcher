@@ -5,7 +5,7 @@
             <v-card>
 
                 <v-card-title>
-                    <p class="text">Are you sure you want to delete your account?</p>
+                    <p class="text">Are you sure you?</p>
                 </v-card-title>
 
                 <v-card-text>
