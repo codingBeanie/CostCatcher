@@ -75,7 +75,7 @@
         <div v-else>
             <Divider title="uploaded Files" spacing="16"></Divider> 
             <v-row class="mt-4">
-                <v-data-table :items="dataUploads" :headers="headersFiles">
+                <v-data-table :items="dataUploads" density="comfortable" :headers="headersFiles">
                     <!--Date-->
                     <template v-slot:item.fileDate="{ item }">
                         {{ new Date(item.fileDate).toLocaleString() }}
@@ -103,24 +103,21 @@
 
     <!--INPUTS-->
     <v-row>
-        <v-col>
+        <v-col cols="12" md="2">
             <v-text-field v-model="inputDate" label="Date" type="date"></v-text-field> 
         </v-col>
-        <v-col>
+        <v-col cols="12" md="3">
             <v-text-field v-model="inputRecipient" label="Recipient"></v-text-field>
         </v-col>
-        <v-col>
+        <v-col cols="12" md="3">
             <v-text-field v-model="inputDescription" label="Description"></v-text-field>
         </v-col>
-        <v-col>
+        <v-col cols="12" md="2">
             <v-text-field v-model="inputAmount" label="Amount" type="number"></v-text-field>
         </v-col>
-        <v-col class="text-end mt-3">
-            <v-btn v-if="componentStore.app.screen > 1" color="accent" @click="manuallyUpload()" prependIcon="mdi-plus">
+        <v-col class="text-end mt-3" cols="12" md="2">
+            <v-btn color="accent" @click="manuallyUpload()" prependIcon="mdi-plus">
                 create
-            </v-btn>
-            <v-btn v-else color="accent" @click="manuallyUpload()">
-                <v-icon>mdi-plus</v-icon>
             </v-btn>
         </v-col>
     </v-row>
@@ -131,6 +128,7 @@
         <v-data-table
             :items="uploadedData"
             :headers="headers"
+            density="comfortable"
         >
             <!--Date-->
             <template v-slot:item.date="{ item }">
