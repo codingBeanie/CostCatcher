@@ -7,6 +7,7 @@
                     <v-tabs
                     v-model="tab"
                     bg-color="primary"
+                    mobile
                     >
                         <v-tab value="general">General</v-tab>
                         <v-tab value="CSV">CSV Settings</v-tab>
@@ -25,7 +26,7 @@
                                     <v-row>
 
                                         <!--First Row-->
-                                        <v-col class="d-flex">
+                                        <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Ignore # first rows" v-model="rowFirst" type="number" :rules="[value => (value >= 0 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoRowFirst">
                                                 <template v-slot:activator="{ props }">
@@ -35,7 +36,7 @@
                                         </v-col>
 
                                         <!--Last Row-->
-                                        <v-col class="d-flex">
+                                        <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Ignore # last rows" v-model="rowLast" type="number" :rules="[value => (value >= 0 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoRowLast">
                                                 <template v-slot:activator="{ props }">
@@ -43,6 +44,7 @@
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
+
                                     </v-row>
 
                                     <v-row class="mr-3">
@@ -51,7 +53,7 @@
                         
                                     <v-row>
                                         <!--Date-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Column # Date" v-model="colDate" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColDate">
                                                 <template v-slot:activator="{ props }">
@@ -61,7 +63,7 @@
                                         </v-col>
 
                                         <!--Recipient-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Column # Recipient" v-model="colRecipient" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColRecipient">
                                                 <template v-slot:activator="{ props }">
@@ -73,7 +75,7 @@
 
                                     <v-row>
                                         <!--Description-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Column # Description" v-model="colDescription" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColDescription">
                                                 <template v-slot:activator="{ props }">
@@ -83,7 +85,7 @@
                                         </v-col>
 
                                         <!--Amount-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Column # Amount" v-model="colAmount" type="number" :rules="[value => (value >= 1 && value <= 1000) || 'Please enter a number']"></v-text-field>
                                             <v-tooltip :text="infoColAmount">
                                                 <template v-slot:activator="{ props }">
@@ -99,7 +101,7 @@
 
                                     <v-row>
                                         <!--Delimiter-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="CSV delimeter" v-model="delimiter" :rules="[value => (value === ';' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                             <v-tooltip :text="infoDelimiter">
                                                 <template v-slot:activator="{ props }">
@@ -109,7 +111,7 @@
                                         </v-col>
 
                                         <!--Thousands Separator-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Thousands seperator" v-model="thousandsSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                             <v-tooltip :text="infoThousandsSeparator">
                                                 <template v-slot:activator="{ props }">
@@ -121,7 +123,7 @@
 
                                     <v-row>
                                         <!--Decimal Separator-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Decimal seperator" v-model="decimalSeparator" :rules="[value => (value === '.' || value === ',') || 'Please enter a valid character']"></v-text-field>
                                             <v-tooltip :text="infoDecimalSeparator">
                                                 <template v-slot:activator="{ props }">
@@ -131,7 +133,7 @@
                                         </v-col>
                                         
                                         <!--Date Format-->
-                                         <v-col class="d-flex">
+                                         <v-col class="d-flex" cols="12" md="6">
                                             <v-text-field label="Date format" v-model="dateFormat"></v-text-field>
                                             <v-tooltip :text="infoDateFormat">
                                                 <template v-slot:activator="{ props }">
@@ -159,6 +161,8 @@
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
+                                    </v-row>
+                                    <v-row>
                                         <v-col class="d-flex">
                                             <v-select label="Value Formatting" v-model="locale" :items="locales" item-title="title" item-value="value"></v-select>
                                             <v-tooltip :text="infoLocale">
@@ -167,6 +171,7 @@
                                                 </template>
                                             </v-tooltip>
                                         </v-col>
+                                    
                                     </v-row>
                                 </v-container>
                             </v-window-item>
