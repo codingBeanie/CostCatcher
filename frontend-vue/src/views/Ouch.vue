@@ -1,6 +1,5 @@
 <template>
-    <v-dialog v-model="active" transition="none" fullscreen>
-
+    <v-dialog v-model="active" fullscreen>
         <v-card color="secondary">
             <v-container>
                 <v-row class="padding text-center">
@@ -29,44 +28,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
-import { useComponentStore } from '../stores/ComponentStore.js'
-import { createDeviceDetector } from "next-vue-device-detector"
+import { ref } from 'vue'
 ////////////////////////////////////////
 // Variables //
 // State Management
 const active = ref(true)
-const componentStore = useComponentStore()
-const device = createDeviceDetector()
 
 ////////////////////////////////////////
 // Lifecylce //
-onMounted(() => { 
-    if (device.mobile == true) {
-        active.value = true
-    }
-    if (componentStore.app.screen == 0) {
-        active.value = true
-    }
-})
-
-watch(componentStore.app, () => {
-    if (componentStore.app.screen == 0 || device.mobile == true) {
-        active.value = true
-    }
-    else {
-        active.value = false
-    }
-})
-
-watch(device, () => {
-    if (device.mobile == true) {
-        active.value = true
-    }
-    else {
-        active.value = false
-    }
-})
 </script>
 
 <style scoped>

@@ -12,6 +12,7 @@
     <!--Main Content-->
     <v-main>
       <v-container class="">
+
          <router-view/>
       </v-container>
     </v-main>
@@ -28,7 +29,9 @@
 
 <!--Dialogs and Alerts-->
 <Alert></Alert>
-
+<div v-if="display.smAndDown.value">
+  <Ouch></Ouch>
+</div>
 
 <DialogRegister></DialogRegister>
 <DialogLogin></DialogLogin>
@@ -51,6 +54,8 @@
 
 <Tutorial></Tutorial>
 
+
+
 </template>
 
 <script setup>
@@ -65,6 +70,8 @@ import MenuDesktop from './components/MenuDesktop.vue'
 import MenuMobile from './components/MenuMobile.vue'
 import FooterDesktop from './components/FooterDesktop.vue'
 import HeaderMobile from './components/HeaderMobile.vue'
+
+import Ouch from './views/Ouch.vue'
 
 import DialogRegister from './components/DialogRegister.vue'
 import DialogLogin from './components/DialogLogin.vue'
