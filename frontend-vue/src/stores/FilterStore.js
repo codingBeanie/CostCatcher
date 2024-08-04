@@ -7,6 +7,8 @@ export const useFilterStore = defineStore('filter', {
             categories: null,
             from: null,
             to: null,
+            statistics: false,
+            ignoreZero: false,
         },
         bargraph: {
             type: 'monthly',
@@ -22,9 +24,6 @@ export const useFilterStore = defineStore('filter', {
         },
         import: {
             mode: 'csv'
-        },
-        statistics: {
-            toggle: false,
         },
     }),
 }

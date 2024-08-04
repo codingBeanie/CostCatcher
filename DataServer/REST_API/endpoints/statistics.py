@@ -30,6 +30,7 @@ class Statistics(APIView):
             fromPeriod = request.query_params.get('fromperiod', None)
             toPeriod = request.query_params.get('toperiod', None)
             queryCategories = request.query_params.get('categories', None)
+            ignoreZeros = request.query_params.get('ignorezeros', False)
             user = request.user.id
 
             # check if null and get default value
@@ -56,6 +57,11 @@ class Statistics(APIView):
             else:
                 toPeriodYear = int(toPeriod.split('-')[0])
                 toPeriodMonth = int(toPeriod.split('-')[1])
+
+            if ignoreZeros == 'true' or ignoreZeros == 'True':
+                ignoreZeros = True
+            else:
+                ignoreZeros = False
 
             # ****************************************************************************************************#
             # *** PERIODS ***#
@@ -199,12 +205,21 @@ class Statistics(APIView):
 
                 # statistics
                 sumlist = entry['Data']
+
+                sumListWithoutZero = [x for x in sumlist if x != 0]
                 allZero = all(x == 0 for x in sumlist)
                 # only if there are values add statistics and append to data
                 if not allZero:
                     entry['Statistics']['Sum'] = sum(sumlist)
-                    entry['Statistics']['Average'] = mean(sumlist)
-                    entry['Statistics']['Median'] = median(sumlist)
+
+                    if ignoreZeros:
+                        entry['Statistics']['Average'] = mean(
+                            sumListWithoutZero)
+                        entry['Statistics']['Median'] = median(
+                            sumListWithoutZero)
+                    else:
+                        entry['Statistics']['Average'] = mean(sumlist)
+                        entry['Statistics']['Median'] = median(sumlist)
                     data.append(entry)
 
             # ****************************************************************************************************#

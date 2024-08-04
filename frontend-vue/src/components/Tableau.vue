@@ -15,6 +15,17 @@
                 <v-col v-for="header in headers" class="column pr-3">
                     <p class="text-button">{{ header.title }}</p>
                 </v-col>
+                
+                <!--STATISTICS-->
+                <v-col v-if="filterStore.tableau.statistics" class="column pr-3">
+                    <p class="text-button">SUM</p>
+                </v-col>
+                <v-col v-if="filterStore.tableau.statistics" class="column pr-3">
+                    <p class="text-button">AVERAGE</p>
+                </v-col>
+                <v-col v-if="filterStore.tableau.statistics" class="column pr-3">
+                    <p class="text-button">MEDIAN</p>
+                </v-col>
             </v-row>
 
 
@@ -28,6 +39,7 @@
                 <v-col v-for="header in headers" class="column">
                     <!--EMPTY-->
                 </v-col>
+
             </v-row>
             <!--INCOME DATA-->
             <v-row no-gutters v-for="income in incomeData" class="d-flex flex-nowrap text-end mb-2">
@@ -44,10 +56,24 @@
                         <v-chip variant="tonal" label :color="income.Category.color" class="chip" @click="componentStore.openCategoryEdit(income.Category.id)">{{ income.Category.name}}</v-chip>
                     </div>
                 </v-col>
+
+
                 <!--INCOME DATA-->
                 <v-col v-for="(value, key) in income.Data" class="column align-self-center">
                     <v-btn variant="plain" @click="componentStore.openReview(income.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                 </v-col>
+
+                <!--STATISTIC DATA-->
+                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
+                    <v-btn variant="plain"> {{ parseFloat(income.Statistics.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                </v-col>
+                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
+                    <v-btn variant="plain"> {{ parseFloat(income.Statistics.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                </v-col>
+                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
+                    <v-btn variant="plain"> {{ parseFloat(income.Statistics.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                </v-col>
+
             </v-row>
             <!--INCOME SUM-->
             <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
@@ -88,6 +114,17 @@
                 <!--EXPENSE DATA-->
                 <v-col v-for="(value, key) in expense.Data" class="column align-self-center">
                     <v-btn variant="plain" @click="componentStore.openReview(expense.Category.id, headers[key])">{{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                </v-col>
+
+                <!--STATISTIC DATA-->
+                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
+                    <v-btn variant="plain"> {{ parseFloat(expense.Statistics.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                </v-col>
+                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
+                    <v-btn variant="plain"> {{ parseFloat(expense.Statistics.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                </v-col>
+                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
+                    <v-btn variant="plain"> {{ parseFloat(expense.Statistics.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                 </v-col>
             </v-row>
             <!--EXPENSE SUM-->
@@ -177,15 +214,14 @@ const loadSettings = async () => {
 
 const loadData = async () => { 
     waiting.value = true
-
     // check if data selection is possible
     if (filterStore.tableau.from > filterStore.tableau.to) {
         waiting.value = false
         return
     }
     // get the API DATA dump
-    const incomeDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=income&categories=${filterStore.tableau.categories}`, 'GET')
-    const expenseDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=expense&categories=${filterStore.tableau.categories}`, 'GET')
+    const incomeDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=income&categories=${filterStore.tableau.categories}&ignorezeros=${filterStore.tableau.ignoreZero}`, 'GET')
+    const expenseDataFrame = await API(`statistics/?periodmode=${filterStore.tableau.type}&fromyear=${filterStore.tableau.from}&toyear=${filterStore.tableau.to}&valuemode=expense&categories=${filterStore.tableau.categories}&ignorezeros=${filterStore.tableau.ignoreZero}`, 'GET')
 
     // fill the dataframes
     incomeData.value = incomeDataFrame['data']

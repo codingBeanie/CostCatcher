@@ -106,7 +106,10 @@
             </v-row>
             <v-row class="d-flex justify-center">
                 <v-col class="d-flex justify-center">
-                    <v-switch inset v-model="statisticsSelect" :onUpdate:modelValue="updateFilter" color="accent"></v-switch>
+                    <v-switch label="show" inset v-model="statisticsSelect" :onUpdate:modelValue="updateFilter" color="accent"></v-switch>
+                </v-col>
+                <v-col class="d-flex justify-center">
+                    <v-switch label="ignore 0" inset v-model="statisticsIgnoreZero" :onUpdate:modelValue="updateFilter" color="accent"></v-switch>
                 </v-col>
             </v-row>
         </v-col>
@@ -133,6 +136,7 @@ const filterIncomeExpense = ref(0)
 const categories = ref([])
 const categoriesSelect = ref([])
 const statisticsSelect = ref(false)
+const statisticsIgnoreZero = ref(false)
 
 const fromYear = ref(null)
 const toYear = ref(null)
@@ -236,6 +240,7 @@ const updateFilter = () => {
     // Statistics
     if (props.statistics) {
         filterStore[props.object].statistics = statisticsSelect.value
+        filterStore[props.object].ignoreZero = statisticsIgnoreZero.value
     }
 
     componentStore.refreshApp()
@@ -309,9 +314,11 @@ const loadFilter = async () => {
     if (props.statistics) {
         if (filterStore[props.object].statistics) {
             statisticsSelect.value = filterStore[props.object].statistics
+            statisticsIgnoreZero.value = filterStore[props.object].statisticsIgnoreZero
         }
         else {
             statisticsSelect.value = false
+            statisticsIgnoreZero.value = false
         }
     }
 }
