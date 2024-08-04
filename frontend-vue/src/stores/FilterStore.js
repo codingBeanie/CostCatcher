@@ -23,6 +23,9 @@ export const useFilterStore = defineStore('filter', {
         import: {
             mode: 'csv'
         },
+        statistics: {
+            toggle: false,
+        },
     }),
 }
 )   

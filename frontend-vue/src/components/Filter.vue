@@ -99,6 +99,18 @@
             </v-row>
         </v-col>
 
+        <!--Statistics Select-->
+        <v-col v-if="statistics">
+            <v-row class="d-flex justify-center">
+                <p class="text-overline">Show Statistics</p>
+            </v-row>
+            <v-row class="d-flex justify-center">
+                <v-col class="d-flex justify-center">
+                    <v-switch inset v-model="statisticsSelect" :onUpdate:modelValue="updateFilter" color="accent"></v-switch>
+                </v-col>
+            </v-row>
+        </v-col>
+
     </v-row>
 </template>
 
@@ -120,6 +132,7 @@ const filterPeriodMode = ref(0)
 const filterIncomeExpense = ref(0)
 const categories = ref([])
 const categoriesSelect = ref([])
+const statisticsSelect = ref(false)
 
 const fromYear = ref(null)
 const toYear = ref(null)
@@ -153,6 +166,10 @@ const props = defineProps({
         default: false
     },
     categoriesSelection: {
+        type: Boolean,
+        default: false
+    },
+    statistics: {
         type: Boolean,
         default: false
     }
@@ -214,6 +231,11 @@ const updateFilter = () => {
     // Categories
     if (props.categoriesSelection) {
         filterStore[props.object].categories = categoriesSelect.value
+    }
+
+    // Statistics
+    if (props.statistics) {
+        filterStore[props.object].statistics = statisticsSelect.value
     }
 
     componentStore.refreshApp()
@@ -280,6 +302,16 @@ const loadFilter = async () => {
         else {
             const categoryList = categories.value.map(category => category.id)
             categoriesSelect.value = categoryList
+        }
+    }
+
+    // Statistics
+    if (props.statistics) {
+        if (filterStore[props.object].statistics) {
+            statisticsSelect.value = filterStore[props.object].statistics
+        }
+        else {
+            statisticsSelect.value = false
         }
     }
 }
