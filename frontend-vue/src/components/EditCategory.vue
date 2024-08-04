@@ -15,19 +15,13 @@
                 </v-row>
 
                 <v-row>
-                    <v-col>
-                        <h4 class="mb-1 font-weight-thin">Color</h4>
-                    </v-col>
-                    <v-col>
-                        <h4 class="mb-1 font-weight-thin">Preview</h4>
-                    </v-col>
-                </v-row>
-
-                <v-row>
-                    <v-col>
+                    <v-col cols="12" md="6">
+                         <h4 class="mb-1 font-weight-thin">Color</h4>
                         <v-color-picker v-model="newColor" hide-inputs></v-color-picker>
                     </v-col>
-                    <v-col class="text-center">
+
+                    <v-col cols="12" md="6">
+                         <h4 class="mb-1 font-weight-thin">Preview</h4>
                         <v-chip :color="newColor" size="large">{{ newCategory }}</v-chip>
                     </v-col>
                 </v-row>
