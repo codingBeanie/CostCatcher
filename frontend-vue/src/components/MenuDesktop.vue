@@ -3,7 +3,7 @@
     <v-app-bar-title>
         <v-row no-gutters class="d-flex align-center">
             <!--LOGO-->
-            <v-col cols="1" class="text-start justify-start">
+            <v-col cols="2" class="text-start justify-start">
                 <router-link to="/welcome">
                 <v-img src="../assets/logo2.webp" max-height="50px" max-width="50px"></v-img>
 
@@ -11,32 +11,32 @@
             </v-col>
 
             <!--MENU-->
-            <v-col cols="9" v-if="username">
+            <v-col cols="8" v-if="username">
                 <v-row class="d-flex">
-                <v-col></v-col>
-                <v-col>
-                    <v-btn v-if="display.lgAndUp.value == true" to="import" class="w-links" prepend-icon="mdi-upload" variant="text" size="large" stacked>Import</v-btn>
-                    <v-btn v-else to="import" variant="tonal" icon="mdi-upload" size="large"></v-btn>
-                </v-col>
-
-                <v-col>
-                    <v-btn v-if="display.lgAndUp.value == true" to="assignments" class="w-links" text prepend-icon="mdi-tag-multiple" variant="text" size="large" stacked>Categorization</v-btn>
-                    <v-btn v-else to="assignments" variant="tonal" icon="mdi-tag-multiple" size="large"></v-btn>
-                </v-col>
 
                     <v-col>
-                    <v-btn v-if="display.lgAndUp.value == true" to="review" class="w-links" text prepend-icon="mdi-text-box-search" variant="text" size="large" stacked>Review</v-btn>
-                    <v-btn v-else to="review" variant="tonal" icon="mdi-text-box-search" size="large"></v-btn>
+                        <v-btn v-if="display.lgAndUp.value == true" to="import" class="w-links" prepend-icon="mdi-upload" variant="text" size="large" stacked>Import</v-btn>
+                        <v-btn v-else to="import" variant="tonal" icon="mdi-upload" size="large"></v-btn>
                     </v-col>
-                
-                <v-col>
-                    <v-btn v-if="display.lgAndUp.value == true" to="statistics" class="w-links" text prepend-icon="mdi-sigma" variant="text" size="large" stacked>Statistics</v-btn>
-                    <v-btn v-else to="statistics" variant="tonal" icon="mdi-sigma" size="large"></v-btn>
-                </v-col>
 
                     <v-col>
-                    <v-btn v-if="display.lgAndUp.value == true" to="graphs" class="w-links" text prepend-icon="mdi-chart-bar" variant="text" size="large" stacked>Graphs</v-btn>
-                    <v-btn v-else to="graphs" variant="tonal" icon="mdi-chart-bar" size="large"></v-btn>
+                        <v-btn v-if="display.lgAndUp.value == true" to="assignments" class="w-links" text prepend-icon="mdi-tag-multiple" variant="text" size="large" stacked>Categorization</v-btn>
+                        <v-btn v-else to="assignments" variant="tonal" icon="mdi-tag-multiple" size="large"></v-btn>
+                    </v-col>
+
+                    <v-col>
+                        <v-btn v-if="display.lgAndUp.value == true" to="review" class="w-links" text prepend-icon="mdi-text-box-search" variant="text" size="large" stacked>Review</v-btn>
+                        <v-btn v-else to="review" variant="tonal" icon="mdi-text-box-search" size="large"></v-btn>
+                    </v-col>
+                    
+                    <v-col>
+                        <v-btn v-if="display.lgAndUp.value == true" to="statistics" class="w-links" text prepend-icon="mdi-sigma" variant="text" size="large" stacked>Statistics</v-btn>
+                        <v-btn v-else to="statistics" variant="tonal" icon="mdi-sigma" size="large"></v-btn>
+                    </v-col>
+
+                    <v-col>
+                        <v-btn v-if="display.lgAndUp.value == true" to="graphs" class="w-links" text prepend-icon="mdi-chart-bar" variant="text" size="large" stacked>Graphs</v-btn>
+                        <v-btn v-else to="graphs" variant="tonal" icon="mdi-chart-bar" size="large"></v-btn>
                     </v-col>
 
                 </v-row>
@@ -120,3 +120,9 @@ onMounted(() => {
   username.value = userStore.username
 })
 </script>
+
+<style scoped>
+.w-links {
+    width: 100%;
+}
+</style>
