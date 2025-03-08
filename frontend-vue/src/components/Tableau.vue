@@ -5,159 +5,207 @@
     </v-row>
     
     <!--MAINFRAME-->
-        <v-container class="d-flex-row overflow bg-white mt-4">
+    <v-container class="d-flex-row overflow-x-auto bg-white mt-4">
 
-            <!--HEADERS-->
-            <v-row no-gutters class="border-b  d-flex flex-nowrap text-end">
-                <v-col class="chip">
-                    <p class="text-button"></p>
-                </v-col>
-                <v-col v-for="header in headers" class="column pr-3">
-                    <p class="text-button">{{ header.title }}</p>
-                </v-col>
-                
-                <!--STATISTICS-->
-                <v-col v-if="filterStore.tableau.statistics" class="column pr-3">
-                    <p class="text-button">SUM</p>
-                </v-col>
-                <v-col v-if="filterStore.tableau.statistics" class="column pr-3">
-                    <p class="text-button">AVERAGE</p>
-                </v-col>
-                <v-col v-if="filterStore.tableau.statistics" class="column pr-3">
-                    <p class="text-button">MEDIAN</p>
-                </v-col>
-            </v-row>
+        <!--HEADERS-->
+        <v-row no-gutters class="d-flex flex-nowrap">
+            <v-col class="chip mr-1">
+                <p class="text-button"></p>
+            </v-col>
+            <!--PERIODS-->
+            <v-col v-for="(header, index) in headers" :key="index" :class="index % 2 === 0 ? 'column bg-primaryLight' : 'column'">
+                <p class="text-button border-b full-width pl-12">{{ header.title }}</p>
+            </v-col>
+            
+            <!--STATISTICS-->
+            <v-col v-if="filterStore.tableau.statistics" class="column bg-accent ml-1 mr-1">
+                <p class="text-button border-b full-width text-center">SUM</p>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column bg-accent mr-1">
+                <p class="text-button border-b full-width text-center">AVERAGE</p>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column bg-accent">
+                <p class="text-button border-b full-width text-center">MEDIAN</p>
+            </v-col>
+        </v-row>
 
 
 <!--*************************************************************************************************-->
 
-            <!--INCOME TITLE-->
-            <v-row no-gutters class="d-flex flex-nowrap">
-                <v-col class="chip">
-                    <p class="text-overline text-success">INCOME</p>
-                </v-col>
-                <v-col v-for="header in headers" class="column">
-                    <!--EMPTY-->
-                </v-col>
+        <!--INCOME TITLE-->
+        <v-row no-gutters class="d-flex flex-nowrap">
+            <v-col class="chip">
+                <p class="text-overline text-success">INCOME</p>
+            </v-col>
+            <v-col v-for="header in headers" class="column">
+                <!--EMPTY-->
+            </v-col>
 
-            </v-row>
+        </v-row>
+        <!--INCOME DATA-->
+        <v-row no-gutters v-for="income in incomeData" class="d-flex flex-nowrap text-end mb-2">
+            <!--CATEGORY TITLE-->
+            <v-col class="chip text-end align-self-center mr-1">
+                <div v-if="income.Category.name == 'UNDEFINED'">
+                    <v-tooltip :text="textUndefined">
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" variant="text" color="accent">not assigned</v-btn>
+                        </template>
+                    </v-tooltip>
+                </div>
+                <div v-else>
+                    <v-chip variant="tonal" label :color="income.Category.color" class="chip" @click="componentStore.openCategoryEdit(income.Category.id)">{{ income.Category.name}}</v-chip>
+                </div>
+            </v-col>
+
+
             <!--INCOME DATA-->
-            <v-row no-gutters v-for="income in incomeData" class="d-flex flex-nowrap text-end mb-2">
-                <!--CATEGORY TITLE-->
-                <v-col class="chip text-end align-self-center">
-                    <div v-if="income.Category.name == 'UNDEFINED'">
-                        <v-tooltip :text="textUndefined">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" variant="text" color="accent">not assigned</v-btn>
-                            </template>
-                        </v-tooltip>
-                    </div>
-                    <div v-else>
-                        <v-chip variant="tonal" label :color="income.Category.color" class="chip" @click="componentStore.openCategoryEdit(income.Category.id)">{{ income.Category.name}}</v-chip>
-                    </div>
-                </v-col>
+            <v-col v-for="(value, key) in income.Data" :class="key % 2 === 0 ? 'column align-self-center bg-primaryLight' : 'column align-self-center'">
+                <v-tooltip :text="income.Category.name + ' | ' + headers[key].title" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="plain"  class="d-flex justify-end" @click="componentStore.openReview(income.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
 
+            <!--STATISTIC DATA-->
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip :text="income.Category.name" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="outlined" color="secondary" class="d-flex justify-end"> {{ parseFloat(income.Statistics.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip :text="income.Category.name" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="outlined" color="secondary" class="d-flex justify-end"> {{ parseFloat(income.Statistics.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip :text="income.Category.name" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="outlined" color="secondary" class="d-flex justify-end"> {{ parseFloat(income.Statistics.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
 
-                <!--INCOME DATA-->
-                <v-col v-for="(value, key) in income.Data" class="column align-self-center">
-                    <v-btn variant="plain" @click="componentStore.openReview(income.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-
-                <!--STATISTIC DATA-->
-                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
-                    <v-btn variant="plain"> {{ parseFloat(income.Statistics.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
-                    <v-btn variant="plain"> {{ parseFloat(income.Statistics.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
-                    <v-btn variant="plain"> {{ parseFloat(income.Statistics.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-
-            </v-row>
-            <!--INCOME SUM-->
-            <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
-                <v-col class="chip align-self-center">
-                    <v-chip label variant="text" class="text-button">SUM INCOME</v-chip>
-                </v-col>
-                <v-col v-for="sum in incomeSums" class="column">
-                    <v-btn variant="text" @click="">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-            </v-row>
-                
-        <!--*************************************************************************************************-->
-
-            <!--EXPENSE TITLE-->
-            <v-row no-gutters class="mt-10 d-flex flex-nowrap">
-                <v-col class="chip">
-                    <p class="text-overline text-error">EXPENSES</p>
-                </v-col>
-                <v-col v-for="header in headers" class="column">
-                    <!--EMPTY-->
-                </v-col>
-            </v-row>
-            <!--EXPENSE DATA-->
-            <v-row no-gutters v-for="expense in expenseData" class="d-flex flex-nowrap text-end mb-2">
-                <!--CATEGORY TITLE-->
-                <v-col class="chip align-self-center">
-                    <div v-if="expense.Category.name == 'UNDEFINED'">
-                        <v-tooltip :text="textUndefined">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" variant="text" color="accent">not assigned</v-btn>
-                            </template>
-                        </v-tooltip>
-                    </div>
-                    <div v-else>
-                        <v-chip label variant="tonal" :color="expense.Category.color" class="chip" @click="componentStore.openCategoryEdit(expense.Category.id)">{{ expense.Category.name}}</v-chip>
-                    </div>
-                </v-col>
-                <!--EXPENSE DATA-->
-                <v-col v-for="(value, key) in expense.Data" class="column align-self-center">
-                    <v-btn variant="plain" @click="componentStore.openReview(expense.Category.id, headers[key])">{{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-
-                <!--STATISTIC DATA-->
-                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
-                    <v-btn variant="plain"> {{ parseFloat(expense.Statistics.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
-                    <v-btn variant="plain"> {{ parseFloat(expense.Statistics.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-                <v-col v-if="filterStore.tableau.statistics" class="column align-self-center">
-                    <v-btn variant="plain"> {{ parseFloat(expense.Statistics.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-            </v-row>
-            <!--EXPENSE SUM-->
-            <v-row no-gutters class="border-t text-end d-flex flex-nowrap ">
-                <v-col class="chip align-self-center">
-                    <v-chip label variant="text" class="text-button">SUM EXPENSES</v-chip>
-                </v-col>
-                <v-col v-for="sum in expenseSums" class="column align-self-center">
-                    <v-btn label variant="text" @click="">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                </v-col>
-            </v-row>
+        </v-row>
+        <!--INCOME SUM-->
+        <v-row no-gutters class="text-end d-flex flex-nowrap ">
+            <v-col class="chip align-self-center mr-1">
+                <v-chip label variant="text" color="success" class="text-button">SUM INCOME</v-chip>
+            </v-col>
+           <v-col v-for="(sum, column, index) in incomeSums" :class="index % 2 === 0 ? 'column bg-successLight' : 'column bg-successLight2'">
+                <v-tooltip :text="column" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="text" @click="" class="d-flex justify-end">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+        </v-row>
             
-
     <!--*************************************************************************************************-->
-            <!--NET SUM-->
-            <v-row no-gutters class="text-end border-t-lg d-flex flex-nowrap mt-10">
-                <v-col class="chip">
-                    <v-btn variant="text">NET</v-btn>
-                </v-col>
-                <v-col v-for="sum in netSums" class="column">
-                    <div v-if="sum >= 0">
-                        <v-btn variant="text" color="success">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                    </div>
-                    <div v-else>
-                        <v-btn variant="text" color="error">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
-                    </div>
-                </v-col>
-            </v-row>
 
-        </v-container>
+        <!--EXPENSE TITLE-->
+        <v-row no-gutters class="mt-10 d-flex flex-nowrap">
+            <v-col class="chip">
+                <p class="text-overline text-error">EXPENSES</p>
+            </v-col>
+            <v-col v-for="header in headers" class="column">
+                <!--EMPTY-->
+            </v-col>
+        </v-row>
+        <!--EXPENSE DATA-->
+        <v-row no-gutters v-for="expense in expenseData" class="d-flex flex-nowrap text-end mb-2">
+            <!--CATEGORY TITLE-->
+            <v-col class="chip align-self-center mr-1">
+                <div v-if="expense.Category.name == 'UNDEFINED'">
+                    <v-tooltip :text="textUndefined">
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" variant="text" color="accent">not assigned</v-btn>
+                        </template>
+                    </v-tooltip>
+                </div>
+                <div v-else>
+                    <v-chip label variant="tonal" :color="expense.Category.color" class="chip" @click="componentStore.openCategoryEdit(expense.Category.id)">{{ expense.Category.name}}</v-chip>
+                </div>
+            </v-col>
+            <!--EXPENSE DATA-->
+            <v-col v-for="(value, key) in expense.Data" :class="key % 2 === 0 ? 'column align-self-center bg-primaryLight' : 'column align-self-center'">
+                <v-tooltip :text="expense.Category.name + ' | ' + headers[key].title" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="plain"  class="d-flex justify-end" @click="componentStore.openReview(income.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
 
+            <!--STATISTIC DATA-->
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip :text="expense.Category.name" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="outlined" color="secondary" class="d-flex justify-end"> {{ parseFloat(expense.Statistics.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip :text="expense.Category.name" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="outlined" color="secondary" class="d-flex justify-end"> {{ parseFloat(expense.Statistics.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip :text="expense.Category.name" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="outlined" color="secondary" class="d-flex justify-end"> {{ parseFloat(expense.Statistics.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+        </v-row>
+        <!--EXPENSE SUM-->
+        <v-row no-gutters class="text-end d-flex flex-nowrap">
+            <v-col class="chip align-self-center mr-1">
+                <v-chip label variant="text" color="error" class="text-button">SUM EXPENSE</v-chip>
+            </v-col>
+           <v-col v-for="(sum, column, index) in expenseSums" :class="index % 2 === 0 ? 'column bg-errorLight' : 'column bg-errorLight2'">
+                <v-tooltip :text="column" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="text" @click="" class="d-flex justify-end">{{ parseFloat(sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+        </v-row>
+        
 
+<!--*************************************************************************************************-->
+        <!--NET SUM-->
+        <v-row no-gutters class="text-end d-flex flex-nowrap mt-10">
+            <v-col class="chip mr-1">
+                <v-btn variant="text">NET</v-btn>
+            </v-col>
+            <v-col v-for="(entry) in netSums" class="column pr-1 pl-1">
+                <!--Positive Values-->
+                <div v-if="entry.value >= 0">
+                    <v-tooltip :text="entry.key.toString()" location="top" :open-delay=openDelay>
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" block variant="tonal" class="d-flex justify-end" color="success">{{ parseFloat(entry.value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                        </template>
+                    </v-tooltip>
+                </div>
+                <div v-else>
+                    <!--Negative Values-->
+                    <v-tooltip :text="entry.key.toString()" location="top" :open-delay=openDelay>
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" block variant="tonal" class="d-flex justify-end" color="error">{{ parseFloat(entry.value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                        </template>
+                    </v-tooltip>
+                </div>
+            </v-col>
+        </v-row>
 
+    </v-container>
 
     <v-row class="mt-4 d-flex text-center justify-center">
         <Hint v-if="!waiting" text="Click on the values (except the sums) to see how they have been formed."></Hint>
@@ -194,6 +242,7 @@ const message = ref('')
 // Settings
 const currency = ref('€')
 const locale = ref('de-DE')
+const openDelay = ref("600")
 
 // DataFrames
 const headers = ref([])
@@ -228,10 +277,16 @@ const loadData = async () => {
     incomeSums.value = incomeDataFrame['sumData']
     expenseData.value = expenseDataFrame['data']
     expenseSums.value = expenseDataFrame['sumData']
+    console.log(expenseSums.value)
 
     // calculate the net sums
-    netSums.value = Object.values(incomeSums.value).map((value, index) => value + Object.values(expenseSums.value)[index])
-
+    netSums.value = []
+    for (const period in incomeSums.value) {
+        let incomeValue = incomeSums.value[period]
+        let expenseValue = expenseSums.value[period]
+        let netValue = incomeValue + expenseValue
+        netSums.value.push({ key:period, value:netValue})
+    }
     // extract the headers
     try {
         headers.value = Object.values(incomeData.value[0].Period)
@@ -270,6 +325,10 @@ watch(() => componentStore.app.refresh, () => {
 .column {
     min-width: 120px;
     max-width: 120px;
+}
+
+.full-width {
+    width: 100%;
 }
 
 .line-height {
