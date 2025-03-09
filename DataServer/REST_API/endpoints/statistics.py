@@ -151,6 +151,7 @@ class Statistics(APIView):
 
             data = []
             sumData = {}
+            allSums = []
             for category in categories:
                 # setup
                 entry = {}
@@ -223,10 +224,30 @@ class Statistics(APIView):
                     data.append(entry)
 
             # ****************************************************************************************************#
+            # Calculate Statistics for all Categories/Periods
+            print("SUM STATISTICS")
+            sumStatistics = {}
+            allSums = sumData.values()
+            allSumsListWithoutZero = [x for x in allSums if x != 0]
+            allSumsZero = all(x == 0 for x in allSums)
+            # only if there are values add statistics and append to data
+            if not allSumsZero:
+                sumStatistics['Sum'] = sum(allSums)
+
+                if ignoreZeros:
+                    sumStatistics['Average'] = mean(
+                        allSumsListWithoutZero)
+                    sumStatistics['Median'] = median(
+                        allSumsListWithoutZero)
+                else:
+                    sumStatistics['Average'] = mean(allSums)
+                    sumStatistics['Median'] = median(allSums)
+
             # sort data by sumvalue
             data = sorted(
                 data, key=lambda x: x['Statistics']['Sum'], reverse=True if valueMode == 'income' else False)
-            response = {'data': data, 'sumData': sumData}
+            response = {'data': data, 'sumData': sumData,
+                        'sumStatistics': sumStatistics}
             return Response(status=200, data=response)
 
         except Exception as e:

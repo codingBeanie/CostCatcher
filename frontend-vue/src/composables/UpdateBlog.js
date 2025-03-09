@@ -1,5 +1,22 @@
 export const updateBlog = [
     {
+        date: '2025-03-09',
+        title: 'V2.2 | Visual Overhaul of Statistics',
+        description:   `I added some more visual guidance in the Statistics Table`,
+        chapter: [
+            {
+                title: 'New Features / Changed',
+                icon: 'mdi-party-popper',
+                text: '',
+                bullets: ['Columns will be colored alternating for better visual guidance',
+                        'other minor visual improvements',
+                        'small tooltip hovering over table entries will show the period and category for better orientation when scrolled outside first column',
+                        'added statistics (sum, average, median) data to aggregated sum rows',
+                ]
+            }
+        ]
+    }, 
+    {
         date: '2024-06-23',
         title: 'V2.1 | Seach and Filter',
         description:   `I added a more advanced search and filter functionality.`,

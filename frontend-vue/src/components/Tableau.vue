@@ -104,6 +104,28 @@
                     </template>
                 </v-tooltip>
             </v-col>
+            <!--STATISTIC DATA-->
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Income" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="success" class="d-flex justify-end"> {{ parseFloat(incomeStats.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Income" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="success" class="d-flex justify-end"> {{ parseFloat(incomeStats.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Income" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="success" class="d-flex justify-end"> {{ parseFloat(incomeStats.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
         </v-row>
             
     <!--*************************************************************************************************-->
@@ -176,6 +198,28 @@
                     </template>
                 </v-tooltip>
             </v-col>
+            <!--STATISTIC DATA-->
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Expenses" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="error" class="d-flex justify-end"> {{ parseFloat(expenseStats.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Expenses" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="error" class="d-flex justify-end"> {{ parseFloat(expenseStats.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Expenses" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="error" class="d-flex justify-end"> {{ parseFloat(expenseStats.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
         </v-row>
         
 
@@ -203,6 +247,28 @@
                     </v-tooltip>
                 </div>
             </v-col>
+            <!--STATISTIC DATA-->
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Net" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="" class="d-flex justify-end"> {{ parseFloat(netStats.Sum).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Net" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="" class="d-flex justify-end"> {{ parseFloat(netStats.Average).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
+            <v-col v-if="filterStore.tableau.statistics" class="column align-self-center ml-1 mr-1">
+                <v-tooltip text="Net" location="top" :open-delay=openDelay>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" block variant="tonal" color="" class="d-flex justify-end"> {{ parseFloat(netStats.Median).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                    </template>
+                </v-tooltip>
+            </v-col>
         </v-row>
 
     </v-container>
@@ -219,7 +285,7 @@
 </template>
 
 <script setup>
-import { watch, ref } from 'vue';
+import { watch, ref, toRaw } from 'vue';
 import { API } from '../composables/API.js'
 import { useComponentStore } from '../stores/ComponentStore'
 import { useFilterStore } from '../stores/FilterStore'
@@ -249,8 +315,11 @@ const headers = ref([])
 const incomeData = ref([])
 const expenseData = ref([])
 const incomeSums = ref([])
+const incomeStats = ref([])
 const expenseSums = ref([])
+const expenseStats = ref([])
 const netSums = ref([])
+const netStats = ref([])
 
 ////////////////////////////////////////////////////////////////
 // Methods
@@ -275,9 +344,10 @@ const loadData = async () => {
     // fill the dataframes
     incomeData.value = incomeDataFrame['data']
     incomeSums.value = incomeDataFrame['sumData']
+    incomeStats.value = incomeDataFrame['sumStatistics']
     expenseData.value = expenseDataFrame['data']
     expenseSums.value = expenseDataFrame['sumData']
-    console.log(expenseSums.value)
+    expenseStats.value = expenseDataFrame['sumStatistics']
 
     // calculate the net sums
     netSums.value = []
@@ -287,6 +357,31 @@ const loadData = async () => {
         let netValue = incomeValue + expenseValue
         netSums.value.push({ key:period, value:netValue})
     }
+    // calculate the net stats
+    netStats.value = []
+    const netSumsRaw = toRaw(netSums.value)
+    let netStat = Object.values(netSumsRaw)
+    netStat.sort((a, b) => a.value - b.value)
+    if (filterStore.tableau.ignoreZero) {
+        netStat = netStat.filter(obj => obj.value !== 0)
+    }
+    // Calculate Sum
+    const netStatSum = netStat.reduce((acc, obj) => acc + obj.value, 0)
+    // Calculate Average
+    const netStatAvg = netStatSum / netStat.length
+    // Find median
+    // Extract sorted values
+    const netStatValues = netStat.map(obj => obj.value);
+    // Find median
+    const mid = Math.floor(netStatValues.length / 2);
+    const netStatMean = netStatValues.length % 2 !== 0 
+        ? netStatValues[mid]  // Odd number of elements → middle value
+        : (netStatValues[mid - 1] + netStatValues[mid]) / 2; // Even number → avg of two middle values
+    // add all Statistics to ref-object
+    netStats.value["Sum"] = netStatSum
+    netStats.value["Average"] = netStatAvg
+    netStats.value["Median"] = netStatMean
+
     // extract the headers
     try {
         headers.value = Object.values(incomeData.value[0].Period)
