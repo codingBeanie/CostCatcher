@@ -158,7 +158,7 @@
             <v-col v-for="(value, key) in expense.Data" :class="key % 2 === 0 ? 'column align-self-center bg-primaryLight' : 'column align-self-center'">
                 <v-tooltip :text="expense.Category.name + ' | ' + headers[key].title" location="top" :open-delay=openDelay>
                     <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" block variant="plain"  class="d-flex justify-end" @click="componentStore.openReview(income.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
+                        <v-btn v-bind="props" block variant="plain"  class="d-flex justify-end" @click="componentStore.openReview(expense.Category.id, headers[key])"> {{ parseFloat(value).toLocaleString(locale, {minimumFractionDigits: 2})}} {{ currency }}</v-btn>
                     </template>
                 </v-tooltip>
             </v-col>
